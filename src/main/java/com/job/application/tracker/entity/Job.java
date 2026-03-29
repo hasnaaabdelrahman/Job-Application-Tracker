@@ -21,7 +21,7 @@ public class Job {
     private String description;
 
     // relation
-    @OneToMany(mappedBy = "Job")
+    @OneToMany(mappedBy = "job")
     private List<Application> applications;
 
     @ManyToOne
