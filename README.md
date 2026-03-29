@@ -35,8 +35,6 @@ src/main/java/com/example/jobtracker
 ├── service        # Business logic
 ├── repository     # Data access layer
 ├── entity         # JPA Entities
-├── dto            # Data Transfer Objects
-└── exception      # Global exception handling
 ```
 
 ---
