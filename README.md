@@ -176,8 +176,3 @@ This project was built to practice:
 - JPA relationships and database design  
 - Clean architecture principles  
 
----
-
-## ⭐ If you like this project
-
-Feel free to star the repository and share your feedback!
