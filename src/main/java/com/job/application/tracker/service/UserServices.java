@@ -1,6 +1,10 @@
 package com.job.application.tracker.service;
 
+import com.job.application.tracker.dto.UserCreateDto;
+import com.job.application.tracker.dto.UserGetDto;
+import com.job.application.tracker.dto.UserUpdateDto;
 import com.job.application.tracker.entity.User;
+import com.job.application.tracker.mapper.UserMapper;
 import com.job.application.tracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,9 +17,11 @@ public class UserServices {
     @Autowired
     UserRepository userRepository;
 
-    public User add(User user) {
-        User userAdded = userRepository.save(user);
-        return userAdded;
+    public UserGetDto add(UserCreateDto user) {
+
+        User userAdded = UserMapper.toEntity(user);
+        userRepository.save(userAdded);
+        return UserMapper.toDto(userAdded);
     }
     public List<User> showAll() {
         return userRepository.findAll();
@@ -23,9 +29,11 @@ public class UserServices {
     public void delete(Integer id) {
         userRepository.deleteById(id);
     }
-    public User update(User user) {
-        User updatedUser = userRepository.save(user);
-        return updatedUser;
+    public UserGetDto update(Integer id ,UserUpdateDto userDto) {
+        User user = userRepository.findById(id).orElseThrow();
+         UserMapper.UpdateEntity(user , userDto);
+        userRepository.save(user);
+        return UserMapper.toDto(user);
     }
 
 }
