@@ -97,6 +97,24 @@ src/main/java/com/example/jobtracker
 - Filter applications by status or company  
 ---
 
+---
+
+## API Documentation (Swagger)
+
+The project includes integrated API documentation using OpenAPI (Swagger UI).
+
+After running the application, you can access the documentation at:
+
+http://localhost:8080/swagger-ui/index.html
+
+Swagger allows you to:
+- View all available endpoints  
+- Test APIs directly from the browser  
+- Inspect request and response structures  
+
+---
+
+
 ##  Configuration
 
 ### H2 Database
