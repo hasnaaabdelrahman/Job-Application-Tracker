@@ -22,8 +22,11 @@ public class ApplicationServices {
          applicationRepository.save(application);
          return ApplicationMapper.toDto(application);
     }
-    public List<Application> get() {
-        return applicationRepository.findAll();
+    public List<ApplicationGetDto> get() {
+        return applicationRepository.findAll()
+                .stream()
+                .map(application -> new ApplicationGetDto(application.getId() , application.getApplicationStatus()))
+                .toList();
     }
     public ApplicationGetDto update(Integer id, ApplicationUpdateDto dto) {
         Application application = applicationRepository.findById(id).orElseThrow();

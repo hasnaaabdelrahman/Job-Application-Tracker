@@ -21,8 +21,8 @@ public class ApplicationController {
         this.applicationServices = applicationServices;
     }
     @GetMapping("/get-all")
-    public ResponseEntity<List<Application>> getAll() {
-        final List<Application> applications = applicationServices.get();
+    public ResponseEntity<List<ApplicationGetDto>> getAll() {
+        final List<ApplicationGetDto> applications = applicationServices.get();
         return ResponseEntity.ok(applications);
     }
     @PostMapping("/add")

@@ -24,8 +24,11 @@ public class JobServices {
          jobRepository.save(jobAdded);
          return JobMapper.toDto(jobAdded);
     }
-    public List<Job> showAll() {
-        return jobRepository.findAll();
+    public List<JobGetDto> showAll() {
+        return jobRepository.findAll()
+                .stream()
+                .map(job -> new JobGetDto(job.getId(), job.getTitle(), job.getDescription()))
+                .toList();
     }
     public void delete(Integer id) {
         jobRepository.deleteById(id);
