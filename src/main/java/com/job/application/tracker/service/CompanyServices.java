@@ -20,7 +20,10 @@ public class CompanyServices {
          companyRepository.save(company);
          return CompanyMapper.toDto(company);
     }
-    public List<Company> getAll() {
-        return companyRepository.findAll();
+    public List<CompanyGetDto> getAll() {
+        return companyRepository.findAll()
+                .stream()
+                .map(company -> new CompanyGetDto(company.getId(), company.getName()))
+                .toList();
     }
 }

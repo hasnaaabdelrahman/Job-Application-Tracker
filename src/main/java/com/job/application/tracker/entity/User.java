@@ -1,5 +1,6 @@
 package com.job.application.tracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,5 +27,6 @@ public class User {
 
     // relations
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Application> applications;
 }

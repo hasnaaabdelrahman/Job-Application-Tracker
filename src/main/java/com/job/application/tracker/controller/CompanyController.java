@@ -22,8 +22,8 @@ public class CompanyController {
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<Company>> getAll() {
-        final List<Company> companies = companyServices.getAll();
+    public ResponseEntity<List<CompanyGetDto>> getAll() {
+        final List<CompanyGetDto> companies = companyServices.getAll();
         return ResponseEntity.ok(companies);
     }
     @PostMapping("/add")

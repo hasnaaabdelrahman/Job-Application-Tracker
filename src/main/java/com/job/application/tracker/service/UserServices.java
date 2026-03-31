@@ -23,8 +23,11 @@ public class UserServices {
         userRepository.save(userAdded);
         return UserMapper.toDto(userAdded);
     }
-    public List<User> showAll() {
-        return userRepository.findAll();
+    public List<UserGetDto> showAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(user -> new UserGetDto(user.getId() , user.getName() , user.getEmail() , user.getPhone() , user.getBirthDate()))
+                .toList();
     }
     public void delete(Integer id) {
         userRepository.deleteById(id);

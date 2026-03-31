@@ -24,8 +24,8 @@ public class JobController {
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<Job>> getAll() {
-        final List<Job> jobs = jobServices.showAll();
+    public ResponseEntity<List<JobGetDto>> getAll() {
+        final List<JobGetDto> jobs = jobServices.showAll();
         return ResponseEntity.ok(jobs);
     }
     @PostMapping("/add")

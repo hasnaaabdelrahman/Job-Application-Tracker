@@ -22,8 +22,8 @@ public class UserController {
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<User>> getAll() {
-       final List<User> users = userServices.showAll();
+    public ResponseEntity<List<UserGetDto>> getAll() {
+       final List<UserGetDto> users = userServices.showAll();
         return ResponseEntity.ok(users);
     }
     @PostMapping("/add")
