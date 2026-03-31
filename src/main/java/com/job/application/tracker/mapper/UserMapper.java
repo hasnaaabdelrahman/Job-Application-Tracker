@@ -38,15 +38,4 @@ public class UserMapper {
         user.setBirthDate(dto.getBirthDate());
     }
 
-    public static User GetEntity(UserGetDto dto) {
-        if (dto == null) return null;
-        User user = new User();
-        user.setId(dto.getId());
-        user.setName(dto.getName());
-        user.setPhone(dto.getPhone());
-        user.setEmail(dto.getEmail());
-        user.setBirthDate(dto.getBirthDate());
-        return user;
-    }
-
 }
