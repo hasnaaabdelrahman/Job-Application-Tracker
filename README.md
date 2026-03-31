@@ -97,8 +97,6 @@ src/main/java/com/example/jobtracker
 - Filter applications by status or company  
 ---
 
----
-
 ## API Documentation (Swagger)
 
 The project includes integrated API documentation using OpenAPI (Swagger UI).
