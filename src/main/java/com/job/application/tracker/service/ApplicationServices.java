@@ -1,6 +1,11 @@
 package com.job.application.tracker.service;
 
+import com.job.application.tracker.dto.ApplicationCreateDto;
+import com.job.application.tracker.dto.ApplicationGetDto;
+import com.job.application.tracker.dto.ApplicationUpdateDto;
 import com.job.application.tracker.entity.Application;
+import com.job.application.tracker.mapper.ApplicationMapper;
+import com.job.application.tracker.mapper.CompanyMapper;
 import com.job.application.tracker.repository.ApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,14 +17,19 @@ public class ApplicationServices {
     @Autowired
     ApplicationRepository applicationRepository;
 
-    public Application add(Application application) {
-        return applicationRepository.save(application);
+    public ApplicationGetDto add(ApplicationCreateDto dto) {
+        Application application = ApplicationMapper.toEntity(dto);
+         applicationRepository.save(application);
+         return ApplicationMapper.toDto(application);
     }
     public List<Application> get() {
         return applicationRepository.findAll();
     }
-    public Application update(Application application) {
-        return applicationRepository.save(application);
+    public ApplicationGetDto update(Integer id, ApplicationUpdateDto dto) {
+        Application application = applicationRepository.findById(id).orElseThrow();
+        ApplicationMapper.update(application , dto);
+        applicationRepository.save(application);
+        return ApplicationMapper.toDto(application);
     }
     public void delete(Application application) {
         if (application.getApplicationStatus() == Application.ApplicationStatus.REJECTED) {
