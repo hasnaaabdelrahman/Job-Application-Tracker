@@ -1,5 +1,8 @@
 package com.job.application.tracker.controller;
 
+import com.job.application.tracker.dto.JobCreateDto;
+import com.job.application.tracker.dto.JobGetDto;
+import com.job.application.tracker.dto.JobUpdateDto;
 import com.job.application.tracker.entity.Job;
 import com.job.application.tracker.entity.User;
 import com.job.application.tracker.service.JobServices;
@@ -26,17 +29,17 @@ public class JobController {
         return ResponseEntity.ok(jobs);
     }
     @PostMapping("/add")
-    public ResponseEntity<Job> addUser(@RequestBody Job job) {
-        final Job added = jobServices.add(job);
+    public ResponseEntity<JobGetDto> addJob(@RequestBody JobCreateDto dto) {
+        final JobGetDto added = jobServices.add(dto);
         return ResponseEntity.ok(added);
     }
-    @PutMapping("/update")
-    public ResponseEntity<Job> updateUser(@RequestBody Job job) {
-        final Job updated = jobServices.update(job);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<JobGetDto> updateJob(@PathVariable("id") Integer id, @RequestBody JobUpdateDto dto) {
+        final JobGetDto updated = jobServices.update(id,dto);
         return ResponseEntity.ok(updated);
     }
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Job> deleteUser(@PathVariable("id") Integer id) {
+    public ResponseEntity<Job> deleteJob(@PathVariable("id") Integer id) {
         jobServices.delete(id);
         return ResponseEntity.ok().build();
     }
