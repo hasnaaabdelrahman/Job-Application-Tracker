@@ -1,6 +1,8 @@
 package com.job.application.tracker.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,11 +16,9 @@ public class Application {
     @Id
     @GeneratedValue
     private Integer id;
-    private String name;
-
     @Enumerated(EnumType.STRING)
-    private ApplicationStatus applicationStatus;
 
+    private ApplicationStatus applicationStatus;
     public enum ApplicationStatus {
         APPLIED,
         INTERVIEW,
@@ -29,9 +29,11 @@ public class Application {
     //relations
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "job_id")
+    @JsonManagedReference
     private Job job;
 }
