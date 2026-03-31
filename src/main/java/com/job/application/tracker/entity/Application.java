@@ -14,11 +14,9 @@ public class Application {
     @Id
     @GeneratedValue
     private Integer id;
-    private String name;
-
     @Enumerated(EnumType.STRING)
-    private ApplicationStatus applicationStatus;
 
+    private ApplicationStatus applicationStatus;
     public enum ApplicationStatus {
         APPLIED,
         INTERVIEW,
