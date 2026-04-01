@@ -4,9 +4,13 @@ import com.job.application.tracker.dto.ApplicationCreateDto;
 import com.job.application.tracker.dto.ApplicationGetDto;
 import com.job.application.tracker.dto.ApplicationUpdateDto;
 import com.job.application.tracker.entity.Application;
+import com.job.application.tracker.entity.Job;
+import com.job.application.tracker.entity.User;
 import com.job.application.tracker.mapper.ApplicationMapper;
 import com.job.application.tracker.mapper.CompanyMapper;
 import com.job.application.tracker.repository.ApplicationRepository;
+import com.job.application.tracker.repository.JobRepository;
+import com.job.application.tracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +20,21 @@ import java.util.List;
 public class ApplicationServices {
     @Autowired
     ApplicationRepository applicationRepository;
-
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    JobRepository jobRepository;
     public ApplicationGetDto add(ApplicationCreateDto dto) {
         Application application = ApplicationMapper.toEntity(dto);
-         applicationRepository.save(application);
+        User user =   userRepository.findById(dto.getUser_id()).orElseThrow();
+
+        Job job = jobRepository.findById(dto.getJob_id())
+                .orElseThrow();
+
+        application.setUser(user);
+        application.setJob(job);
+
+        applicationRepository.save(application);
          return ApplicationMapper.toDto(application);
     }
     public List<ApplicationGetDto> get() {
