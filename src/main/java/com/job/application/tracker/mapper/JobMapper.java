@@ -20,6 +20,7 @@ public class JobMapper {
         dto.setId(job.getId());
         dto.setTitle(job.getTitle());
         dto.setDescription(job.getDescription());
+        dto.setCompany_id(job.getCompany().getId());
         return dto;
     }
 
