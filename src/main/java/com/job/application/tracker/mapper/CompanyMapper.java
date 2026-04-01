@@ -1,9 +1,6 @@
 package com.job.application.tracker.mapper;
 
-import com.job.application.tracker.dto.CompanyCreateDto;
-import com.job.application.tracker.dto.CompanyGetDto;
-import com.job.application.tracker.dto.CompanyUpdateDto;
-import com.job.application.tracker.dto.JobUpdateDto;
+import com.job.application.tracker.dto.*;
 import com.job.application.tracker.entity.Company;
 import com.job.application.tracker.entity.Job;
 
@@ -21,6 +18,10 @@ public class CompanyMapper {
         CompanyGetDto dto = new CompanyGetDto();
         dto.setId(company.getId());
         dto.setName(company.getName());
+        dto.setJobs(company.getJobs()
+                .stream()
+                .map(job -> new JobsDto(job.getId(), job.getTitle() , job.getDescription()))
+                .toList());
         return dto;
     }
 

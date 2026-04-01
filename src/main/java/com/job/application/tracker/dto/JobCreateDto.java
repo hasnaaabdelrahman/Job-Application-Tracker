@@ -6,4 +6,5 @@ import lombok.Data;
 public class JobCreateDto {
     private String title;
     private String description;
+    private Integer companyId;
 }

@@ -1,5 +1,6 @@
 package com.job.application.tracker.service;
 
+import com.job.application.tracker.dto.ApplicationDto;
 import com.job.application.tracker.dto.UserCreateDto;
 import com.job.application.tracker.dto.UserGetDto;
 import com.job.application.tracker.dto.UserUpdateDto;
@@ -26,8 +27,12 @@ public class UserServices {
     public List<UserGetDto> showAll() {
         return userRepository.findAll()
                 .stream()
-                .map(user -> new UserGetDto(user.getId() , user.getName() , user.getEmail() , user.getPhone() , user.getBirthDate()))
+                .map(user -> new UserGetDto(user.getId() , user.getName() , user.getEmail() , user.getPhone() , user.getBirthDate() ,
+                        user.getApplications().stream()
+                                .map(
+                                application -> new ApplicationDto (application.getId() , application.getApplicationStatus())).toList()))
                 .toList();
+
     }
     public void delete(Integer id) {
         userRepository.deleteById(id);

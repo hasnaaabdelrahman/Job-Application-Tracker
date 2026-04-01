@@ -1,21 +1,16 @@
 package com.job.application.tracker.dto;
 
 import com.job.application.tracker.entity.Application;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserGetDto {
+public class ApplicationDto {
     private Integer id;
-    private String name;
-    private String phone;
-    private String email;
-    private LocalDate birthDate;
-    private List<ApplicationDto> application;
+    private Application.ApplicationStatus applicationStatus;
 }

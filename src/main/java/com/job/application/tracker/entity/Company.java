@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,5 +24,5 @@ public class Company {
 
     // relation
     @OneToMany(mappedBy = "company")
-    private List<Job> jobs;
+    private List<Job> jobs = new ArrayList<>();
 }

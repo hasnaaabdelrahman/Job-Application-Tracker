@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,5 +29,5 @@ public class User {
     // relations
     @OneToMany(mappedBy = "user")
     @JsonIgnore
-    private List<Application> applications;
+    private List<Application> applications = new ArrayList<>();
 }

@@ -12,6 +12,7 @@ public class ApplicationMapper {
     }
 
     public static ApplicationGetDto toDto(Application application) {
+        if (application == null) return null;
         ApplicationGetDto dto = new ApplicationGetDto();
         dto.setId(application.getId());
         dto.setApplicationStatus(application.getApplicationStatus());
