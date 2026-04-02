@@ -1,10 +1,13 @@
 package com.job.application.tracker.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class JobCreateDto {
+    @NotBlank
     private String title;
+    @NotBlank
     private String description;
     private Integer companyId;
 }
