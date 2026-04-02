@@ -5,6 +5,7 @@ import com.job.application.tracker.dto.UserGetDto;
 import com.job.application.tracker.dto.UserUpdateDto;
 import com.job.application.tracker.entity.User;
 import com.job.application.tracker.service.UserServices;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +28,12 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
     @PostMapping("/add")
-    public ResponseEntity<UserGetDto> addUser(@RequestBody UserCreateDto userDto) {
+    public ResponseEntity<UserGetDto> addUser(@Valid @RequestBody UserCreateDto userDto) {
         final UserGetDto added = userServices.add(userDto);
         return ResponseEntity.ok(added);
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<UserGetDto> updateUser(@PathVariable("id") Integer id, @RequestBody UserUpdateDto userDto) {
+    public ResponseEntity<UserGetDto> updateUser(@PathVariable("id") Integer id,@Valid @RequestBody UserUpdateDto userDto) {
         final UserGetDto updated = userServices.update(id ,userDto);
         return ResponseEntity.ok(updated);
     }

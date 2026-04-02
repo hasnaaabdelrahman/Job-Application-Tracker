@@ -7,6 +7,7 @@ import com.job.application.tracker.entity.Job;
 import com.job.application.tracker.entity.User;
 import com.job.application.tracker.service.JobServices;
 import com.job.application.tracker.service.UserServices;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,12 +30,12 @@ public class JobController {
         return ResponseEntity.ok(jobs);
     }
     @PostMapping("/add")
-    public ResponseEntity<JobGetDto> addJob(@RequestBody JobCreateDto dto) {
+    public ResponseEntity<JobGetDto> addJob(@Valid @RequestBody JobCreateDto dto) {
         final JobGetDto added = jobServices.add(dto);
         return ResponseEntity.ok(added);
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<JobGetDto> updateJob(@PathVariable("id") Integer id, @RequestBody JobUpdateDto dto) {
+    public ResponseEntity<JobGetDto> updateJob(@PathVariable("id") Integer id,@Valid @RequestBody JobUpdateDto dto) {
         final JobGetDto updated = jobServices.update(id,dto);
         return ResponseEntity.ok(updated);
     }

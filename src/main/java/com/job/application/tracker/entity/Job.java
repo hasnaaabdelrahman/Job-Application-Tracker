@@ -2,6 +2,7 @@ package com.job.application.tracker.entity;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,9 @@ public class Job {
     @Id
     @GeneratedValue
     private Integer id;
+    @NotBlank
     private String title;
+    @NotBlank
     private String description;
 
     // relation
