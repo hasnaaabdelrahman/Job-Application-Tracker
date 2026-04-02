@@ -1,9 +1,6 @@
 package com.job.application.tracker.controller;
 
-import com.job.application.tracker.dto.ApplicationCreateDto;
-import com.job.application.tracker.dto.ApplicationGetDto;
-import com.job.application.tracker.dto.ApplicationUpdateDto;
-import com.job.application.tracker.dto.ApplicationsByCompanyDto;
+import com.job.application.tracker.dto.*;
 import com.job.application.tracker.entity.Application;
 import com.job.application.tracker.service.ApplicationServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +26,11 @@ public class ApplicationController {
     @GetMapping("/getByCompany/{id}")
     public ResponseEntity<List<ApplicationsByCompanyDto>> get(@PathVariable("id") Integer id) {
         final List<ApplicationsByCompanyDto> applications = applicationServices.getByCompany(id);
+        return ResponseEntity.ok(applications);
+    }
+    @GetMapping("/getByStatus")
+    public ResponseEntity<List<ApplicationByStatusDto>> get(@RequestParam Application.ApplicationStatus status) {
+        final List<ApplicationByStatusDto> applications = applicationServices.getByStatus(status);
         return ResponseEntity.ok(applications);
     }
     @PostMapping("/add")
