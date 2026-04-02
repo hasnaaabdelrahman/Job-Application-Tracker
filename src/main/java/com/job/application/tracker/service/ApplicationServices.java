@@ -1,9 +1,6 @@
 package com.job.application.tracker.service;
 
-import com.job.application.tracker.dto.ApplicationCreateDto;
-import com.job.application.tracker.dto.ApplicationGetDto;
-import com.job.application.tracker.dto.ApplicationUpdateDto;
-import com.job.application.tracker.dto.ApplicationsByCompanyDto;
+import com.job.application.tracker.dto.*;
 import com.job.application.tracker.entity.Application;
 import com.job.application.tracker.entity.Company;
 import com.job.application.tracker.entity.Job;
@@ -53,6 +50,11 @@ public class ApplicationServices {
         return applicationRepository.findAll()
                 .stream()
                 .map(application -> new ApplicationsByCompanyDto(application.getId() , application.getApplicationStatus() , application.getJob().getCompany().getName()))
+                .toList();
+    }
+    public List<ApplicationByStatusDto> getByStatus(Application.ApplicationStatus status) {
+        return applicationRepository.findByApplicationStatus(status).stream()
+                .map(app -> new ApplicationByStatusDto(app.getId() , app.getApplicationStatus()))
                 .toList();
     }
     public ApplicationGetDto update(Integer id, ApplicationUpdateDto dto) {
