@@ -3,12 +3,15 @@ package com.job.application.tracker.service;
 import com.job.application.tracker.dto.ApplicationCreateDto;
 import com.job.application.tracker.dto.ApplicationGetDto;
 import com.job.application.tracker.dto.ApplicationUpdateDto;
+import com.job.application.tracker.dto.ApplicationsByCompanyDto;
 import com.job.application.tracker.entity.Application;
+import com.job.application.tracker.entity.Company;
 import com.job.application.tracker.entity.Job;
 import com.job.application.tracker.entity.User;
 import com.job.application.tracker.mapper.ApplicationMapper;
 import com.job.application.tracker.mapper.CompanyMapper;
 import com.job.application.tracker.repository.ApplicationRepository;
+import com.job.application.tracker.repository.CompanyRepository;
 import com.job.application.tracker.repository.JobRepository;
 import com.job.application.tracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,8 @@ public class ApplicationServices {
     UserRepository userRepository;
     @Autowired
     JobRepository jobRepository;
+    @Autowired
+    CompanyRepository companyRepository;
     public ApplicationGetDto add(ApplicationCreateDto dto) {
         Application application = ApplicationMapper.toEntity(dto);
         User user =   userRepository.findById(dto.getUser_id()).orElseThrow();
@@ -41,6 +46,13 @@ public class ApplicationServices {
         return applicationRepository.findAll()
                 .stream()
                 .map(application -> new ApplicationGetDto(application.getId() , application.getApplicationStatus()))
+                .toList();
+    }
+    public List<ApplicationsByCompanyDto> getByCompany(Integer id) {
+        Company company = companyRepository.findById(id).orElseThrow();
+        return applicationRepository.findAll()
+                .stream()
+                .map(application -> new ApplicationsByCompanyDto(application.getId() , application.getApplicationStatus() , application.getJob().getCompany().getName()))
                 .toList();
     }
     public ApplicationGetDto update(Integer id, ApplicationUpdateDto dto) {
