@@ -3,6 +3,7 @@ package com.job.application.tracker.controller;
 import com.job.application.tracker.dto.JobCreateDto;
 import com.job.application.tracker.dto.JobGetDto;
 import com.job.application.tracker.dto.JobUpdateDto;
+import com.job.application.tracker.dto.JobsDto;
 import com.job.application.tracker.entity.Job;
 import com.job.application.tracker.entity.User;
 import com.job.application.tracker.service.JobServices;
@@ -27,6 +28,11 @@ public class JobController {
     public ResponseEntity<JobGetDto> get(@PathVariable("id") Integer id) {
         JobGetDto job = jobServices.get(id);
         return ResponseEntity.ok(job);
+    }
+    @GetMapping("/getByCompany/{id}")
+    public ResponseEntity<List<JobsDto>> getByCompany(@PathVariable("id") Integer id) {
+        final List<JobsDto> jobs = jobServices.getAllByCompany(id);
+        return ResponseEntity.ok(jobs);
     }
 
     @GetMapping("/get-all")
