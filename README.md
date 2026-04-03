@@ -6,11 +6,15 @@ A backend RESTful API built with Spring Boot to help users track and manage thei
 
 ## Overview
 
-Job Application Tracker allows users to:
+Job Application Tracker is a system that allows users to:
 - Manage job applications in one place
 - Track application status (Applied, Interview, Rejected, Accepted)
 - Organize jobs by companies
+- Filter applications by status or company
+- Search jobs by title keyword
 - View application statistics grouped by status
+
+This project demonstrates clean backend architecture using modern development practices.
 
 ---
 
@@ -19,9 +23,9 @@ Job Application Tracker allows users to:
 | Technology | Purpose |
 |---|---|
 | Java 17 | Core language |
-| Spring Boot 3 | Application framework |
+| Spring Boot | Application framework |
 | Spring Data JPA | Data access layer |
-| H2 Database | In-memory database for development |
+| H2 Database | In-memory database (dev & testing) |
 | Maven | Build tool |
 | Swagger / OpenAPI | API documentation |
 
@@ -38,12 +42,12 @@ Job Application Tracker allows users to:
 
 ```
 src/main/java/com/job/application/tracker
-├── controller      # REST Controllers (request handling)
+├── controller      # REST Controllers
 ├── service         # Business logic
-├── repository      # Data access layer (JPA Repositories)
+├── repository      # Data access layer
 ├── entity          # JPA Entities
 ├── dto             # Data Transfer Objects
-├── mapper          # Entity <-> DTO mapping
+├── mapper          # Entity <-> DTO mappers
 ```
 
 ---
@@ -77,55 +81,66 @@ src/main/java/com/job/application/tracker
 | Field | Type |
 |---|---|
 | id | Integer |
-| status | Enum (APPLIED, INTERVIEW, REJECTED, ACCEPTED) |
+| status | APPLIED / INTERVIEW / REJECTED / ACCEPTED |
 | user | User |
 | job | Job |
 
 ### Relationships Summary
+
 ```
-User         ──< Application
-Company      ──< Job
-Job          ──< Application
-Application >── User
-Application >── Job
+User ──────< Application >────── Job ──────< Company
 ```
+
+- User → Applications (One-to-Many)
+- Company → Jobs (One-to-Many)
+- Job → Applications (One-to-Many)
+- Application → User & Job (Many-to-One)
 
 ---
 
 ## API Endpoints
 
-### Users — `/api/user/v1`
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/get-all` | Get all users |
-| POST | `/add` | Create a new user |
-| PUT | `/update/{id}` | Update a user |
-| DELETE | `/delete/{id}` | Delete a user |
+### Applications `api/application/v1`
 
-### Companies — `/api/company/v1`
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/get-all` | Get all companies |
-| POST | `/add` | Create a new company |
-
-### Jobs — `/api/job/v1`
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/get-all` | Get all jobs |
-| POST | `/add` | Create a new job |
-| PUT | `/update/{id}` | Update a job |
-| DELETE | `/delete/{id}` | Delete a job |
-
-### Applications — `/api/application/v1`
 | Method | Endpoint | Description |
 |---|---|---|
 | GET | `/get-all` | Get all applications |
 | GET | `/getByCompany/{id}` | Get applications by company |
-| GET | `/getByStatus?status=APPLIED` | Filter applications by status |
-| GET | `/stats` | Get application count grouped by status |
-| POST | `/add` | Create a new application |
-| PUT | `/update/{id}` | Update an application |
-| DELETE | `/delete` | Delete a rejected application |
+| GET | `/getByStatus?status=` | Filter by status |
+| GET | `/stats` | Get count grouped by status |
+| POST | `/add` | Create new application |
+| PUT | `/update/{id}` | Update application |
+| DELETE | `/delete` | Delete application (REJECTED only) |
+
+### Jobs `api/job/v1`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/get-all` | Get all jobs |
+| GET | `/getByCompany/{id}` | Get jobs by company |
+| GET | `/search?title=` | Search jobs by title keyword |
+| POST | `/add` | Create new job |
+| PUT | `/update/{id}` | Update job |
+| DELETE | `/delete/{id}` | Delete job |
+
+### Companies `api/company/v1`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/get-all` | Get all companies |
+| GET | `/get/{id}` | Get company by ID |
+| POST | `/add` | Create new company |
+| PUT | `/update/{id}` | Update company |
+| DELETE | `/delete/{id}` | Delete company |
+
+### Users `api/user/v1`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/get-all` | Get all users |
+| POST | `/add` | Create new user |
+| PUT | `/update/{id}` | Update user |
+| DELETE | `/delete/{id}` | Delete user |
 
 ---
 
@@ -162,11 +177,27 @@ Application >── Job
 }
 ```
 
+### GET `/api/job/v1/search?title=engineer`
+
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "title": "Backend Engineer",
+    "description": "Java Spring Boot role",
+    "company_id": 2
+  }
+]
+```
+
 ---
 
 ## API Documentation (Swagger)
 
-After running the application, access the full interactive API docs at:
+The project includes integrated API documentation using OpenAPI (Swagger UI).
+
+After running the application, access the documentation at:
 
 ```
 http://localhost:8080/swagger-ui/index.html
@@ -176,7 +207,7 @@ http://localhost:8080/swagger-ui/index.html
 
 ## Configuration
 
-Configure the following in `application.properties`:
+Configure credentials in `application.properties`:
 
 ```properties
 spring.datasource.url=jdbc:h2:mem:testdb
@@ -184,7 +215,7 @@ spring.h2.console.enabled=true
 spring.jpa.hibernate.ddl-auto=create-drop
 ```
 
-Access the H2 console at:
+Access H2 Console at:
 ```
 http://localhost:8080/h2-console
 ```
@@ -193,26 +224,31 @@ http://localhost:8080/h2-console
 
 ## Running the Project
 
+1. Clone the repository
 ```bash
-# 1. Clone the repository
 git clone https://github.com/your-username/job-application-tracker.git
+```
 
-# 2. Navigate to the project directory
+2. Navigate to the project directory
+```bash
 cd job-application-tracker
+```
 
-# 3. Run the application
+3. Run the application
+```bash
 mvn spring-boot:run
 ```
+
+The API will be available at `http://localhost:8080`
 
 ---
 
 ## Future Improvements
 
-- JWT Authentication & Authorization
-- Global exception handling with meaningful error responses
-- Filter jobs by title keyword
-- Pagination for large result sets
-- PostgreSQL support for production deployment
+- Add authentication & authorization (JWT + Spring Security)
+- Global exception handling with meaningful HTTP responses
+- Pagination for list endpoints
+- Deploy to cloud (Railway / Render)
 
 ---
 
@@ -221,5 +257,5 @@ mvn spring-boot:run
 This project was built to practice:
 - Spring Boot & REST API development
 - JPA relationships and database design
-- Clean layered architecture (Controller → Service → Repository)
-- DTO pattern and entity mapping
+- Clean architecture principles (Controller → Service → Mapper → Repository)
+- DTO pattern for decoupling API layer from persistence layer
