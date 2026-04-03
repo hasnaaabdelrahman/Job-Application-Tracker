@@ -32,6 +32,11 @@ public class JobServices {
          jobRepository.save(jobAdded);
          return JobMapper.toDto(jobAdded);
     }
+
+    public JobGetDto get(Integer id) {
+        Job job = jobRepository.findById(id).orElseThrow();
+        return JobMapper.toDto(job);
+    }
     public List<JobGetDto> showAll() {
         return jobRepository.findAll()
                 .stream()
