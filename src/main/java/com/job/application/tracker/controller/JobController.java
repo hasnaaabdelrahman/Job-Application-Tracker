@@ -40,6 +40,13 @@ public class JobController {
         final List<JobGetDto> jobs = jobServices.showAll();
         return ResponseEntity.ok(jobs);
     }
+
+    @GetMapping("getByTitle/{title}")
+    public ResponseEntity<List<JobsDto>> getByTitle(String title) {
+        final List<JobsDto> jobs = jobServices.getByTitle(title);
+        return ResponseEntity.ok(jobs);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<JobGetDto> addJob(@Valid @RequestBody JobCreateDto dto) {
         final JobGetDto added = jobServices.add(dto);

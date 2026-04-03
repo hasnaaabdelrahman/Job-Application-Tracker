@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ApplicationServices {
@@ -63,6 +65,10 @@ public class ApplicationServices {
         return applicationRepository.findByApplicationStatus(status).stream()
                 .map(app -> new ApplicationByStatusDto(app.getId() , app.getApplicationStatus()))
                 .toList();
+    }
+    public Map<Application.ApplicationStatus , Long> getStats() {
+        return applicationRepository.findAll().stream()
+                .collect(Collectors.groupingBy(Application::getApplicationStatus , Collectors.counting()));
     }
     public ApplicationGetDto update(Integer id, ApplicationUpdateDto dto) {
         Application application = applicationRepository.findById(id).orElseThrow();

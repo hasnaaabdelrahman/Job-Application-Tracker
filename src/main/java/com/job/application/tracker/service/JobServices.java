@@ -44,6 +44,13 @@ public class JobServices {
         Job job = jobRepository.findById(id).orElseThrow();
         return JobMapper.toDto(job);
     }
+
+    public List<JobsDto> getByTitle(String title) {
+        return jobRepository.findByTitleContainingIgnoreCase(title)
+                .stream().map(job -> new JobsDto(job.getId() , job.getTitle() , job.getDescription()))
+                .toList();
+    }
+
     public List<JobGetDto> showAll() {
         return jobRepository.findAll()
                 .stream()
