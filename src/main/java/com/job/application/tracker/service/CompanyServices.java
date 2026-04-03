@@ -2,6 +2,7 @@ package com.job.application.tracker.service;
 
 import com.job.application.tracker.dto.CompanyCreateDto;
 import com.job.application.tracker.dto.CompanyGetDto;
+import com.job.application.tracker.dto.CompanyUpdateDto;
 import com.job.application.tracker.dto.JobsDto;
 import com.job.application.tracker.entity.Company;
 import com.job.application.tracker.mapper.CompanyMapper;
@@ -29,5 +30,19 @@ public class CompanyServices {
                         .map(job -> new JobsDto(job.getId() , job.getTitle() , job.getDescription()))
                         .toList()))
                 .toList();
+    }
+    public CompanyGetDto get(Integer id) {
+        Company company = companyRepository.findById(id).orElseThrow();
+        return CompanyMapper.toDto(company);
+    }
+
+    public CompanyGetDto update(Integer id , CompanyUpdateDto dto) {
+        Company company = companyRepository.findById(id).orElseThrow();
+        CompanyMapper.update(company,dto);
+        companyRepository.save(company);
+        return CompanyMapper.toDto(company);
+    }
+    public void delete(Integer id) {
+        companyRepository.deleteById(id);
     }
 }

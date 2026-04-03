@@ -23,6 +23,11 @@ public class JobController {
     public JobController(JobServices jobServices) {
         this.jobServices = jobServices;
     }
+    @GetMapping("/get/{id}")
+    public ResponseEntity<JobGetDto> get(@PathVariable("id") Integer id) {
+        JobGetDto job = jobServices.get(id);
+        return ResponseEntity.ok(job);
+    }
 
     @GetMapping("/get-all")
     public ResponseEntity<List<JobGetDto>> getAll() {

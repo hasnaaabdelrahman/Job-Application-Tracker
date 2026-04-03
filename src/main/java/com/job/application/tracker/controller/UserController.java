@@ -22,6 +22,12 @@ public class UserController {
         this.userServices = userServices;
     }
 
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<UserGetDto> get(@PathVariable("id") Integer id) {
+        final UserGetDto user = userServices.get(id);
+        return ResponseEntity.ok(user);
+    }
+
     @GetMapping("/get-all")
     public ResponseEntity<List<UserGetDto>> getAll() {
        final List<UserGetDto> users = userServices.showAll();
