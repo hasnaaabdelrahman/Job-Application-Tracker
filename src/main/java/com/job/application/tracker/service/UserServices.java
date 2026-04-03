@@ -34,6 +34,10 @@ public class UserServices {
                 .toList();
 
     }
+    public UserGetDto get(Integer id) {
+        User user = userRepository.findById(id).orElseThrow();
+        return UserMapper.toDto(user);
+    }
     public void delete(Integer id) {
         userRepository.deleteById(id);
     }
