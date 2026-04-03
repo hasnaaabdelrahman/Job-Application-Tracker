@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ApplicationRepository extends JpaRepository<Application , Integer> {
     public List<Application> findByApplicationStatus(Application.ApplicationStatus status);
+    boolean existsByUserIdAndJobId(Integer userId , Integer jobId);
 }
