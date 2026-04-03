@@ -54,6 +54,11 @@ public class ApplicationServices {
                 .map(application -> new ApplicationsByCompanyDto(application.getId() , application.getApplicationStatus() , application.getJob().getCompany().getName()))
                 .toList();
     }
+    public List<ApplicationGetDto> getByUser(Integer id) {
+        return applicationRepository.findByUserId(id).stream()
+                .map(application -> new ApplicationGetDto(application.getId() , application.getApplicationStatus()))
+                .toList();
+    }
     public List<ApplicationByStatusDto> getByStatus(Application.ApplicationStatus status) {
         return applicationRepository.findByApplicationStatus(status).stream()
                 .map(app -> new ApplicationByStatusDto(app.getId() , app.getApplicationStatus()))
