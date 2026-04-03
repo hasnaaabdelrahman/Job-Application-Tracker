@@ -3,6 +3,7 @@ package com.job.application.tracker.controller;
 import com.job.application.tracker.dto.*;
 import com.job.application.tracker.entity.Application;
 import com.job.application.tracker.service.ApplicationServices;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,17 +45,17 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationServices.getStats());
     }
     @PostMapping("/add")
-    public ResponseEntity<ApplicationGetDto> add(@RequestBody ApplicationCreateDto dto) {
+    public ResponseEntity<ApplicationGetDto> add(@Valid @RequestBody ApplicationCreateDto dto) {
         final ApplicationGetDto applicationAdded = applicationServices.add(dto);
         return ResponseEntity.ok(applicationAdded);
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<ApplicationGetDto> update(@PathVariable("id") Integer id,@RequestBody ApplicationUpdateDto dto) {
+    public ResponseEntity<ApplicationGetDto> update(@PathVariable("id") Integer id,@Valid @RequestBody ApplicationUpdateDto dto) {
         final ApplicationGetDto applicationUpdated= applicationServices.update(id,dto);
         return ResponseEntity.ok(applicationUpdated);
     }
     @DeleteMapping("/delete")
-    public ResponseEntity<Application> delete(@RequestBody Application application) {
+    public ResponseEntity<Application> delete(@Valid @RequestBody Application application) {
       applicationServices.delete(application);
         return ResponseEntity.ok().build();
     }
