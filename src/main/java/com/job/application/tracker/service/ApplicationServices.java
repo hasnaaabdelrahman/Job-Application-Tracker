@@ -32,7 +32,9 @@ public class ApplicationServices {
 
         Job job = jobRepository.findById(dto.getJob_id())
                 .orElseThrow();
-
+        if(applicationRepository.existsByUserIdAndJobId(user.getId() , job.getId())) {
+            throw new RuntimeException("You have already applied for this job");
+        }
         application.setUser(user);
         application.setJob(job);
 
