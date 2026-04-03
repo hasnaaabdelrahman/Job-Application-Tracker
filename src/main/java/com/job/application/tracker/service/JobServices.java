@@ -3,6 +3,7 @@ package com.job.application.tracker.service;
 import com.job.application.tracker.dto.JobCreateDto;
 import com.job.application.tracker.dto.JobGetDto;
 import com.job.application.tracker.dto.JobUpdateDto;
+import com.job.application.tracker.dto.JobsDto;
 import com.job.application.tracker.entity.Company;
 import com.job.application.tracker.entity.Job;
 import com.job.application.tracker.entity.User;
@@ -31,6 +32,12 @@ public class JobServices {
         jobAdded.setCompany(company);
          jobRepository.save(jobAdded);
          return JobMapper.toDto(jobAdded);
+    }
+
+    public List<JobsDto> getAllByCompany(Integer id) {
+        return  jobRepository.findByCompanyId(id).stream()
+                .map(job -> new JobsDto(job.getId() , job.getTitle() , job.getDescription()))
+                .toList();
     }
 
     public JobGetDto get(Integer id) {

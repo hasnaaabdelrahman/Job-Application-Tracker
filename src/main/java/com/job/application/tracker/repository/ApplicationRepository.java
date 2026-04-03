@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ApplicationRepository extends JpaRepository<Application , Integer> {
-    public List<Application> findByApplicationStatus(Application.ApplicationStatus status);
+    List<Application> findByApplicationStatus(Application.ApplicationStatus status);
     boolean existsByUserIdAndJobId(Integer userId , Integer jobId);
+    List<Application> findByUserId(Integer userId);
+
 }

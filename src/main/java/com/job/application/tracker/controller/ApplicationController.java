@@ -33,6 +33,11 @@ public class ApplicationController {
         final List<ApplicationByStatusDto> applications = applicationServices.getByStatus(status);
         return ResponseEntity.ok(applications);
     }
+    @GetMapping("/getByUser/{id}")
+    public ResponseEntity<List<ApplicationGetDto>> getByUser(@PathVariable("id") Integer id) {
+        final List<ApplicationGetDto> applications = applicationServices.getByUser(id);
+        return ResponseEntity.ok(applications);
+    }
     @PostMapping("/add")
     public ResponseEntity<ApplicationGetDto> add(@RequestBody ApplicationCreateDto dto) {
         final ApplicationGetDto applicationAdded = applicationServices.add(dto);
