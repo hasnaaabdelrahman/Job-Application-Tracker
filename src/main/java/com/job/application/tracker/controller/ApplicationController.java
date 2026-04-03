@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/application/v1")
@@ -37,6 +38,10 @@ public class ApplicationController {
     public ResponseEntity<List<ApplicationGetDto>> getByUser(@PathVariable("id") Integer id) {
         final List<ApplicationGetDto> applications = applicationServices.getByUser(id);
         return ResponseEntity.ok(applications);
+    }
+    @GetMapping("/getStats")
+    public ResponseEntity<Map<Application.ApplicationStatus , Long>> getStats() {
+        return ResponseEntity.ok(applicationServices.getStats());
     }
     @PostMapping("/add")
     public ResponseEntity<ApplicationGetDto> add(@RequestBody ApplicationCreateDto dto) {
