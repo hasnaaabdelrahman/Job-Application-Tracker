@@ -48,6 +48,8 @@ src/main/java/com/job/application/tracker
 ├── entity          # JPA Entities
 ├── dto             # Data Transfer Objects
 ├── mapper          # Entity <-> DTO mappers
+├── exceptions      # Custom exception classes (ResourceNotFoundException, etc.), GlobalExceptionHandler (@ControllerAdvice)
+
 ```
 
 ---
@@ -246,7 +248,6 @@ The API will be available at `http://localhost:8080`
 ## Future Improvements
 
 - Add authentication & authorization (JWT + Spring Security)
-- Global exception handling with meaningful HTTP responses
 - Pagination for list endpoints
 - Deploy to cloud (Railway / Render)
 
