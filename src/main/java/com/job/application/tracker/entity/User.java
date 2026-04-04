@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,15 +19,21 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 
-@Table(name = "users")
+@Table(name = "users",
+uniqueConstraints = {
+    @UniqueConstraint(columnNames = "email"), @UniqueConstraint(columnNames = "phone")
 
+})
 public class User {
     @Id
     @GeneratedValue
     private Integer id;
     @NotBlank
+    @Column(columnDefinition = "TEXT")
+    @Size(min = 3)
     private String name;
     @NumberFormat
+    @Size(max = 11)
     private String phone;
     @Email
     @NotBlank(message = "enter a valid email")
