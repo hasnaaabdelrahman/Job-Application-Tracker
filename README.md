@@ -25,7 +25,7 @@ This project demonstrates clean backend architecture using modern development pr
 | Java 17 | Core language |
 | Spring Boot | Application framework |
 | Spring Data JPA | Data access layer |
-| H2 Database | In-memory database (dev & testing) |
+| H2 Database | File-based embedded database (persistent storage) |
 | Maven | Build tool |
 | Swagger / OpenAPI | API documentation |
 
@@ -212,9 +212,10 @@ http://localhost:8080/swagger-ui/index.html
 Configure credentials in `application.properties`:
 
 ```properties
-spring.datasource.url=jdbc:h2:mem:testdb
+# File-based H2 database (data persists across restarts)
+spring.datasource.url=jdbc:h2:file:./data/testdb
 spring.h2.console.enabled=true
-spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.hibernate.ddl-auto=update
 ```
 
 Access H2 Console at:
