@@ -9,5 +9,5 @@ public interface ApplicationRepository extends JpaRepository<Application , Integ
     List<Application> findByApplicationStatus(Application.ApplicationStatus status);
     boolean existsByUserIdAndJobId(Integer userId , Integer jobId);
     List<Application> findByUserId(Integer userId);
-
+    boolean existsById(Integer id);
 }
