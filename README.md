@@ -1,16 +1,18 @@
-#  Job Application Tracker API
+# Job Application Tracker API
 
 A backend RESTful API built with Spring Boot to help users track and manage their job applications efficiently.
 
 ---
 
-##  Overview
+## Overview
 
 Job Application Tracker is a system that allows users to:
-
-- Manage job applications in one place  
-- Track application status (Applied, Interview, Rejected, Accepted)  
-- Organize jobs by companies  
+- Manage job applications in one place
+- Track application status (Applied, Interview, Rejected, Accepted)
+- Organize jobs by companies
+- Filter applications by status or company
+- Search jobs by title keyword
+- View application statistics grouped by status
 
 This project demonstrates clean backend architecture using modern development practices.
 
@@ -18,176 +20,242 @@ This project demonstrates clean backend architecture using modern development pr
 
 ## Tech Stack
 
-- Java  
-- Spring Boot  
-- Spring Data JPA  
-- H2 Database (for development & testing)  
-- Maven  
+| Technology | Purpose |
+|---|---|
+| Java 17 | Core language |
+| Spring Boot | Application framework |
+| Spring Data JPA | Data access layer |
+| H2 Database | In-memory database (dev & testing) |
+| Maven | Build tool |
+| Swagger / OpenAPI | API documentation |
 
 ---
 
-##  Project Structure
+## Prerequisites
+
+- Java 17+
+- Maven 3.8+
+
+---
+
+## Project Structure
 
 ```
-src/main/java/com/example/jobtracker
-
-├── controller     # REST Controllers
-├── service        # Business logic
-├── repository     # Data access layer
-├── entity         # JPA Entities
-├── dto            # Data Transfer Objects
+src/main/java/com/job/application/tracker
+├── controller      # REST Controllers
+├── service         # Business logic
+├── repository      # Data access layer
+├── entity          # JPA Entities
+├── dto             # Data Transfer Objects
+├── mapper          # Entity <-> DTO mappers
 ```
 
 ---
 
-##  Entities & Relationships
+## Entities & Relationships
 
-###  User
-- id
-- name
-- email
-- phone
-- birthdate  
+### User
+| Field | Type |
+|---|---|
+| id | Integer |
+| name | String |
+| email | String |
+| phone | String |
+| birthDate | LocalDate |
 
- One user can have multiple applications  
-
----
-
-###  Company
-- id
-- name  
-
- One company can have multiple jobs  
-
----
+### Company
+| Field | Type |
+|---|---|
+| id | Integer |
+| name | String |
 
 ### Job
-- id
-- title
-- description  
-
- Each job belongs to one company  
- One job can have multiple applications  
-
----
+| Field | Type |
+|---|---|
+| id | Integer |
+| title | String |
+| description | String |
+| company | Company |
 
 ### Application
-- id
-- status (APPLIED, INTERVIEW, REJECTED, ACCEPTED)  
+| Field | Type |
+|---|---|
+| id | Integer |
+| status | APPLIED / INTERVIEW / REJECTED / ACCEPTED |
+| user | User |
+| job | Job |
 
- Each application belongs to:
-- one user  
-- one job  
+### Relationships Summary
+
+```
+User ──────< Application >────── Job ──────< Company
+```
+
+- User → Applications (One-to-Many)
+- Company → Jobs (One-to-Many)
+- Job → Applications (One-to-Many)
+- Application → User & Job (Many-to-One)
 
 ---
 
-##  Relationships Summary
+## API Endpoints
 
-- User → Applications (One-to-Many)  
-- Company → Jobs (One-to-Many)  
-- Job → Applications (One-to-Many)  
-- Application → User & Job (Many-to-One)  
+### Applications `api/application/v1`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/get-all` | Get all applications |
+| GET | `/getByCompany/{id}` | Get applications by company |
+| GET | `/getByStatus?status=` | Filter by status |
+| GET | `/stats` | Get count grouped by status |
+| POST | `/add` | Create new application |
+| PUT | `/update/{id}` | Update application |
+| DELETE | `/delete` | Delete application (REJECTED only) |
+
+### Jobs `api/job/v1`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/get-all` | Get all jobs |
+| GET | `/getByCompany/{id}` | Get jobs by company |
+| GET | `/search?title=` | Search jobs by title keyword |
+| POST | `/add` | Create new job |
+| PUT | `/update/{id}` | Update job |
+| DELETE | `/delete/{id}` | Delete job |
+
+### Companies `api/company/v1`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/get-all` | Get all companies |
+| GET | `/get/{id}` | Get company by ID |
+| POST | `/add` | Create new company |
+| PUT | `/update/{id}` | Update company |
+| DELETE | `/delete/{id}` | Delete company |
+
+### Users `api/user/v1`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/get-all` | Get all users |
+| POST | `/add` | Create new user |
+| PUT | `/update/{id}` | Update user |
+| DELETE | `/delete/{id}` | Delete user |
 
 ---
 
-##  Features
+## Sample Request & Response
 
-- CRUD operations for all entities  
-- Track application status using Enum  
-- Filter applications by status or company  
+### POST `/api/application/v1/add`
+
+**Request:**
+```json
+{
+  "user_id": 1,
+  "job_id": 2,
+  "applicationStatus": "APPLIED"
+}
+```
+
+**Response:**
+```json
+{
+  "id": 5,
+  "applicationStatus": "APPLIED"
+}
+```
+
+### GET `/api/application/v1/stats`
+
+**Response:**
+```json
+{
+  "APPLIED": 5,
+  "INTERVIEW": 3,
+  "REJECTED": 2,
+  "ACCEPTED": 1
+}
+```
+
+### GET `/api/job/v1/search?title=engineer`
+
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "title": "Backend Engineer",
+    "description": "Java Spring Boot role",
+    "company_id": 2
+  }
+]
+```
+
 ---
 
 ## API Documentation (Swagger)
 
 The project includes integrated API documentation using OpenAPI (Swagger UI).
 
-After running the application, you can access the documentation at:
+After running the application, access the documentation at:
 
+```
 http://localhost:8080/swagger-ui/index.html
-
-Swagger allows you to:
-- View all available endpoints  
-- Test APIs directly from the browser  
-- Inspect request and response structures  
+```
 
 ---
 
+## Configuration
 
-##  Configuration
+Configure credentials in `application.properties`:
 
-### H2 Database
+```properties
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.h2.console.enabled=true
+spring.jpa.hibernate.ddl-auto=create-drop
+```
 
-The project uses an in-memory database for easy setup.
-
-Access H2 Console:
+Access H2 Console at:
 ```
 http://localhost:8080/h2-console
 ```
 
-Example configuration in `application.properties`:
-
-```
-spring.datasource.username=root
-spring.datasource.password=password
-spring.h2.console.enabled=true
-```
-
 ---
 
-##  Running the Project
+## Running the Project
 
-1. Clone the repository  
-2. Open in IntelliJ / VS Code  
-3. Run the application  
-
+1. Clone the repository
+```bash
+git clone https://github.com/your-username/job-application-tracker.git
 ```
+
+2. Navigate to the project directory
+```bash
+cd job-application-tracker
+```
+
+3. Run the application
+```bash
 mvn spring-boot:run
 ```
 
----
-
-##  Sample Endpoints
-
-###  Applications
-- GET /applications  
-- POST /applications  
-- GET /applications/{id}  
-- DELETE /applications/{id}  
-
----
-
-###  Jobs
-- GET /jobs  
-- POST /jobs  
-
----
-
-###  Companies
-- GET /companies  
-- POST /companies  
-
----
-
-###  Users
-- GET /users  
-- POST /users
-- DELETE /users
-- UPDATE /users
+The API will be available at `http://localhost:8080`
 
 ---
 
 ## Future Improvements
 
--  Add authentication (JWT)  
-
+- Add authentication & authorization (JWT + Spring Security)
+- Global exception handling with meaningful HTTP responses
+- Pagination for list endpoints
+- Deploy to cloud (Railway / Render)
 
 ---
 
-##  Purpose
+## Purpose
 
 This project was built to practice:
-
-- Spring Boot & REST API development  
-- JPA relationships and database design  
-- Clean architecture principles  
-
+- Spring Boot & REST API development
+- JPA relationships and database design
+- Clean architecture principles (Controller → Service → Mapper → Repository)
+- DTO pattern for decoupling API layer from persistence layer
