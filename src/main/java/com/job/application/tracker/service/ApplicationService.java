@@ -6,7 +6,6 @@ import com.job.application.tracker.entity.Company;
 import com.job.application.tracker.entity.Job;
 import com.job.application.tracker.entity.User;
 import com.job.application.tracker.mapper.ApplicationMapper;
-import com.job.application.tracker.mapper.CompanyMapper;
 import com.job.application.tracker.repository.ApplicationRepository;
 import com.job.application.tracker.repository.CompanyRepository;
 import com.job.application.tracker.repository.JobRepository;
@@ -19,7 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class ApplicationServices {
+public class ApplicationService  implements  IApplicationService{
     @Autowired
     ApplicationRepository applicationRepository;
     @Autowired
@@ -28,6 +27,8 @@ public class ApplicationServices {
     JobRepository jobRepository;
     @Autowired
     CompanyRepository companyRepository;
+
+    @Override
     public ApplicationGetDto add(ApplicationCreateDto dto) {
         Application application = ApplicationMapper.toEntity(dto);
         User user =   userRepository.findById(dto.getUser_id()).orElseThrow();
@@ -43,12 +44,16 @@ public class ApplicationServices {
         applicationRepository.save(application);
          return ApplicationMapper.toDto(application);
     }
+
+    @Override
     public List<ApplicationGetDto> get() {
         return applicationRepository.findAll()
                 .stream()
                 .map(application -> new ApplicationGetDto(application.getId() , application.getApplicationStatus()))
                 .toList();
     }
+
+    @Override
     public List<ApplicationsByCompanyDto> getByCompany(Integer id) {
         Company company = companyRepository.findById(id).orElseThrow();
         return applicationRepository.findAll()
@@ -56,26 +61,36 @@ public class ApplicationServices {
                 .map(application -> new ApplicationsByCompanyDto(application.getId() , application.getApplicationStatus() , application.getJob().getCompany().getName()))
                 .toList();
     }
+
+    @Override
     public List<ApplicationGetDto> getByUser(Integer id) {
         return applicationRepository.findByUserId(id).stream()
                 .map(application -> new ApplicationGetDto(application.getId() , application.getApplicationStatus()))
                 .toList();
     }
+
+    @Override
     public List<ApplicationByStatusDto> getByStatus(Application.ApplicationStatus status) {
         return applicationRepository.findByApplicationStatus(status).stream()
                 .map(app -> new ApplicationByStatusDto(app.getId() , app.getApplicationStatus()))
                 .toList();
     }
+
+    @Override
     public Map<Application.ApplicationStatus , Long> getStats() {
         return applicationRepository.findAll().stream()
                 .collect(Collectors.groupingBy(Application::getApplicationStatus , Collectors.counting()));
     }
+
+    @Override
     public ApplicationGetDto update(Integer id, ApplicationUpdateDto dto) {
         Application application = applicationRepository.findById(id).orElseThrow();
         ApplicationMapper.update(application , dto);
         applicationRepository.save(application);
         return ApplicationMapper.toDto(application);
     }
+
+    @Override
     public void delete(Application application) {
         if (application.getApplicationStatus() == Application.ApplicationStatus.REJECTED) {
             applicationRepository.delete(application);

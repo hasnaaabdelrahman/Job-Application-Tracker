@@ -4,7 +4,7 @@ import com.job.application.tracker.dto.CompanyCreateDto;
 import com.job.application.tracker.dto.CompanyGetDto;
 import com.job.application.tracker.dto.CompanyUpdateDto;
 import com.job.application.tracker.entity.Company;
-import com.job.application.tracker.service.CompanyServices;
+import com.job.application.tracker.service.CompanyService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,39 +16,39 @@ import java.util.List;
 @RequestMapping("api/company/v1")
 public class CompanyController {
 
-    private final CompanyServices companyServices;
+    private final CompanyService companyService;
 
     @Autowired
-    public CompanyController(CompanyServices companyServices) {
-        this.companyServices = companyServices;
+    public CompanyController(CompanyService companyService) {
+        this.companyService = companyService;
     }
 
     @GetMapping("/get-all")
     public ResponseEntity<List<CompanyGetDto>> getAll() {
-        final List<CompanyGetDto> companies = companyServices.getAll();
+        final List<CompanyGetDto> companies = companyService.getAll();
         return ResponseEntity.ok(companies);
     }
     @GetMapping("/get/{id}")
     public ResponseEntity<CompanyGetDto> get(@PathVariable("id") Integer id) {
-        final CompanyGetDto company = companyServices.get(id);
+        final CompanyGetDto company = companyService.get(id);
         return ResponseEntity.ok(company);
     }
     @PostMapping("/add")
     public ResponseEntity<CompanyGetDto> add(@Valid @RequestBody CompanyCreateDto dto) {
-        final CompanyGetDto addedCompany = companyServices.add(dto);
+        final CompanyGetDto addedCompany = companyService.add(dto);
         return ResponseEntity.ok(addedCompany);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<CompanyGetDto> update(@PathVariable("id") Integer id ,@Valid @RequestBody CompanyUpdateDto dto) {
-        final CompanyGetDto company = companyServices.update(id , dto);
+        final CompanyGetDto company = companyService.update(id , dto);
         return ResponseEntity.ok(company);
     }
 
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Company> delete(@PathVariable("id") Integer id) {
-        companyServices.delete(id);
+        companyService.delete(id);
         return ResponseEntity.ok().build();
     }
 

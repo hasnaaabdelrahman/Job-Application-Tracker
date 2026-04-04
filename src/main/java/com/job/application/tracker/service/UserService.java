@@ -13,17 +13,20 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserServices {
+public class UserService implements IUserService {
 
     @Autowired
     UserRepository userRepository;
 
+    @Override
     public UserGetDto add(UserCreateDto user) {
 
         User userAdded = UserMapper.toEntity(user);
         userRepository.save(userAdded);
         return UserMapper.toDto(userAdded);
     }
+
+    @Override
     public List<UserGetDto> showAll() {
         return userRepository.findAll()
                 .stream()
@@ -34,13 +37,19 @@ public class UserServices {
                 .toList();
 
     }
+
+    @Override
     public UserGetDto get(Integer id) {
         User user = userRepository.findById(id).orElseThrow();
         return UserMapper.toDto(user);
     }
+
+    @Override
     public void delete(Integer id) {
         userRepository.deleteById(id);
     }
+
+    @Override
     public UserGetDto update(Integer id ,UserUpdateDto userDto) {
         User user = userRepository.findById(id).orElseThrow();
          UserMapper.UpdateEntity(user , userDto);
