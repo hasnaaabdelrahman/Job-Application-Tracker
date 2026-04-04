@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,6 +36,8 @@ public class User {
     @NumberFormat
     @Size(max = 11)
     @Column(nullable = false)
+    @Pattern(regexp = "\\d+", message = "Phone number must contain digits only")
+    @Size(min = 11, message = "Phone number must be at least 11 digits")
     private String phone;
     @Email
     @NotBlank(message = "enter a valid email")
