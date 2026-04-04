@@ -5,6 +5,7 @@ import com.job.application.tracker.dto.UserCreateDto;
 import com.job.application.tracker.dto.UserGetDto;
 import com.job.application.tracker.dto.UserUpdateDto;
 import com.job.application.tracker.entity.User;
+import com.job.application.tracker.exceptions.DuplicateApplicationException;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.mapper.UserMapper;
 import com.job.application.tracker.repository.UserRepository;
@@ -22,7 +23,15 @@ public class UserService implements IUserService {
     @Override
     public UserGetDto add(UserCreateDto user) {
 
+        if(userRepository.existsByEmail(user.getEmail())){
+            throw new DuplicateApplicationException("Email already exists");
+        }
+        if(userRepository.existsByPhone(user.getPhone())){
+            throw new DuplicateApplicationException("Phone already exists");
+
+        }
         User userAdded = UserMapper.toEntity(user);
+
         userRepository.save(userAdded);
         return UserMapper.toDto(userAdded);
     }
@@ -57,6 +66,14 @@ public class UserService implements IUserService {
     @Override
     public UserGetDto update(Integer id ,UserUpdateDto userDto) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+
+        if(userRepository.existsByEmailAndIdNot(userDto.getEmail() , id)){
+            throw new DuplicateApplicationException("Email already exists");
+        }
+        if(userRepository.existsByPhoneAndIdNot(userDto.getPhone() ,id)){
+            throw new DuplicateApplicationException("Phone already exists");
+
+        }
          UserMapper.UpdateEntity(user , userDto);
         userRepository.save(user);
         return UserMapper.toDto(user);
