@@ -6,24 +6,22 @@ import com.job.application.tracker.dto.JobUpdateDto;
 import com.job.application.tracker.dto.JobsDto;
 import com.job.application.tracker.entity.Company;
 import com.job.application.tracker.entity.Job;
-import com.job.application.tracker.entity.User;
 import com.job.application.tracker.mapper.JobMapper;
 import com.job.application.tracker.repository.CompanyRepository;
 import com.job.application.tracker.repository.JobRepository;
-import com.job.application.tracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
 import java.util.List;
 
 @Service
-public class JobServices {
+public class JobService implements IJobService {
     @Autowired
     JobRepository jobRepository;
     @Autowired
     CompanyRepository companyRepository;
 
+    @Override
     public JobGetDto add(JobCreateDto job) {
         Job jobAdded =  JobMapper.toEntity(job);
         Company company = companyRepository.findById(job.getCompanyId())
@@ -34,32 +32,41 @@ public class JobServices {
          return JobMapper.toDto(jobAdded);
     }
 
+    @Override
     public List<JobsDto> getAllByCompany(Integer id) {
         return  jobRepository.findByCompanyId(id).stream()
                 .map(job -> new JobsDto(job.getId() , job.getTitle() , job.getDescription()))
                 .toList();
     }
 
+    @Override
     public JobGetDto get(Integer id) {
         Job job = jobRepository.findById(id).orElseThrow();
         return JobMapper.toDto(job);
     }
 
+    @Override
     public List<JobsDto> getByTitle(String title) {
         return jobRepository.findByTitleContainingIgnoreCase(title)
                 .stream().map(job -> new JobsDto(job.getId() , job.getTitle() , job.getDescription()))
                 .toList();
     }
 
+    @Override
     public List<JobGetDto> showAll() {
         return jobRepository.findAll()
                 .stream()
                 .map(job -> new JobGetDto(job.getId(), job.getTitle(), job.getDescription() , job.getCompany().getId()))
                 .toList();
     }
+
+    @Override
     public void delete(Integer id) {
+
         jobRepository.deleteById(id);
     }
+
+    @Override
     public JobGetDto update(Integer id , JobUpdateDto dto) {
         Job job = jobRepository.findById(id).orElseThrow();
         JobMapper.update(job , dto);
