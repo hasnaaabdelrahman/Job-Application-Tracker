@@ -6,6 +6,7 @@ import com.job.application.tracker.dto.JobUpdateDto;
 import com.job.application.tracker.dto.JobsDto;
 import com.job.application.tracker.entity.Company;
 import com.job.application.tracker.entity.Job;
+import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.mapper.JobMapper;
 import com.job.application.tracker.repository.CompanyRepository;
 import com.job.application.tracker.repository.JobRepository;
@@ -25,7 +26,7 @@ public class JobService implements IJobService {
     public JobGetDto add(JobCreateDto job) {
         Job jobAdded =  JobMapper.toEntity(job);
         Company company = companyRepository.findById(job.getCompanyId())
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException("Company not found with id: " + job.getCompanyId()));
 
         jobAdded.setCompany(company);
          jobRepository.save(jobAdded);
@@ -41,7 +42,7 @@ public class JobService implements IJobService {
 
     @Override
     public JobGetDto get(Integer id) {
-        Job job = jobRepository.findById(id).orElseThrow();
+        Job job = jobRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Job not found with id :" + id));
         return JobMapper.toDto(job);
     }
 
@@ -62,13 +63,15 @@ public class JobService implements IJobService {
 
     @Override
     public void delete(Integer id) {
-
+        if(!jobRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Job not found with id" + id);
+        }
         jobRepository.deleteById(id);
     }
 
     @Override
     public JobGetDto update(Integer id , JobUpdateDto dto) {
-        Job job = jobRepository.findById(id).orElseThrow();
+        Job job = jobRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Job not found with id" + id));
         JobMapper.update(job , dto);
         Job updatedjob = jobRepository.save(job);
         return JobMapper.toDto(updatedjob);

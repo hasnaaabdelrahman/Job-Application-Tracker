@@ -5,6 +5,7 @@ import com.job.application.tracker.dto.CompanyGetDto;
 import com.job.application.tracker.dto.CompanyUpdateDto;
 import com.job.application.tracker.dto.JobsDto;
 import com.job.application.tracker.entity.Company;
+import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.mapper.CompanyMapper;
 import com.job.application.tracker.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,13 +39,13 @@ public class CompanyService implements ICompanyService {
 
     @Override
     public CompanyGetDto get(Integer id) {
-        Company company = companyRepository.findById(id).orElseThrow();
+        Company company = companyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Company not found with id: "+ id));
         return CompanyMapper.toDto(company);
     }
 
     @Override
     public CompanyGetDto update(Integer id , CompanyUpdateDto dto) {
-        Company company = companyRepository.findById(id).orElseThrow();
+        Company company = companyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Company not found with id: "+ id));
         CompanyMapper.update(company,dto);
         companyRepository.save(company);
         return CompanyMapper.toDto(company);
@@ -52,6 +53,9 @@ public class CompanyService implements ICompanyService {
 
     @Override
     public void delete(Integer id) {
+        if(!companyRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Company not found with id: "+ id);
+        }
         companyRepository.deleteById(id);
     }
 }

@@ -5,6 +5,8 @@ import com.job.application.tracker.entity.Application;
 import com.job.application.tracker.entity.Company;
 import com.job.application.tracker.entity.Job;
 import com.job.application.tracker.entity.User;
+import com.job.application.tracker.exceptions.DuplicateApplicationException;
+import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.mapper.ApplicationMapper;
 import com.job.application.tracker.repository.ApplicationRepository;
 import com.job.application.tracker.repository.CompanyRepository;
@@ -31,12 +33,12 @@ public class ApplicationService  implements  IApplicationService{
     @Override
     public ApplicationGetDto add(ApplicationCreateDto dto) {
         Application application = ApplicationMapper.toEntity(dto);
-        User user =   userRepository.findById(dto.getUser_id()).orElseThrow();
+        User user =   userRepository.findById(dto.getUser_id()).orElseThrow(() -> new ResourceNotFoundException("user not found with id: "+ dto.getUser_id()));
 
         Job job = jobRepository.findById(dto.getJob_id())
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException("job not found with id: "+dto.getJob_id()));
         if(applicationRepository.existsByUserIdAndJobId(user.getId() , job.getId())) {
-            throw new RuntimeException("You have already applied for this job");
+            throw new DuplicateApplicationException("You have already applied for this job");
         }
         application.setUser(user);
         application.setJob(job);
@@ -55,7 +57,7 @@ public class ApplicationService  implements  IApplicationService{
 
     @Override
     public List<ApplicationsByCompanyDto> getByCompany(Integer id) {
-        Company company = companyRepository.findById(id).orElseThrow();
+        Company company = companyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("company not found with id:" + id));
         return applicationRepository.findAll()
                 .stream()
                 .map(application -> new ApplicationsByCompanyDto(application.getId() , application.getApplicationStatus() , application.getJob().getCompany().getName()))
@@ -84,7 +86,7 @@ public class ApplicationService  implements  IApplicationService{
 
     @Override
     public ApplicationGetDto update(Integer id, ApplicationUpdateDto dto) {
-        Application application = applicationRepository.findById(id).orElseThrow();
+        Application application = applicationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("application not found with id:"+ id));
         ApplicationMapper.update(application , dto);
         applicationRepository.save(application);
         return ApplicationMapper.toDto(application);
@@ -92,6 +94,9 @@ public class ApplicationService  implements  IApplicationService{
 
     @Override
     public void delete(Application application) {
+        if (!applicationRepository.existsById(application.getId())) {
+            throw new ResourceNotFoundException("application not found with id" + application.getId());
+        }
         if (application.getApplicationStatus() == Application.ApplicationStatus.REJECTED) {
             applicationRepository.delete(application);
         }
