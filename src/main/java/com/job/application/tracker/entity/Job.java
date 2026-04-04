@@ -21,11 +21,11 @@ public class Job {
     @GeneratedValue
     private Integer id;
     @NotBlank
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT" , nullable = false)
     @Size(max = 100)
     private String title;
     @NotBlank
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT" , nullable = false)
     @Size(min = 50)
     private String description;
 

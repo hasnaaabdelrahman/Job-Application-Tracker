@@ -21,7 +21,7 @@ public class Company {
     @GeneratedValue
     private Integer id;
     @NotBlank
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT" , nullable = false)
     @Size(min = 3)
     private String name;
 

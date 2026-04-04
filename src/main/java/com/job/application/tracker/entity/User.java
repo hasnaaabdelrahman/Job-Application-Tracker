@@ -29,15 +29,18 @@ public class User {
     @GeneratedValue
     private Integer id;
     @NotBlank
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = false)
     @Size(min = 3)
     private String name;
     @NumberFormat
     @Size(max = 11)
+    @Column(nullable = false)
     private String phone;
     @Email
     @NotBlank(message = "enter a valid email")
+    @Column(nullable = false)
     private String email;
+    @Column(nullable = false)
     private LocalDate birthDate;
 
     // relations
