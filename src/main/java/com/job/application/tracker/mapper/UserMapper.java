@@ -6,6 +6,10 @@ import com.job.application.tracker.dto.UserGetDto;
 import com.job.application.tracker.dto.UserUpdateDto;
 import com.job.application.tracker.entity.User;
 
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
+
 public class UserMapper {
     public static User toEntity(UserCreateDto dto) {
         if(dto == null) return null;
@@ -29,7 +33,9 @@ public class UserMapper {
         dto.setBirthDate(user.getBirthDate());
         dto.setApplication(user.getApplications().stream()
                 .map(application -> new ApplicationDto(application.getId(), application.getApplicationStatus()))
-                .toList());
+                .collect(Collectors.toList()));
+        dto.setRoles(user.getRoles());
+
 
         return dto;
     }

@@ -8,6 +8,8 @@ import lombok.Data;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 
@@ -21,5 +23,8 @@ public class UserCreateDto {
     @Email
     @NotBlank
     private String email;
+    @NotBlank
+    private String password;
     private LocalDate birthDate;
+    private Set<String> roles = new HashSet<>();
 }

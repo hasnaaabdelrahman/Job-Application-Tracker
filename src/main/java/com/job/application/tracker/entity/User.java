@@ -9,11 +9,14 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -44,10 +47,18 @@ public class User {
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
     private LocalDate birthDate;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> roles = new HashSet<>();
 
     // relations
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Application> applications = new ArrayList<>();
+
+
 }
