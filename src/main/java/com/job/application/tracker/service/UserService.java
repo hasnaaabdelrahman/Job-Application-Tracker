@@ -10,15 +10,24 @@ import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.mapper.UserMapper;
 import com.job.application.tracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements IUserService {
 
     @Autowired
     UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
 
     @Override
     public UserGetDto add(UserCreateDto user) {
@@ -31,7 +40,7 @@ public class UserService implements IUserService {
 
         }
         User userAdded = UserMapper.toEntity(user);
-
+        userAdded.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(userAdded);
         return UserMapper.toDto(userAdded);
     }
@@ -40,11 +49,17 @@ public class UserService implements IUserService {
     public List<UserGetDto> showAll() {
         return userRepository.findAll()
                 .stream()
-                .map(user -> new UserGetDto(user.getId() , user.getName() , user.getEmail() , user.getPhone() , user.getBirthDate() ,
+                .map(user -> new UserGetDto(
+                        user.getId(),
+                        user.getName(),
+                        user.getPhone(),
+                        user.getEmail(),
+                        user.getBirthDate(),
                         user.getApplications().stream()
-                                .map(
-                                application -> new ApplicationDto (application.getId() , application.getApplicationStatus())).toList()))
-                .toList();
+                                .map(application -> new ApplicationDto(application.getId(), application.getApplicationStatus()))
+                                .collect(Collectors.toList()),
+                        user.getRoles()
+                )).toList();
 
     }
 

@@ -8,6 +8,8 @@ import lombok.Data;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class UserUpdateDto {
