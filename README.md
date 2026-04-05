@@ -24,8 +24,10 @@ This project demonstrates clean backend architecture using modern development pr
 |---|---|
 | Java 17 | Core language |
 | Spring Boot | Application framework |
+| Spring Security | Authentication & Authorization |
 | Spring Data JPA | Data access layer |
 | H2 Database | File-based embedded database (persistent storage) |
+| JWT (JSON Web Token) | Stateless authentication |
 | Maven | Build tool |
 | Swagger / OpenAPI | API documentation |
 
@@ -48,9 +50,43 @@ src/main/java/com/job/application/tracker
 ├── entity          # JPA Entities
 ├── dto             # Data Transfer Objects
 ├── mapper          # Entity <-> DTO mappers
-├── exceptions      # Custom exception classes (ResourceNotFoundException, etc.), GlobalExceptionHandler (@ControllerAdvice)
+├── config          # Security config, JWT utilities
+├── exceptions      # Custom exception classes, GlobalExceptionHandler (@ControllerAdvice)
+```
+
+---
+
+## Authentication & Authorization
+
+This project uses **JWT-based stateless authentication** with **role-based access control (RBAC)**.
+
+### Roles
+
+| Role | Description |
+|---|---|
+| `ROLE_USER` | Regular user — can manage their own applications and profile |
+| `ROLE_ADMIN` | Administrator — full access including user management |
+
+### How It Works
+
+1. Register via `POST /api/auth/register` — account is created with `ROLE_USER`
+2. Login via `POST /api/auth/login` — returns a JWT token
+3. Include the token in subsequent requests as a Bearer token:
 
 ```
+Authorization: Bearer <your_token>
+```
+
+### Endpoint Access Rules
+
+| Endpoint | Access |
+|---|---|
+| `POST /api/auth/**` | Public (no token required) |
+| `GET /api/user/v1/get-all` | `ROLE_ADMIN` only |
+| `DELETE /api/user/v1/delete/{id}` | `ROLE_ADMIN` only |
+| `GET /api/user/v1/getById/{id}` | Authenticated (`ROLE_USER` or `ROLE_ADMIN`) |
+| `PUT /api/user/v1/update/{id}` | Authenticated (`ROLE_USER` or `ROLE_ADMIN`) |
+| All other endpoints | Authenticated |
 
 ---
 
@@ -62,8 +98,10 @@ src/main/java/com/job/application/tracker
 | id | Integer |
 | name | String |
 | email | String |
+| password | String (hashed) |
 | phone | String |
 | birthDate | LocalDate |
+| roles | Set\<String\> |
 
 ### Company
 | Field | Type |
@@ -90,7 +128,7 @@ src/main/java/com/job/application/tracker
 ### Relationships Summary
 
 ```
-User ──────< Application >────── Job ──────< Company
+User ──────< Application >────── Job >────── Company
 ```
 
 - User → Applications (One-to-Many)
@@ -102,7 +140,14 @@ User ──────< Application >────── Job ──────<
 
 ## API Endpoints
 
-### Applications `api/application/v1`
+### Auth `api/auth` — Public
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/login` | Login and receive JWT token |
+| POST | `/register` | Register a new user account |
+
+### Applications `api/application/v1` — Authenticated
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -114,7 +159,7 @@ User ──────< Application >────── Job ──────<
 | PUT | `/update/{id}` | Update application |
 | DELETE | `/delete` | Delete application (REJECTED only) |
 
-### Jobs `api/job/v1`
+### Jobs `api/job/v1` — Authenticated
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -125,7 +170,7 @@ User ──────< Application >────── Job ──────<
 | PUT | `/update/{id}` | Update job |
 | DELETE | `/delete/{id}` | Delete job |
 
-### Companies `api/company/v1`
+### Companies `api/company/v1` — Authenticated
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -135,18 +180,54 @@ User ──────< Application >────── Job ──────<
 | PUT | `/update/{id}` | Update company |
 | DELETE | `/delete/{id}` | Delete company |
 
-### Users `api/user/v1`
+### Users `api/user/v1` — Authenticated / Admin
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/get-all` | Get all users |
-| POST | `/add` | Create new user |
-| PUT | `/update/{id}` | Update user |
-| DELETE | `/delete/{id}` | Delete user |
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| GET | `/getById/{id}` | Authenticated | Get user by ID |
+| GET | `/get-all` | Admin only | Get all users |
+| PUT | `/update/{id}` | Authenticated | Update user |
+| DELETE | `/delete/{id}` | Admin only | Delete user |
 
 ---
 
-## Sample Request & Response
+## Sample Requests & Responses
+
+### POST `/api/auth/register`
+
+**Request:**
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "secret123"
+}
+```
+
+**Response:**
+```json
+{
+  "id": 1,
+  "name": "John Doe",
+  "email": "john@example.com",
+  "roles": ["USER"]
+}
+```
+
+### POST `/api/auth/login`
+
+**Request:**
+```json
+{
+  "email": "john@example.com",
+  "password": "secret123"
+}
+```
+
+**Response:**
+```
+eyJhbGciOiJIUzI1NiJ9...
+```
 
 ### POST `/api/application/v1/add`
 
@@ -197,13 +278,13 @@ User ──────< Application >────── Job ──────<
 
 ## API Documentation (Swagger)
 
-The project includes integrated API documentation using OpenAPI (Swagger UI).
-
-After running the application, access the documentation at:
+After running the application, access the Swagger UI at:
 
 ```
 http://localhost:8080/swagger-ui/index.html
 ```
+
+> To test protected endpoints in Swagger, click **Authorize** and enter your JWT token as: `Bearer <token>`
 
 ---
 
@@ -216,6 +297,10 @@ Configure credentials in `application.properties`:
 spring.datasource.url=jdbc:h2:file:./data/testdb
 spring.h2.console.enabled=true
 spring.jpa.hibernate.ddl-auto=update
+
+# JWT secret key
+jwt.secret=your_jwt_secret_key
+jwt.expiration=86400000
 ```
 
 Access H2 Console at:
@@ -248,8 +333,9 @@ The API will be available at `http://localhost:8080`
 
 ## Future Improvements
 
-- Add authentication & authorization (JWT + Spring Security)
 - Pagination for list endpoints
+- User can only update/delete their own applications (ownership check)
+- Refresh token support
 - Deploy to cloud (Railway / Render)
 
 ---
@@ -258,6 +344,8 @@ The API will be available at `http://localhost:8080`
 
 This project was built to practice:
 - Spring Boot & REST API development
+- Spring Security with JWT authentication
+- Role-based access control (RBAC)
 - JPA relationships and database design
 - Clean architecture principles (Controller → Service → Mapper → Repository)
 - DTO pattern for decoupling API layer from persistence layer
