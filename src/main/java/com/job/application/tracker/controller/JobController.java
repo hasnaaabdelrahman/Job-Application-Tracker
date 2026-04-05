@@ -9,6 +9,7 @@ import com.job.application.tracker.service.JobService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,12 +23,15 @@ public class JobController {
     public JobController(JobService jobService) {
         this.jobService = jobService;
     }
+
     @GetMapping("/get/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<JobGetDto> get(@PathVariable("id") Integer id) {
         JobGetDto job = jobService.get(id);
         return ResponseEntity.ok(job);
     }
     @GetMapping("/getByCompany/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<JobsDto>> getByCompany(@PathVariable("id") Integer id) {
         final List<JobsDto> jobs = jobService.getAllByCompany(id);
         return ResponseEntity.ok(jobs);
@@ -40,22 +44,26 @@ public class JobController {
     }
 
     @GetMapping("getByTitle/{title}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<JobsDto>> getByTitle(String title) {
         final List<JobsDto> jobs = jobService.getByTitle(title);
         return ResponseEntity.ok(jobs);
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<JobGetDto> addJob(@Valid @RequestBody JobCreateDto dto) {
         final JobGetDto added = jobService.add(dto);
         return ResponseEntity.ok(added);
     }
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<JobGetDto> updateJob(@PathVariable("id") Integer id,@Valid @RequestBody JobUpdateDto dto) {
         final JobGetDto updated = jobService.update(id,dto);
         return ResponseEntity.ok(updated);
     }
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Job> deleteJob(@PathVariable("id") Integer id) {
         jobService.delete(id);
         return ResponseEntity.ok().build();

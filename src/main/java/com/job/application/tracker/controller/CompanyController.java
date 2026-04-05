@@ -8,6 +8,7 @@ import com.job.application.tracker.service.CompanyService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,22 +25,26 @@ public class CompanyController {
     }
 
     @GetMapping("/get-all")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<CompanyGetDto>> getAll() {
         final List<CompanyGetDto> companies = companyService.getAll();
         return ResponseEntity.ok(companies);
     }
     @GetMapping("/get/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<CompanyGetDto> get(@PathVariable("id") Integer id) {
         final CompanyGetDto company = companyService.get(id);
         return ResponseEntity.ok(company);
     }
     @PostMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CompanyGetDto> add(@Valid @RequestBody CompanyCreateDto dto) {
         final CompanyGetDto addedCompany = companyService.add(dto);
         return ResponseEntity.ok(addedCompany);
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CompanyGetDto> update(@PathVariable("id") Integer id ,@Valid @RequestBody CompanyUpdateDto dto) {
         final CompanyGetDto company = companyService.update(id , dto);
         return ResponseEntity.ok(company);
@@ -47,6 +52,7 @@ public class CompanyController {
 
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Company> delete(@PathVariable("id") Integer id) {
         companyService.delete(id);
         return ResponseEntity.ok().build();
