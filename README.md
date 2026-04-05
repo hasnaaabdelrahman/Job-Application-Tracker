@@ -90,6 +90,33 @@ Authorization: Bearer <your_token>
 
 ---
 
+### Assigning Admin Role
+ 
+Every new account registered via `/api/auth/register` gets `ROLE_USER` by default. To assign `ROLE_ADMIN`, use one of the following approaches:
+ 
+**via H2 Console**
+ 
+1. Make sure your `SecurityConfig` allows H2 console access:
+```java
+.requestMatchers("/h2-console/**").permitAll()
+// and disable frame options:
+.headers(headers -> headers.frameOptions(frame -> frame.disable()))
+```
+ 
+2. Open `http://localhost:8080/h2-console` with these credentials:
+ 
+| Field | Value |
+|---|---|
+| JDBC URL | `jdbc:h2:file:./data/testdb` |
+| Username | `sa` |
+| Password | *(leave empty)* |
+ 
+3. Run:
+```sql
+SELECT * FROM USERS; -- find the user id first
+INSERT INTO USER_ROLES (USER_ID, ROLES) VALUES (1, 'ROLE_ADMIN');
+```
+
 ## Entities & Relationships
 
 ### User
