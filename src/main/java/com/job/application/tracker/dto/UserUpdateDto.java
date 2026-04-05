@@ -13,7 +13,6 @@ import java.util.Set;
 
 @Data
 public class UserUpdateDto {
-    private Integer id;
     @NotBlank
     private String name;
     @NumberFormat

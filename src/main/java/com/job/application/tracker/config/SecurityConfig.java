@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,18 +25,28 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.disable())
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html"
+                                "/swagger-ui.html",
+                                "/h2-console/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET , "/api/user/v1/get-all").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE , "/api/user/v1/delete/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT , "/api/user/v1/update/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET , "/api/user/v1/get/**").hasAnyRole("USER", "ADMIN")
+
                         .requestMatchers("/api/user/v1/**").authenticated()
+
                         .anyRequest().authenticated()
+
                 )
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
