@@ -52,6 +52,7 @@ public class CompanyController {
 
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Company> delete(@PathVariable("id") Integer id) {
         companyService.delete(id);
         return ResponseEntity.ok().build();
