@@ -265,3 +265,6 @@ select u1_0.id,u1_0.birth_date,u1_0.email,u1_0.name,u1_0.password,u1_0.phone fro
 2026-04-05 07:57:04.763799+02:00 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLDataException: Value too long for column "PHONE CHARACTER VARYING(11)": "'012227705987' (12)"; SQL statement:
 INSERT INTO "PUBLIC"."USERS_COPY_3_1"("ID", "BIRTH_DATE", "EMAIL", "NAME", "PHONE") OVERRIDING SYSTEM VALUE SELECT "ID", "BIRTH_DATE", "EMAIL", "NAME", "PHONE" FROM "PUBLIC"."USERS" [22001-240]
+2026-04-05 15:08:17.809750+02:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]USER_ROLES"; expected "UPDATE"; SQL statement:
+USER_ROLES [42001-240]
