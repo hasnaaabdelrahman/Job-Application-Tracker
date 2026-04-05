@@ -24,27 +24,27 @@ public class UserController {
     }
 
     @GetMapping("/getById/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserGetDto> get(@PathVariable("id") Integer id) {
         final UserGetDto user = userService.get(id);
         return ResponseEntity.ok(user);
     }
 
     @GetMapping("/get-all")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<UserGetDto>> getAll() {
        final List<UserGetDto> users = userService.showAll();
         return ResponseEntity.ok(users);
     }
 
     @PutMapping("/update/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserGetDto> updateUser(@PathVariable("id") Integer id,@Valid @RequestBody UserUpdateDto userDto) {
         final UserGetDto updated = userService.update(id ,userDto);
         return ResponseEntity.ok(updated);
     }
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<User> deleteUser(@PathVariable("id") Integer id) {
         userService.delete(id);
         return ResponseEntity.ok().build();

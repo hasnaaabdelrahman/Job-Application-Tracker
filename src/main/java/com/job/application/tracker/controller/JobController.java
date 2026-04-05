@@ -23,7 +23,6 @@ public class JobController {
     public JobController(JobService jobService) {
         this.jobService = jobService;
     }
-
     @GetMapping("/get/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<JobGetDto> get(@PathVariable("id") Integer id) {
@@ -38,6 +37,7 @@ public class JobController {
     }
 
     @GetMapping("/get-all")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<JobGetDto>> getAll() {
         final List<JobGetDto> jobs = jobService.showAll();
         return ResponseEntity.ok(jobs);
