@@ -26,7 +26,7 @@ This project demonstrates clean backend architecture using modern development pr
 | Spring Boot | Application framework |
 | Spring Security | Authentication & Authorization |
 | Spring Data JPA | Data access layer |
-| H2 Database | File-based embedded database (persistent storage) |
+| PostgreSQL | Relational database |
 | JWT (JSON Web Token) | Stateless authentication |
 | Maven | Build tool |
 | Swagger / OpenAPI | API documentation |
@@ -37,6 +37,7 @@ This project demonstrates clean backend architecture using modern development pr
 
 - Java 17+
 - Maven 3.8+
+- PostgreSQL 14+
 
 ---
 
@@ -50,7 +51,7 @@ src/main/java/com/job/application/tracker
 ├── entity          # JPA Entities
 ├── dto             # Data Transfer Objects
 ├── mapper          # Entity <-> DTO mappers
-├── config          # Security config, JWT utilities
+├── config          # Security config, JWT utilities, DataSeeder
 ├── exceptions      # Custom exception classes, GlobalExceptionHandler (@ControllerAdvice)
 ```
 
@@ -88,34 +89,20 @@ Authorization: Bearer <your_token>
 | `PUT /api/user/v1/update/{id}` | Authenticated (`ROLE_USER` or `ROLE_ADMIN`) |
 | All other endpoints | Authenticated |
 
----
+### Default Admin Account
 
-### Assigning Admin Role
- 
-Every new account registered via `/api/auth/register` gets `ROLE_USER` by default. To assign `ROLE_ADMIN`, use one of the following approaches:
- 
-**via H2 Console**
- 
-1. Make sure your `SecurityConfig` allows H2 console access:
-```java
-.requestMatchers("/h2-console/**").permitAll()
-// and disable frame options:
-.headers(headers -> headers.frameOptions(frame -> frame.disable()))
-```
- 
-2. Open `http://localhost:8080/h2-console` with these credentials:
- 
+A default admin user is automatically created on startup via `DataSeeder` if one doesn't already exist:
+
 | Field | Value |
 |---|---|
-| JDBC URL | `jdbc:h2:file:./data/testdb` |
-| Username | `sa` |
-| Password | *(leave empty)* |
- 
-3. Run:
-```sql
-SELECT * FROM USERS; -- find the user id first
-INSERT INTO USER_ROLES (USER_ID, ROLES) VALUES (1, 'ROLE_ADMIN');
-```
+| Email | `admin@app.com` |
+| Password | `admin123` |
+
+> **Important:** Change these credentials before deploying to any environment.
+
+Login with the admin credentials to receive a token with `ROLE_ADMIN`, which grants full access to all endpoints.
+
+---
 
 ## Entities & Relationships
 
@@ -237,7 +224,7 @@ User ──────< Application >────── Job >──────
   "id": 1,
   "name": "John Doe",
   "email": "john@example.com",
-  "roles": ["USER"]
+  "roles": ["ROLE_USER"]
 }
 ```
 
@@ -317,22 +304,31 @@ http://localhost:8080/swagger-ui/index.html
 
 ## Configuration
 
-Configure credentials in `application.properties`:
+This project uses environment-specific configuration. A template file is provided — copy it and fill in your values:
+
+```bash
+cp src/main/resources/application.properties.example src/main/resources/application.properties
+```
 
 ```properties
-# File-based H2 database (data persists across restarts)
-spring.datasource.url=jdbc:h2:file:./data/testdb
-spring.h2.console.enabled=true
+# PostgreSQL
+spring.datasource.url=jdbc:postgresql://localhost:5432/job_tracker
+spring.datasource.username=your_db_username
+spring.datasource.password=your_db_password
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
 spring.jpa.hibernate.ddl-auto=update
 
-# JWT secret key
+# JWT
 jwt.secret=your_jwt_secret_key
 jwt.expiration=86400000
 ```
 
-Access H2 Console at:
-```
-http://localhost:8080/h2-console
+> `application.properties` is excluded from version control via `.gitignore` to protect credentials.
+
+### Database Setup
+
+```sql
+CREATE DATABASE job_tracker;
 ```
 
 ---
@@ -349,7 +345,13 @@ git clone https://github.com/your-username/job-application-tracker.git
 cd job-application-tracker
 ```
 
-3. Run the application
+3. Set up configuration
+```bash
+cp src/main/resources/application.properties.example src/main/resources/application.properties
+# then edit application.properties with your DB credentials
+```
+
+4. Run the application
 ```bash
 mvn spring-boot:run
 ```
@@ -360,6 +362,7 @@ The API will be available at `http://localhost:8080`
 
 ## Future Improvements
 
+- Unit tests for service layer
 - Pagination for list endpoints
 - User can only update/delete their own applications (ownership check)
 - Refresh token support
