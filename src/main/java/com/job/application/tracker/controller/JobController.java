@@ -45,7 +45,7 @@ public class JobController {
 
     @GetMapping("getByTitle/{title}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<JobsDto>> getByTitle(String title) {
+    public ResponseEntity<List<JobsDto>> getByTitle(@PathVariable("title") String title) {
         final List<JobsDto> jobs = jobService.getByTitle(title);
         return ResponseEntity.ok(jobs);
     }
