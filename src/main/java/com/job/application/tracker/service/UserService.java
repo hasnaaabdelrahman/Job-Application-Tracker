@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +41,7 @@ public class UserService implements IUserService {
 
         }
         User userAdded = UserMapper.toEntity(user);
+        userAdded.setRoles(Set.of("ROLE_USER"));
         userAdded.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(userAdded);
         return UserMapper.toDto(userAdded);
