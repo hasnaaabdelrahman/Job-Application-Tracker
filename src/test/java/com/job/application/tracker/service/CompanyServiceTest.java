@@ -1,6 +1,9 @@
 package com.job.application.tracker.service;
 
+import com.job.application.tracker.dto.CompanyGetDto;
+import com.job.application.tracker.entity.Company;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
+import com.job.application.tracker.mapper.CompanyMapper;
 import com.job.application.tracker.repository.CompanyRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -9,9 +12,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CompanyServiceTest {
@@ -20,6 +25,27 @@ public class CompanyServiceTest {
     CompanyRepository companyRepository;
     @InjectMocks
     CompanyService companyService;
+
+
+    @Test
+    void  getCompany_shouldCallGet_whenCompanyExists() {
+        Company company = new Company(1, "tech", new ArrayList<>());
+        when(companyRepository.findById(1)).thenReturn(Optional.of(company));
+        companyService.get(1);
+        verify(companyRepository).findById(1);
+    }
+
+    @Test
+    void getCompany_shouldThrowException_whenCompanyNotExists() {
+        Company company = new Company(1, "tech", new ArrayList<>());
+
+        when(companyRepository.findById(999)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () ->
+                companyService.get(999)
+        );
+
+        verify(companyRepository).findById(999);    }
 
     @Test
     void deleteCompany_shouldThrowException_whenCompanyIsNotFound() {
