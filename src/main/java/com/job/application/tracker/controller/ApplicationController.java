@@ -72,10 +72,10 @@ public class ApplicationController {
         final ApplicationGetDto applicationUpdated= applicationService.update(id,dto);
         return ResponseEntity.ok(applicationUpdated);
     }
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Application> delete(@Valid @RequestBody Application application) {
-      applicationService.delete(application);
+    public ResponseEntity<Application> delete(@Valid @PathVariable("id") Integer id) {
+      applicationService.delete(id);
         return ResponseEntity.ok().build();
     }
 }

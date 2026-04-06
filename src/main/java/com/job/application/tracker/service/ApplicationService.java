@@ -94,13 +94,9 @@ public class ApplicationService  implements  IApplicationService{
     }
 
     @Override
-    public void delete(Application application) {
-        if (!applicationRepository.existsById(application.getId())) {
-            throw new ResourceNotFoundException("application not found with id" + application.getId());
-        }
-        if (application.getApplicationStatus() == Application.ApplicationStatus.REJECTED) {
-            applicationRepository.delete(application);
-        }
+    public void delete(Integer id) {
+        Application application = applicationRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("application not found with id: " + id));
+        applicationRepository.deleteById(id);
     }
 
 }
