@@ -7,6 +7,9 @@ import com.job.application.tracker.entity.Company;
 import com.job.application.tracker.service.CompanyService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +29,14 @@ public class CompanyController {
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<CompanyGetDto>> getAll() {
-        final List<CompanyGetDto> companies = companyService.getAll();
+    public ResponseEntity<List<CompanyGetDto>> getAll(@RequestParam(defaultValue = "0") int page ,
+                                                      @RequestParam(defaultValue = "5") int size ,
+                                                      @RequestParam(defaultValue = "id") String sortBy ,
+                                                      @RequestParam(defaultValue = "true") boolean ascending)
+    {
+        Sort sort = ascending? Sort.by(sortBy).ascending():Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page , size , sort);
+        final List<CompanyGetDto> companies = companyService.getAll(pageable);
         return ResponseEntity.ok(companies);
     }
     @GetMapping("/get/{id}")

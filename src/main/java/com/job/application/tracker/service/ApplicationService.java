@@ -13,6 +13,7 @@ import com.job.application.tracker.repository.CompanyRepository;
 import com.job.application.tracker.repository.JobRepository;
 import com.job.application.tracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,8 +49,8 @@ public class ApplicationService  implements  IApplicationService{
     }
 
     @Override
-    public List<ApplicationGetDto> get() {
-        return applicationRepository.findAll()
+    public List<ApplicationGetDto> get(Pageable pageable) {
+        return applicationRepository.findAll(pageable)
                 .stream()
                 .map(application -> new ApplicationGetDto(application.getId() , application.getApplicationStatus()))
                 .toList();

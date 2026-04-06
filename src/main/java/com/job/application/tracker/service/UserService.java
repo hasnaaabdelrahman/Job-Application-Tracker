@@ -12,6 +12,7 @@ import com.job.application.tracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Set;
@@ -48,8 +49,8 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<UserGetDto> showAll() {
-        return userRepository.findAll()
+    public List<UserGetDto> showAll(Pageable pageable) {
+        return userRepository.findAll(pageable)
                 .stream()
                 .map(user -> new UserGetDto(
                         user.getId(),

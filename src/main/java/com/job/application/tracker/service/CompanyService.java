@@ -9,7 +9,9 @@ import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.mapper.CompanyMapper;
 import com.job.application.tracker.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
@@ -27,8 +29,8 @@ public class CompanyService implements ICompanyService {
     }
 
     @Override
-    public List<CompanyGetDto> getAll() {
-        return companyRepository.findAll()
+    public List<CompanyGetDto> getAll(Pageable pageable) {
+        return companyRepository.findAll(pageable)
                 .stream()
                 .map(company -> new CompanyGetDto(company.getId(), company.getName() ,company.getJobs()
                         .stream()
