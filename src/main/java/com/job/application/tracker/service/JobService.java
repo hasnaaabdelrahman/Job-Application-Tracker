@@ -11,6 +11,7 @@ import com.job.application.tracker.mapper.JobMapper;
 import com.job.application.tracker.repository.CompanyRepository;
 import com.job.application.tracker.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,8 +55,8 @@ public class JobService implements IJobService {
     }
 
     @Override
-    public List<JobGetDto> showAll() {
-        return jobRepository.findAll()
+    public List<JobGetDto> showAll(Pageable pageable) {
+        return jobRepository.findAll(pageable)
                 .stream()
                 .map(job -> new JobGetDto(job.getId(), job.getTitle(), job.getDescription() , job.getCompany().getId()))
                 .toList();
