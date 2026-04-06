@@ -15,5 +15,5 @@ public interface IApplicationService {
     List<ApplicationByStatusDto> getByStatus(Application.ApplicationStatus status);
     Map<Application.ApplicationStatus , Long> getStats();
     ApplicationGetDto update(Integer id, ApplicationUpdateDto dto);
-    void delete(Application application);
+    void delete(Integer id);
 }
