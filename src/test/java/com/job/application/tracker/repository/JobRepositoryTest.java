@@ -25,7 +25,7 @@ public class JobRepositoryTest {
     void setUp() {
         Company company = new Company();
         company.setName("ABC Company");
-        company = companyRepository.save(company);
+        companyRepository.save(company);
         job = new Job(null, "full stack" , "We need a Full Stack Developer who can work on both frontend and backend technologies. You will build end-to-end features, manage databases, and ensure seamless integration between systems." , new ArrayList<>() ,company);
         jobRepository.save(job);
     }
