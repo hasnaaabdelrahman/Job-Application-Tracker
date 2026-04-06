@@ -363,7 +363,6 @@ The API will be available at `http://localhost:8080`
 ## Future Improvements
 
 - Unit tests for service layer
-- Pagination for list endpoints
 - User can only update/delete their own applications (ownership check)
 - Refresh token support
 - Deploy to cloud (Railway / Render)
