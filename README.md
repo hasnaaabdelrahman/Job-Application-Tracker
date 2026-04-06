@@ -95,7 +95,7 @@ A default admin user is automatically created on startup via `DataSeeder` if one
 
 | Field | Value |
 |---|---|
-| Email | `admin@app.com` |
+| Email | `admin@gmail.com` |
 | Password | `admin123` |
 
 > **Important:** Change these credentials before deploying to any environment.
