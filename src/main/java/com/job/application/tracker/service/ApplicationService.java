@@ -55,6 +55,24 @@ public class ApplicationService  implements  IApplicationService{
                 .map(application -> new ApplicationGetDto(application.getId() , application.getApplicationStatus()))
                 .toList();
     }
+    @Override
+    public ApplicationGetDto get(Integer id) {
+        Application application= applicationRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("application not found with id: " + id));
+        return ApplicationMapper.toDto(application);
+    }
+    @Override
+    public ApplicationGetDto get(Integer userId , Integer applicationId) {
+        Application application= applicationRepository.findByUser_IdAndId(userId , applicationId)
+                .orElseThrow(()-> new ResourceNotFoundException("application not found with id: " + applicationId));
+        return ApplicationMapper.toDto(application);
+    }
+
+    public List<ApplicationGetDto> getAllByUser(Integer id , Pageable pageable) {
+        return applicationRepository.findByUser_Id(id , pageable)
+                .stream()
+                .map(application -> new ApplicationGetDto(application.getId() , application.getApplicationStatus()))
+                .toList();
+    }
 
     @Override
     public List<ApplicationsByCompanyDto> getByCompany(Integer id) {
@@ -62,6 +80,12 @@ public class ApplicationService  implements  IApplicationService{
         return applicationRepository.findAll()
                 .stream()
                 .map(application -> new ApplicationsByCompanyDto(application.getId() , application.getApplicationStatus() , application.getJob().getCompany().getName()))
+                .toList();
+    }
+
+    public  List<ApplicationsByCompanyDto>getByCompanyForUser(Integer id , Integer userId) {
+        return applicationRepository.findByJobCompanyIdAndUserId(id , userId).stream()
+                .map(app -> new ApplicationsByCompanyDto(app.getId() , app.getApplicationStatus() , app.getJob().getCompany().getName()))
                 .toList();
     }
 
@@ -78,10 +102,21 @@ public class ApplicationService  implements  IApplicationService{
                 .map(app -> new ApplicationByStatusDto(app.getId() , app.getApplicationStatus()))
                 .toList();
     }
+    @Override
+    public List<ApplicationByStatusDto> getByStatusForUser(Application.ApplicationStatus status , Integer id) {
+        return applicationRepository.findByApplicationStatusAndUserId(status , id).stream()
+                .map(app -> new ApplicationByStatusDto(app.getId() , app.getApplicationStatus()))
+                .toList();
+    }
 
     @Override
     public Map<Application.ApplicationStatus , Long> getStats() {
         return applicationRepository.findAll().stream()
+                .collect(Collectors.groupingBy(Application::getApplicationStatus , Collectors.counting()));
+    }
+    @Override
+    public Map<Application.ApplicationStatus , Long> getStats(Integer id) {
+        return applicationRepository.findByUserId(id).stream()
                 .collect(Collectors.groupingBy(Application::getApplicationStatus , Collectors.counting()));
     }
 
