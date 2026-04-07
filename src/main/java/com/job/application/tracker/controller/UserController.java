@@ -5,6 +5,8 @@ import com.job.application.tracker.dto.UserGetDto;
 import com.job.application.tracker.dto.UserUpdateDto;
 import com.job.application.tracker.entity.User;
 import com.job.application.tracker.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "2- User")
 @RestController
-@RequestMapping("api/user/v1")
+@RequestMapping("/api/v1/user")
 public class UserController {
     private final UserService userService;
 
@@ -27,14 +30,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/getById/{id}")
+    @Operation(summary = "1- Get user")
+    @GetMapping("/get/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserGetDto> get(@PathVariable("id") Integer id) {
         final UserGetDto user = userService.get(id);
         return ResponseEntity.ok(user);
     }
-
-    @GetMapping("/get-all")
+    @Operation(summary = "2- Get all users")
+    @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserGetDto>>
     getAll(@RequestParam(defaultValue = "0") int page , @RequestParam(defaultValue = "5") int size ,
@@ -45,13 +49,14 @@ public class UserController {
        final List<UserGetDto> users = userService.showAll(pageable);
         return ResponseEntity.ok(users);
     }
-
+    @Operation(summary = "3- Update user")
     @PutMapping("/update/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserGetDto> updateUser(@PathVariable("id") Integer id,@Valid @RequestBody UserUpdateDto userDto) {
         final UserGetDto updated = userService.update(id ,userDto);
         return ResponseEntity.ok(updated);
     }
+    @Operation(summary = "4- Delete user")
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> deleteUser(@PathVariable("id") Integer id) {
