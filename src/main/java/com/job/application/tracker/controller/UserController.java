@@ -4,6 +4,7 @@ import com.job.application.tracker.dto.UserCreateDto;
 import com.job.application.tracker.dto.UserGetDto;
 import com.job.application.tracker.dto.UserUpdateDto;
 import com.job.application.tracker.entity.User;
+import com.job.application.tracker.service.CustomUserDetails;
 import com.job.application.tracker.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,8 +54,15 @@ public class UserController {
     }
     @Operation(summary = "3- Update user")
     @PutMapping("/update/{id}")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<UserGetDto> updateUser(@PathVariable("id") Integer id,@Valid @RequestBody UserUpdateDto userDto) {
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<?> updateUser(@PathVariable("id") Integer id
+            ,@Valid @RequestBody UserUpdateDto userDto
+         ,@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        if(!id.equals(userDetails.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You cannot edit another user's data.");
+        }
         final UserGetDto updated = userService.update(id ,userDto);
         return ResponseEntity.ok(updated);
     }
