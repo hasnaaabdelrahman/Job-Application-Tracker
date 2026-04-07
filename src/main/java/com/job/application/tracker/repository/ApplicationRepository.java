@@ -16,6 +16,6 @@ public interface ApplicationRepository extends JpaRepository<Application , Integ
     List<Application> findByApplicationStatusAndUserId(Application.ApplicationStatus status,Integer userId);
     List<Application> findByUser_Id(Integer userId ,Pageable page);
     Optional<Application> findByUser_IdAndId(Integer userId , Integer applicationId);
-
+    List<Application> findByJob_Company_Id(Integer companyId);
 
 }
