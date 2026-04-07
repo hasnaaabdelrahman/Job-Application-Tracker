@@ -91,7 +91,7 @@ public class ApplicationController {
 
     @Operation(summary = "8- Delete applications")
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Application> delete(@Valid @PathVariable("id") Integer id) {
       applicationService.delete(id);
         return ResponseEntity.ok().build();
