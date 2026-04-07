@@ -30,18 +30,18 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/auth/**",
+                                "/api/v1/auth/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/h2-console/**"
                         ).permitAll()
-                        .requestMatchers(HttpMethod.GET , "/api/user/v1/get-all").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE , "/api/user/v1/delete/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT , "/api/user/v1/update/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.GET , "/api/user/v1/get/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET , "/api/v1/user/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE , "/api/v1/user/delete/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT , "/api/v1/user/update/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET , "/api/v1/user/get/**").hasAnyRole("USER", "ADMIN")
 
-                        .requestMatchers("/api/user/v1/**").authenticated()
+                        .requestMatchers("/api/v1/user/**").authenticated()
 
                         .anyRequest().authenticated()
 
