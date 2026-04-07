@@ -77,7 +77,7 @@ public class ApplicationService  implements  IApplicationService{
     @Override
     public List<ApplicationsByCompanyDto> getByCompany(Integer id) {
         Company company = companyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("company not found with id:" + id));
-        return applicationRepository.findAll()
+        return applicationRepository.findByJob_Company_Id(company.getId())
                 .stream()
                 .map(application -> new ApplicationsByCompanyDto(application.getId() , application.getApplicationStatus() , application.getJob().getCompany().getName()))
                 .toList();
