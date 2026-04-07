@@ -30,7 +30,7 @@ public class ApplicationController {
         this.applicationService = applicationService;
     }
 
-    @Operation(summary = "Get application")
+    @Operation(summary = "1- Get application")
     @GetMapping("/get/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ApplicationGetDto> getApplication(@PathVariable("id") Integer id ,
@@ -45,7 +45,7 @@ public class ApplicationController {
         return ResponseEntity.ok(application);
     }
 
-    @Operation(summary = "1- Get all applications")
+    @Operation(summary = "2- Get all applications")
     @GetMapping("/get")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<ApplicationGetDto>> getAll(@RequestParam(defaultValue = "0") int page ,
@@ -65,7 +65,7 @@ public class ApplicationController {
         return ResponseEntity.ok(applications);
     }
 
-    @Operation(summary = "2- Get applications by company")
+    @Operation(summary = "3- Get applications by company")
     @GetMapping("/companies/{id}/applications")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<ApplicationsByCompanyDto>> get(@PathVariable("id") Integer id
@@ -79,7 +79,7 @@ public class ApplicationController {
         return ResponseEntity.ok(applications);
     }
 
-    @Operation(summary = "3- Get applications by status")
+    @Operation(summary = "4- Get applications by status")
     @GetMapping("/search")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<ApplicationByStatusDto>> get(@RequestParam Application.ApplicationStatus status
@@ -93,7 +93,7 @@ public class ApplicationController {
         return ResponseEntity.ok(applications);
     }
 
-    @Operation(summary = "4- Get applications by user")
+    @Operation(summary = "5- Get applications by user")
     @GetMapping("/users/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<ApplicationGetDto>> getByUser(@PathVariable("id") Integer id) {
@@ -101,7 +101,7 @@ public class ApplicationController {
         return ResponseEntity.ok(applications);
     }
 
-    @Operation(summary = "5- Get applications stats")
+    @Operation(summary = "6- Get applications stats")
     @GetMapping("/stats")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Map<Application.ApplicationStatus , Long>> getStats(@AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -114,7 +114,7 @@ public class ApplicationController {
         }
     }
 
-    @Operation(summary = "6- Create application")
+    @Operation(summary = "7- Create application")
     @PostMapping("/add")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApplicationGetDto> add(@Valid @RequestBody ApplicationCreateDto dto) {
@@ -122,7 +122,7 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationAdded);
     }
 
-    @Operation(summary = "7- Update application")
+    @Operation(summary = "8- Update application")
     @PutMapping("/update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApplicationGetDto> update(@PathVariable("id") Integer id,@Valid @RequestBody ApplicationUpdateDto dto) {
@@ -130,7 +130,7 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationUpdated);
     }
 
-    @Operation(summary = "8- Delete applications")
+    @Operation(summary = "9- Delete applications")
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Application> delete(@Valid @PathVariable("id") Integer id) {
