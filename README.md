@@ -30,6 +30,9 @@ This project demonstrates clean backend architecture using modern development pr
 | JWT (JSON Web Token) | Stateless authentication |
 | Maven | Build tool |
 | Swagger / OpenAPI | API documentation |
+| JUnit 5 | Unit & integration testing framework |
+| Mockito | Mocking framework for service unit tests |
+| H2 Database | In-memory database for repository integration tests |
 
 ---
 
@@ -53,6 +56,17 @@ src/main/java/com/job/application/tracker
 ├── mapper          # Entity <-> DTO mappers
 ├── config          # Security config, JWT utilities, DataSeeder
 ├── exceptions      # Custom exception classes, GlobalExceptionHandler (@ControllerAdvice)
+
+src/test/java/com/job/application/tracker
+├── service         # Unit tests for service layer (Mockito)
+│   ├── ApplicationServiceTest.java
+│   ├── CompanyServiceTest.java
+│   ├── JobServiceTest.java
+│   └── UserServiceTest.java
+├── repository      # Integration tests for repository layer (@DataJpaTest / H2)
+│   ├── CompanyRepositoryTest.java
+│   ├── JobRepositoryTest.java
+│   └── UserRepositoryTest.java
 ```
 
 ---
@@ -70,8 +84,8 @@ This project uses **JWT-based stateless authentication** with **role-based acces
 
 ### How It Works
 
-1. Register via `POST /api/auth/register` — account is created with `ROLE_USER`
-2. Login via `POST /api/auth/login` — returns a JWT token
+1. Register via `POST /api/v1/auth/register` — account is created with `ROLE_USER`
+2. Login via `POST /api/v1/auth/login` — returns a JWT token
 3. Include the token in subsequent requests as a Bearer token:
 
 ```
@@ -82,11 +96,11 @@ Authorization: Bearer <your_token>
 
 | Endpoint | Access |
 |---|---|
-| `POST /api/auth/**` | Public (no token required) |
-| `GET /api/user/v1/get-all` | `ROLE_ADMIN` only |
-| `DELETE /api/user/v1/delete/{id}` | `ROLE_ADMIN` only |
-| `GET /api/user/v1/getById/{id}` | Authenticated (`ROLE_USER` or `ROLE_ADMIN`) |
-| `PUT /api/user/v1/update/{id}` | Authenticated (`ROLE_USER` or `ROLE_ADMIN`) |
+| `POST /api/v1/auth/**` | Public (no token required) |
+| `GET /api/v1/user/users` | `ROLE_ADMIN` only |
+| `DELETE /api/v1/user/delete/{id}` | `ROLE_ADMIN` only |
+| `GET /api/v1/user/get/{id}` | Authenticated (`ROLE_USER` or `ROLE_ADMIN`) |
+| `PUT /api/v1/user/update/{id}` | Authenticated — own profile only |
 | All other endpoints | Authenticated |
 
 ### Default Admin Account
@@ -154,67 +168,72 @@ User ──────< Application >────── Job >──────
 
 ## API Endpoints
 
-### Auth `api/auth` — Public
+### Auth `/api/v1/auth` — Public
 
 | Method | Endpoint | Description |
 |---|---|---|
 | POST | `/login` | Login and receive JWT token |
 | POST | `/register` | Register a new user account |
 
-### Applications `api/application/v1` — Authenticated
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/get-all` | Get all applications |
-| GET | `/getByCompany/{id}` | Get applications by company |
-| GET | `/getByStatus?status=` | Filter by status |
-| GET | `/stats` | Get count grouped by status |
-| POST | `/add` | Create new application |
-| PUT | `/update/{id}` | Update application |
-| DELETE | `/delete` | Delete application (REJECTED only) |
-
-### Jobs `api/job/v1` — Authenticated
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/get-all` | Get all jobs |
-| GET | `/getByCompany/{id}` | Get jobs by company |
-| GET | `/search?title=` | Search jobs by title keyword |
-| POST | `/add` | Create new job |
-| PUT | `/update/{id}` | Update job |
-| DELETE | `/delete/{id}` | Delete job |
-
-### Companies `api/company/v1` — Authenticated
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/get-all` | Get all companies |
-| GET | `/get/{id}` | Get company by ID |
-| POST | `/add` | Create new company |
-| PUT | `/update/{id}` | Update company |
-| DELETE | `/delete/{id}` | Delete company |
-
-### Users `api/user/v1` — Authenticated / Admin
+### Applications `/api/v1/application` — Authenticated
 
 | Method | Endpoint | Access | Description |
 |---|---|---|---|
-| GET | `/getById/{id}` | Authenticated | Get user by ID |
-| GET | `/get-all` | Admin only | Get all users |
-| PUT | `/update/{id}` | Authenticated | Update user |
-| DELETE | `/delete/{id}` | Admin only | Delete user |
+| GET | `/get` | USER / ADMIN | Get all applications (paginated) |
+| GET | `/get/{id}` | USER / ADMIN | Get application by ID |
+| GET | `/companies/{id}/applications` | USER / ADMIN | Get applications by company |
+| GET | `/search?status=` | USER / ADMIN | Filter by status |
+| GET | `/users/{id}` | USER / ADMIN | Get applications by user |
+| GET | `/stats` | USER / ADMIN | Get count grouped by status |
+| POST | `/add` | USER | Create new application |
+| PUT | `/update/{id}` | ADMIN | Update application |
+| DELETE | `/delete/{id}` | USER | Delete application |
+
+### Jobs `/api/v1/job` — Authenticated
+
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| GET | `/get` | USER / ADMIN | Get all jobs (paginated) |
+| GET | `/get/{id}` | USER / ADMIN | Get job by ID |
+| GET | `/companies/{id}/jobs` | USER / ADMIN | Get jobs by company |
+| GET | `/search/{title}` | USER / ADMIN | Search jobs by title keyword |
+| POST | `/add` | ADMIN | Create new job |
+| PUT | `/update/{id}` | ADMIN | Update job |
+| DELETE | `/delete/{id}` | ADMIN | Delete job |
+
+### Companies `/api/company/v1` — Authenticated
+
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| GET | `/get` | USER / ADMIN | Get all companies (paginated) |
+| GET | `/get/{id}` | USER / ADMIN | Get company by ID |
+| POST | `/add` | ADMIN | Create new company |
+| PUT | `/update/{id}` | ADMIN | Update company |
+| DELETE | `/delete/{id}` | ADMIN | Delete company |
+
+### Users `/api/v1/user` — Authenticated / Admin
+
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| GET | `/get/{id}` | USER / ADMIN | Get user by ID |
+| GET | `/users` | ADMIN only | Get all users (paginated) |
+| PUT | `/update/{id}` | Own account only | Update user profile |
+| DELETE | `/delete/{id}` | ADMIN only | Delete user |
 
 ---
 
 ## Sample Requests & Responses
 
-### POST `/api/auth/register`
+### POST `/api/v1/auth/register`
 
 **Request:**
 ```json
 {
   "name": "John Doe",
   "email": "john@example.com",
-  "password": "secret123"
+  "password": "secret123",
+  "phone": "01012345678",
+  "birthDate": "1995-06-15"
 }
 ```
 
@@ -228,7 +247,7 @@ User ──────< Application >────── Job >──────
 }
 ```
 
-### POST `/api/auth/login`
+### POST `/api/v1/auth/login`
 
 **Request:**
 ```json
@@ -243,7 +262,7 @@ User ──────< Application >────── Job >──────
 eyJhbGciOiJIUzI1NiJ9...
 ```
 
-### POST `/api/application/v1/add`
+### POST `/api/v1/application/add`
 
 **Request:**
 ```json
@@ -262,7 +281,7 @@ eyJhbGciOiJIUzI1NiJ9...
 }
 ```
 
-### GET `/api/application/v1/stats`
+### GET `/api/v1/application/stats`
 
 **Response:**
 ```json
@@ -274,7 +293,7 @@ eyJhbGciOiJIUzI1NiJ9...
 }
 ```
 
-### GET `/api/job/v1/search?title=engineer`
+### GET `/api/v1/job/search/engineer`
 
 **Response:**
 ```json
@@ -282,10 +301,51 @@ eyJhbGciOiJIUzI1NiJ9...
   {
     "id": 1,
     "title": "Backend Engineer",
-    "description": "Java Spring Boot role",
-    "company_id": 2
+    "description": "Java Spring Boot role"
   }
 ]
+```
+
+---
+
+## Tests
+
+The project includes two levels of testing: **unit tests** for the service layer and **repository integration tests** using an in-memory H2 database.
+
+### Service Tests — Unit Tests (Mockito)
+
+Dependencies are mocked with Mockito. No database or Spring context is needed.
+
+| Test Class | Test Cases |
+|---|---|
+| `ApplicationServiceTest` | Delete calls `deleteById` when found; throws `ResourceNotFoundException` when not found |
+| `CompanyServiceTest` | Get returns company when found; throws exception when not found; delete calls `deleteById` when found; throws exception when not found |
+| `JobServiceTest` | Get returns job when found; throws exception when not found; delete calls `deleteById` when found; throws exception when not found |
+| `UserServiceTest` | Get returns user when found; throws exception when not found; delete throws exception when not found; delete calls `existsById` when found |
+
+### Repository Tests — Integration Tests (@DataJpaTest + H2)
+
+Run against a real in-memory H2 database. Spring Data JPA context is loaded for each test.
+
+| Test Class | Test Cases |
+|---|---|
+| `CompanyRepositoryTest` | `existsById` returns true for saved company; returns false for missing ID |
+| `JobRepositoryTest` | `findByCompanyId` returns jobs for valid company; returns empty for unknown company; `existsById` returns true/false correctly |
+| `UserRepositoryTest` | `existsById`, `existsByEmail`, `existsByPhone` return true/false correctly; `existsByEmailAndIdNot` and `existsByPhoneAndIdNot` handle same/different user cases |
+
+### Running Tests
+
+```bash
+# Run all tests
+mvn test
+
+# Run a specific test class
+mvn test -Dtest=ApplicationServiceTest
+mvn test -Dtest=UserRepositoryTest
+
+# Generate coverage report
+mvn verify
+# Report available at: target/site/jacoco/index.html
 ```
 
 ---
@@ -362,8 +422,7 @@ The API will be available at `http://localhost:8080`
 
 ## Future Improvements
 
-- Unit tests for service layer
-- User can only update/delete their own applications (ownership check)
+- Integration tests for controllers
 - Refresh token support
 - Deploy to cloud (Railway / Render)
 
@@ -378,3 +437,5 @@ This project was built to practice:
 - JPA relationships and database design
 - Clean architecture principles (Controller → Service → Mapper → Repository)
 - DTO pattern for decoupling API layer from persistence layer
+- Unit testing with JUnit 5 and Mockito
+- Repository integration testing with @DataJpaTest and H2
