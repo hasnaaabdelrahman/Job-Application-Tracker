@@ -36,7 +36,12 @@ public class UserController {
     @Operation(summary = "1- Get user")
     @GetMapping("/get/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<UserGetDto> get(@PathVariable("id") Integer id) {
+    public ResponseEntity<?> get(@PathVariable("id") Integer id
+            ,@AuthenticationPrincipal CustomUserDetails userDetails) {
+        if(!id.equals(userDetails.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You cannot see another user's data.");
+        }
         final UserGetDto user = userService.get(id);
         return ResponseEntity.ok(user);
     }
