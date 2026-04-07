@@ -1,6 +1,8 @@
 package com.job.application.tracker.service;
 
+import com.job.application.tracker.dto.CompanyCreateDto;
 import com.job.application.tracker.dto.CompanyGetDto;
+import com.job.application.tracker.dto.CompanyUpdateDto;
 import com.job.application.tracker.entity.Company;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.mapper.CompanyMapper;
@@ -45,7 +47,10 @@ public class CompanyServiceTest {
                 companyService.get(999)
         );
 
-        verify(companyRepository).findById(999);    }
+        verify(companyRepository).findById(999);
+
+    }
+
 
     @Test
     void deleteCompany_shouldThrowException_whenCompanyIsNotFound() {
