@@ -24,7 +24,6 @@ import java.util.List;
 public class JobController {
     private final JobService jobService;
 
-    @Autowired
     public JobController(JobService jobService) {
         this.jobService = jobService;
     }

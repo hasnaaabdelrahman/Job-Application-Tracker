@@ -18,10 +18,13 @@ import java.util.List;
 
 @Service
 public class JobService implements IJobService {
-    @Autowired
-    JobRepository jobRepository;
-    @Autowired
-    CompanyRepository companyRepository;
+    private final JobRepository jobRepository;
+    private final CompanyRepository companyRepository;
+
+    public JobService(JobRepository jobRepository, CompanyRepository companyRepository) {
+        this.jobRepository = jobRepository;
+        this.companyRepository = companyRepository;
+    }
 
     @Override
     public JobGetDto add(JobCreateDto job) {

@@ -17,9 +17,12 @@ import java.util.List;
 
 @Service
 public class CompanyService implements ICompanyService {
-    @Autowired
-    CompanyRepository companyRepository;
 
+    private final CompanyRepository companyRepository;
+
+    public CompanyService(CompanyRepository companyRepository) {
+        this.companyRepository = companyRepository;
+    }
 
     @Override
     public CompanyGetDto add(CompanyCreateDto dto) {
