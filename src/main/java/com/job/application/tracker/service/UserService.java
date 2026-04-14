@@ -21,8 +21,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserService implements IUserService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {

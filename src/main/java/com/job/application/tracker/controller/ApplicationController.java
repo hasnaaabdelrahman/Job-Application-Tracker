@@ -25,7 +25,7 @@ import java.util.Map;
 public class ApplicationController {
 
     private final ApplicationService applicationService;
-    @Autowired
+
     public ApplicationController(ApplicationService applicationService) {
         this.applicationService = applicationService;
     }

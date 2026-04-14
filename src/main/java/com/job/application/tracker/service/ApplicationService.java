@@ -22,14 +22,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class ApplicationService  implements  IApplicationService{
-    @Autowired
-    ApplicationRepository applicationRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    JobRepository jobRepository;
-    @Autowired
-    CompanyRepository companyRepository;
+    private final ApplicationRepository applicationRepository;
+    private final UserRepository userRepository;
+    private final JobRepository jobRepository;
+    private final CompanyRepository companyRepository;
+
+    public ApplicationService(ApplicationRepository applicationRepository ,  UserRepository userRepository,
+                              JobRepository jobRepository , CompanyRepository companyRepository) {
+        this.applicationRepository = applicationRepository;
+        this.userRepository = userRepository;
+        this.jobRepository = jobRepository;
+        this.companyRepository = companyRepository;
+
+    }
 
     @Override
     public ApplicationGetDto add(ApplicationCreateDto dto) {
