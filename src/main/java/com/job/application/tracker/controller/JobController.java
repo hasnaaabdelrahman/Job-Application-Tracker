@@ -1,15 +1,14 @@
 package com.job.application.tracker.controller;
 
-import com.job.application.tracker.dto.JobCreateDto;
-import com.job.application.tracker.dto.JobGetDto;
-import com.job.application.tracker.dto.JobUpdateDto;
-import com.job.application.tracker.dto.JobsDto;
-import com.job.application.tracker.entity.Job;
+import com.job.application.tracker.model.dto.JobCreateDto;
+import com.job.application.tracker.model.dto.JobGetDto;
+import com.job.application.tracker.model.dto.JobUpdateDto;
+import com.job.application.tracker.model.dto.JobsDto;
+import com.job.application.tracker.model.entity.Job;
 import com.job.application.tracker.service.JobService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

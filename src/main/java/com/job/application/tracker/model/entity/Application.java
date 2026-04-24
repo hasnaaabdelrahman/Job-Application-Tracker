@@ -1,4 +1,4 @@
-package com.job.application.tracker.entity;
+package com.job.application.tracker.model.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;

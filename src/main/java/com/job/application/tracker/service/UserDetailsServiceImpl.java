@@ -1,17 +1,11 @@
 package com.job.application.tracker.service;
 
-import com.job.application.tracker.entity.User;
+import com.job.application.tracker.model.CustomUserDetails;
+import com.job.application.tracker.model.entity.User;
 import com.job.application.tracker.repository.UserRepository;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

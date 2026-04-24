@@ -1,16 +1,15 @@
-package com.job.application.tracker.dto;
+package com.job.application.tracker.model.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyGetDto {
-    private Integer id;
+public class CompanyUpdateDto {
+    @NotBlank
     private String name;
-    private List<JobsDto> jobs;
+
 }

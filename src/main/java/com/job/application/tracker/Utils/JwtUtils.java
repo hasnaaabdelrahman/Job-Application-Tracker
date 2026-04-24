@@ -1,4 +1,4 @@
-package com.job.application.tracker.config;
+package com.job.application.tracker.Utils;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

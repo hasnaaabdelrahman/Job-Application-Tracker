@@ -1,14 +1,13 @@
 package com.job.application.tracker.service;
 
-import com.job.application.tracker.dto.CompanyCreateDto;
-import com.job.application.tracker.dto.CompanyGetDto;
-import com.job.application.tracker.dto.CompanyUpdateDto;
-import com.job.application.tracker.dto.JobsDto;
-import com.job.application.tracker.entity.Company;
+import com.job.application.tracker.model.dto.CompanyCreateDto;
+import com.job.application.tracker.model.dto.CompanyGetDto;
+import com.job.application.tracker.model.dto.CompanyUpdateDto;
+import com.job.application.tracker.model.dto.JobsDto;
+import com.job.application.tracker.model.entity.Company;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.mapper.CompanyMapper;
 import com.job.application.tracker.repository.CompanyRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 

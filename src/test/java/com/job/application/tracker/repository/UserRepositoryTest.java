@@ -1,8 +1,7 @@
 package com.job.application.tracker.repository;
 
-import com.job.application.tracker.entity.User;
+import com.job.application.tracker.model.entity.User;
 
-import org.h2.engine.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;

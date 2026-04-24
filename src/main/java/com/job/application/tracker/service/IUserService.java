@@ -1,8 +1,8 @@
 package com.job.application.tracker.service;
 
-import com.job.application.tracker.dto.UserCreateDto;
-import com.job.application.tracker.dto.UserGetDto;
-import com.job.application.tracker.dto.UserUpdateDto;
+import com.job.application.tracker.model.dto.UserCreateDto;
+import com.job.application.tracker.model.dto.UserGetDto;
+import com.job.application.tracker.model.dto.UserUpdateDto;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

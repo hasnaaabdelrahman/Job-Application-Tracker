@@ -1,13 +1,12 @@
 package com.job.application.tracker.controller;
 
-import com.job.application.tracker.dto.*;
-import com.job.application.tracker.entity.Application;
+import com.job.application.tracker.model.dto.*;
+import com.job.application.tracker.model.entity.Application;
 import com.job.application.tracker.service.ApplicationService;
-import com.job.application.tracker.service.CustomUserDetails;
+import com.job.application.tracker.model.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -34,7 +33,7 @@ public class ApplicationController {
     @GetMapping("/get/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ApplicationGetDto> getApplication(@PathVariable("id") Integer id ,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
+                                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
         ApplicationGetDto application;
         if(userDetails.getUsername().equals("admin@gmail.com")) {
             application = applicationService.get(id);
@@ -69,7 +68,7 @@ public class ApplicationController {
     @GetMapping("/companies/{id}/applications")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<ApplicationsByCompanyDto>> get(@PathVariable("id") Integer id
-    ,@AuthenticationPrincipal CustomUserDetails userDetails) {
+    , @AuthenticationPrincipal CustomUserDetails userDetails) {
         final List<ApplicationsByCompanyDto> applications ;
         if (userDetails.getUsername().equals("admin@gmail.com")) {
             applications = applicationService.getByCompany(id);
@@ -83,7 +82,7 @@ public class ApplicationController {
     @GetMapping("/search")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<ApplicationByStatusDto>> get(@RequestParam Application.ApplicationStatus status
-            ,@AuthenticationPrincipal CustomUserDetails userDetails) {
+            , @AuthenticationPrincipal CustomUserDetails userDetails) {
         final List<ApplicationByStatusDto> applications ;
         if(userDetails.getUsername().equals("admin@gmail.com")) {
             applications = applicationService.getByStatus(status);

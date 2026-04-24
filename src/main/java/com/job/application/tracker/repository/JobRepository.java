@@ -1,6 +1,6 @@
 package com.job.application.tracker.repository;
 
-import com.job.application.tracker.entity.Job;
+import com.job.application.tracker.model.entity.Job;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
