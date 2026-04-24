@@ -1,16 +1,13 @@
 package com.job.application.tracker.controller;
 
-import com.job.application.tracker.dto.UserCreateDto;
-import com.job.application.tracker.dto.UserGetDto;
-import com.job.application.tracker.dto.UserUpdateDto;
-import com.job.application.tracker.entity.User;
-import com.job.application.tracker.service.CustomUserDetails;
+import com.job.application.tracker.model.dto.UserGetDto;
+import com.job.application.tracker.model.dto.UserUpdateDto;
+import com.job.application.tracker.model.entity.User;
+import com.job.application.tracker.model.CustomUserDetails;
 import com.job.application.tracker.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.apache.coyote.Request;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

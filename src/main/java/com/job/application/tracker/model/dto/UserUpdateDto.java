@@ -1,4 +1,4 @@
-package com.job.application.tracker.dto;
+package com.job.application.tracker.model.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,8 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-
-public class UserCreateDto {
+public class UserUpdateDto {
     @NotBlank
     private String name;
     @NumberFormat
@@ -23,8 +22,5 @@ public class UserCreateDto {
     @Email
     @NotBlank
     private String email;
-    @NotBlank
-    private String password;
     private LocalDate birthDate;
-    private Set<String> roles = new HashSet<>();
 }

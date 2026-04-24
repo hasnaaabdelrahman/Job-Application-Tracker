@@ -1,13 +1,8 @@
 package com.job.application.tracker.service;
 
-import com.job.application.tracker.dto.CompanyCreateDto;
-import com.job.application.tracker.dto.CompanyGetDto;
-import com.job.application.tracker.dto.CompanyUpdateDto;
-import com.job.application.tracker.entity.Company;
+import com.job.application.tracker.model.entity.Company;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
-import com.job.application.tracker.mapper.CompanyMapper;
 import com.job.application.tracker.repository.CompanyRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -1,7 +1,7 @@
 package com.job.application.tracker.repository;
 
-import com.job.application.tracker.entity.Company;
-import com.job.application.tracker.entity.Job;
+import com.job.application.tracker.model.entity.Company;
+import com.job.application.tracker.model.entity.Job;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

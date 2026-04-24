@@ -1,7 +1,7 @@
 package com.job.application.tracker.service;
 
-import com.job.application.tracker.dto.*;
-import com.job.application.tracker.entity.Application;
+import com.job.application.tracker.model.dto.*;
+import com.job.application.tracker.model.entity.Application;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

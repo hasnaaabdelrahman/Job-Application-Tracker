@@ -1,4 +1,4 @@
-package com.job.application.tracker.entity;
+package com.job.application.tracker.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -9,7 +9,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.time.LocalDate;

@@ -1,14 +1,12 @@
 package com.job.application.tracker.mapper;
 
-import com.job.application.tracker.dto.ApplicationDto;
-import com.job.application.tracker.dto.UserCreateDto;
-import com.job.application.tracker.dto.UserGetDto;
-import com.job.application.tracker.dto.UserUpdateDto;
-import com.job.application.tracker.entity.User;
+import com.job.application.tracker.model.dto.ApplicationDto;
+import com.job.application.tracker.model.dto.UserCreateDto;
+import com.job.application.tracker.model.dto.UserGetDto;
+import com.job.application.tracker.model.dto.UserUpdateDto;
+import com.job.application.tracker.model.entity.User;
 
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 public class UserMapper {
     public static User toEntity(UserCreateDto dto) {

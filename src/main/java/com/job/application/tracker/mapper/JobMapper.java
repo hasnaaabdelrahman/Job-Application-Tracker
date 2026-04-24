@@ -1,9 +1,9 @@
 package com.job.application.tracker.mapper;
 
-import com.job.application.tracker.dto.JobCreateDto;
-import com.job.application.tracker.dto.JobGetDto;
-import com.job.application.tracker.dto.JobUpdateDto;
-import com.job.application.tracker.entity.Job;
+import com.job.application.tracker.model.dto.JobCreateDto;
+import com.job.application.tracker.model.dto.JobGetDto;
+import com.job.application.tracker.model.dto.JobUpdateDto;
+import com.job.application.tracker.model.entity.Job;
 
 public class JobMapper {
 

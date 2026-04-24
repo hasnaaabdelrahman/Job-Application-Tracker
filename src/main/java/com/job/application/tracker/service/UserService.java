@@ -1,15 +1,14 @@
 package com.job.application.tracker.service;
 
-import com.job.application.tracker.dto.ApplicationDto;
-import com.job.application.tracker.dto.UserCreateDto;
-import com.job.application.tracker.dto.UserGetDto;
-import com.job.application.tracker.dto.UserUpdateDto;
-import com.job.application.tracker.entity.User;
+import com.job.application.tracker.model.dto.ApplicationDto;
+import com.job.application.tracker.model.dto.UserCreateDto;
+import com.job.application.tracker.model.dto.UserGetDto;
+import com.job.application.tracker.model.dto.UserUpdateDto;
+import com.job.application.tracker.model.entity.User;
 import com.job.application.tracker.exceptions.DuplicateApplicationException;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.mapper.UserMapper;
 import com.job.application.tracker.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;

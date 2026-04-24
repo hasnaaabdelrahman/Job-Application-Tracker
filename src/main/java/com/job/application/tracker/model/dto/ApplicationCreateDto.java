@@ -1,8 +1,6 @@
-package com.job.application.tracker.dto;
+package com.job.application.tracker.model.dto;
 
-import com.job.application.tracker.entity.Application;
-import com.job.application.tracker.entity.Job;
-import com.job.application.tracker.entity.User;
+import com.job.application.tracker.model.entity.Application;
 import lombok.*;
 
 @Data

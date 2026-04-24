@@ -1,8 +1,6 @@
-package com.job.application.tracker.dto;
+package com.job.application.tracker.model.dto;
 
-import com.job.application.tracker.entity.Application;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import com.job.application.tracker.model.entity.Application;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApplicationDto {
+public class ApplicationsByCompanyDto {
     private Integer id;
     private Application.ApplicationStatus applicationStatus;
+    private String companyName;
 }

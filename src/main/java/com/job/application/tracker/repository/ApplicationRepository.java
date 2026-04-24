@@ -1,6 +1,6 @@
 package com.job.application.tracker.repository;
 
-import com.job.application.tracker.entity.Application;
+import com.job.application.tracker.model.entity.Application;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 

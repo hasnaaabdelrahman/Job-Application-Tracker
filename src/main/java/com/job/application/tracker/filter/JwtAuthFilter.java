@@ -1,5 +1,6 @@
-package com.job.application.tracker.config;
+package com.job.application.tracker.filter;
 
+import com.job.application.tracker.Utils.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

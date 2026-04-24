@@ -1,4 +1,4 @@
-package com.job.application.tracker.dto;
+package com.job.application.tracker.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

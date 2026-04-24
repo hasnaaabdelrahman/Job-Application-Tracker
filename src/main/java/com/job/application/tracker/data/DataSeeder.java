@@ -1,6 +1,6 @@
-package com.job.application.tracker.config;
+package com.job.application.tracker.data;
 
-import com.job.application.tracker.entity.User;
+import com.job.application.tracker.model.entity.User;
 import com.job.application.tracker.repository.UserRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

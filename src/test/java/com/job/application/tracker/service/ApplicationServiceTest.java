@@ -1,6 +1,6 @@
 package com.job.application.tracker.service;
 
-import com.job.application.tracker.entity.Application;
+import com.job.application.tracker.model.entity.Application;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.repository.ApplicationRepository;
 import org.junit.jupiter.api.Test;

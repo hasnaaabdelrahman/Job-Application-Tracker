@@ -1,4 +1,4 @@
-package com.job.application.tracker.dto;
+package com.job.application.tracker.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
