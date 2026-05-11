@@ -1,4 +1,4 @@
-package com.job.application.tracker.service;
+package com.job.application.tracker.service.implementation;
 
 import com.job.application.tracker.model.CustomUserDetails;
 import com.job.application.tracker.model.entity.User;

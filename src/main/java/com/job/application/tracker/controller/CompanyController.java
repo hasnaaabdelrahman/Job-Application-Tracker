@@ -1,10 +1,10 @@
 package com.job.application.tracker.controller;
 
-import com.job.application.tracker.model.dto.CompanyCreateDto;
-import com.job.application.tracker.model.dto.CompanyGetDto;
-import com.job.application.tracker.model.dto.CompanyUpdateDto;
+import com.job.application.tracker.model.dto.company.CompanyCreateDto;
+import com.job.application.tracker.model.dto.company.CompanyGetDto;
+import com.job.application.tracker.model.dto.company.CompanyUpdateDto;
 import com.job.application.tracker.model.entity.Company;
-import com.job.application.tracker.service.CompanyService;
+import com.job.application.tracker.service.implementation.CompanyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

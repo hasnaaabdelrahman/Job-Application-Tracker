@@ -1,5 +1,6 @@
-package com.job.application.tracker.model.dto;
+package com.job.application.tracker.model.dto.user;
 
+import com.job.application.tracker.model.dto.application.ApplicationDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

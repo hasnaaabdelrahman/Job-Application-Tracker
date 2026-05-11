@@ -1,4 +1,4 @@
-package com.job.application.tracker.model.dto;
+package com.job.application.tracker.model.dto.application;
 
 import com.job.application.tracker.model.entity.Application;
 import lombok.*;

@@ -1,7 +1,7 @@
 package com.job.application.tracker.mapper;
-import com.job.application.tracker.model.dto.ApplicationCreateDto;
-import com.job.application.tracker.model.dto.ApplicationGetDto;
-import com.job.application.tracker.model.dto.ApplicationUpdateDto;
+import com.job.application.tracker.model.dto.application.ApplicationCreateDto;
+import com.job.application.tracker.model.dto.application.ApplicationGetDto;
+import com.job.application.tracker.model.dto.application.ApplicationUpdateDto;
 import com.job.application.tracker.model.entity.Application;
 
 
