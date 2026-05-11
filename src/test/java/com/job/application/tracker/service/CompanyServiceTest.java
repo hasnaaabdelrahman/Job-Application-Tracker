@@ -3,6 +3,7 @@ package com.job.application.tracker.service;
 import com.job.application.tracker.model.entity.Company;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.repository.CompanyRepository;
+import com.job.application.tracker.service.implementation.CompanyService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

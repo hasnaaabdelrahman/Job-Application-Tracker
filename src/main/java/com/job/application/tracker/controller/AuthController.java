@@ -1,10 +1,10 @@
 package com.job.application.tracker.controller;
 
 import com.job.application.tracker.Utils.JwtUtils;
-import com.job.application.tracker.model.dto.LoginRequestDto;
-import com.job.application.tracker.model.dto.UserCreateDto;
-import com.job.application.tracker.model.dto.UserGetDto;
-import com.job.application.tracker.service.UserService;
+import com.job.application.tracker.model.dto.user.LoginRequestDto;
+import com.job.application.tracker.model.dto.user.UserCreateDto;
+import com.job.application.tracker.model.dto.user.UserGetDto;
+import com.job.application.tracker.service.implementation.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

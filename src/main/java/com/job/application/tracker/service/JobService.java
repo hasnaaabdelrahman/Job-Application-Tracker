@@ -1,82 +1,21 @@
 package com.job.application.tracker.service;
 
-import com.job.application.tracker.model.dto.JobCreateDto;
-import com.job.application.tracker.model.dto.JobGetDto;
-import com.job.application.tracker.model.dto.JobUpdateDto;
-import com.job.application.tracker.model.dto.JobsDto;
-import com.job.application.tracker.model.entity.Company;
-import com.job.application.tracker.model.entity.Job;
-import com.job.application.tracker.exceptions.ResourceNotFoundException;
-import com.job.application.tracker.mapper.JobMapper;
-import com.job.application.tracker.repository.CompanyRepository;
-import com.job.application.tracker.repository.JobRepository;
+import com.job.application.tracker.model.dto.job.JobCreateDto;
+import com.job.application.tracker.model.dto.job.JobGetDto;
+import com.job.application.tracker.model.dto.job.JobUpdateDto;
+import com.job.application.tracker.model.dto.job.JobsDto;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class JobService implements IJobService {
-    private final JobRepository jobRepository;
-    private final CompanyRepository companyRepository;
+public interface JobService {
 
-    public JobService(JobRepository jobRepository, CompanyRepository companyRepository) {
-        this.jobRepository = jobRepository;
-        this.companyRepository = companyRepository;
-    }
+    JobGetDto add(JobCreateDto job);
+    List<JobsDto> getAllByCompany(Integer id);
+    JobGetDto get(Integer id);
+    List<JobsDto> getByTitle(String title);
+    List<JobGetDto> showAll(Pageable pageable);
+    void delete(Integer id);
+    JobGetDto update(Integer id , JobUpdateDto dto);
 
-    @Override
-    public JobGetDto add(JobCreateDto job) {
-        Job jobAdded =  JobMapper.toEntity(job);
-        Company company = companyRepository.findById(job.getCompanyId())
-                .orElseThrow(() -> new ResourceNotFoundException("Company not found with id: " + job.getCompanyId()));
-
-        jobAdded.setCompany(company);
-         jobRepository.save(jobAdded);
-         return JobMapper.toDto(jobAdded);
-    }
-
-    @Override
-    public List<JobsDto> getAllByCompany(Integer id) {
-        return  jobRepository.findByCompanyId(id).stream()
-                .map(job -> new JobsDto(job.getId() , job.getTitle() , job.getDescription()))
-                .toList();
-    }
-
-    @Override
-    public JobGetDto get(Integer id) {
-        Job job = jobRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Job not found with id: " + id));
-        return JobMapper.toDto(job);
-    }
-
-    @Override
-    public List<JobsDto> getByTitle(String title) {
-        return jobRepository.findByTitleContainingIgnoreCase(title)
-                .stream().map(job -> new JobsDto(job.getId() , job.getTitle() , job.getDescription()))
-                .toList();
-    }
-
-    @Override
-    public List<JobGetDto> showAll(Pageable pageable) {
-        return jobRepository.findAll(pageable)
-                .stream()
-                .map(job -> new JobGetDto(job.getId(), job.getTitle(), job.getDescription() , job.getCompany().getId()))
-                .toList();
-    }
-
-    @Override
-    public void delete(Integer id) {
-        if(!jobRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Job not found with id: " + id);
-        }
-        jobRepository.deleteById(id);
-    }
-
-    @Override
-    public JobGetDto update(Integer id , JobUpdateDto dto) {
-        Job job = jobRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Job not found with id: " + id));
-        JobMapper.update(job , dto);
-        Job updatedjob = jobRepository.save(job);
-        return JobMapper.toDto(updatedjob);
-    }
 }

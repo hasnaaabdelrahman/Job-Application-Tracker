@@ -1,9 +1,9 @@
 package com.job.application.tracker.mapper;
 
-import com.job.application.tracker.model.dto.ApplicationDto;
-import com.job.application.tracker.model.dto.UserCreateDto;
-import com.job.application.tracker.model.dto.UserGetDto;
-import com.job.application.tracker.model.dto.UserUpdateDto;
+import com.job.application.tracker.model.dto.application.ApplicationDto;
+import com.job.application.tracker.model.dto.user.UserCreateDto;
+import com.job.application.tracker.model.dto.user.UserGetDto;
+import com.job.application.tracker.model.dto.user.UserUpdateDto;
 import com.job.application.tracker.model.entity.User;
 
 import java.util.stream.Collectors;

@@ -1,8 +1,8 @@
 package com.job.application.tracker.controller;
 
-import com.job.application.tracker.model.dto.*;
+import com.job.application.tracker.model.dto.application.*;
 import com.job.application.tracker.model.entity.Application;
-import com.job.application.tracker.service.ApplicationService;
+import com.job.application.tracker.service.implementation.ApplicationService;
 import com.job.application.tracker.model.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
