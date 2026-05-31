@@ -10,7 +10,7 @@ import org.springframework.format.annotation.NumberFormat;
 import java.time.LocalDate;
 
 @Data
-public class UserUpdateDto {
+public class UserUpdateRequest {
     @NotBlank
     private String name;
     @NumberFormat

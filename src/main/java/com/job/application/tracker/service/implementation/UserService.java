@@ -1,9 +1,9 @@
 package com.job.application.tracker.service.implementation;
 
 import com.job.application.tracker.model.dto.application.ApplicationDto;
-import com.job.application.tracker.model.dto.user.UserCreateDto;
-import com.job.application.tracker.model.dto.user.UserGetDto;
-import com.job.application.tracker.model.dto.user.UserUpdateDto;
+import com.job.application.tracker.model.dto.user.UserRequest;
+import com.job.application.tracker.model.dto.user.UserResponse;
+import com.job.application.tracker.model.dto.user.UserUpdateRequest;
 import com.job.application.tracker.model.entity.User;
 import com.job.application.tracker.exceptions.DuplicateApplicationException;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
@@ -30,7 +30,7 @@ public class UserService implements com.job.application.tracker.service.UserServ
 
 
     @Override
-    public UserGetDto add(UserCreateDto user) {
+    public UserResponse add(UserRequest user) {
 
         if(userRepository.existsByEmail(user.getEmail())){
             throw new DuplicateApplicationException("Email already exists");
@@ -47,10 +47,10 @@ public class UserService implements com.job.application.tracker.service.UserServ
     }
 
     @Override
-    public List<UserGetDto> showAll(Pageable pageable) {
+    public List<UserResponse> showAll(Pageable pageable) {
         return userRepository.findAll(pageable)
                 .stream()
-                .map(user -> new UserGetDto(
+                .map(user -> new UserResponse(
                         user.getId(),
                         user.getName(),
                         user.getPhone(),
@@ -65,7 +65,7 @@ public class UserService implements com.job.application.tracker.service.UserServ
     }
 
     @Override
-    public UserGetDto get(Integer id) {
+    public UserResponse get(Integer id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         return UserMapper.toDto(user);
     }
@@ -80,7 +80,7 @@ public class UserService implements com.job.application.tracker.service.UserServ
     }
 
     @Override
-    public UserGetDto update(Integer id ,UserUpdateDto userDto) {
+    public UserResponse update(Integer id , UserUpdateRequest userDto) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
         if(userRepository.existsByEmailAndIdNot(userDto.getEmail() , id)){

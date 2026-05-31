@@ -13,7 +13,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserGetDto {
+public class UserResponse {
     private Integer id;
     private String name;
     private String phone;

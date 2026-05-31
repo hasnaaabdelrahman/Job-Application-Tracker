@@ -1,7 +1,7 @@
 package com.job.application.tracker.controller;
 
-import com.job.application.tracker.model.dto.user.UserGetDto;
-import com.job.application.tracker.model.dto.user.UserUpdateDto;
+import com.job.application.tracker.model.dto.user.UserResponse;
+import com.job.application.tracker.model.dto.user.UserUpdateRequest;
 import com.job.application.tracker.model.entity.User;
 import com.job.application.tracker.model.CustomUserDetails;
 import com.job.application.tracker.service.implementation.UserService;
@@ -38,33 +38,33 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body("You cannot see another user's data.");
         }
-        final UserGetDto user = userService.get(id);
+        final UserResponse user = userService.get(id);
         return ResponseEntity.ok(user);
     }
     @Operation(summary = "2- Get all users")
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UserGetDto>>
+    public ResponseEntity<List<UserResponse>>
     getAll(@RequestParam(defaultValue = "0") int page , @RequestParam(defaultValue = "5") int size ,
                                                    @RequestParam(defaultValue = "id") String sortBy ,
                                                    @RequestParam(defaultValue = "true") boolean ascending) {
         Sort sort = ascending ? Sort.by(sortBy).ascending(): Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page , size , sort);
-       final List<UserGetDto> users = userService.showAll(pageable);
+       final List<UserResponse> users = userService.showAll(pageable);
         return ResponseEntity.ok(users);
     }
     @Operation(summary = "3- Update user")
     @PutMapping("/update/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateUser(@PathVariable("id") Integer id
-            ,@Valid @RequestBody UserUpdateDto userDto
+            ,@Valid @RequestBody UserUpdateRequest userDto
          ,@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         if(!id.equals(userDetails.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body("You cannot edit another user's data.");
         }
-        final UserGetDto updated = userService.update(id ,userDto);
+        final UserResponse updated = userService.update(id ,userDto);
         return ResponseEntity.ok(updated);
     }
     @Operation(summary = "4- Delete user")

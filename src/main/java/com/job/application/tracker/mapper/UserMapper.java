@@ -1,15 +1,15 @@
 package com.job.application.tracker.mapper;
 
 import com.job.application.tracker.model.dto.application.ApplicationDto;
-import com.job.application.tracker.model.dto.user.UserCreateDto;
-import com.job.application.tracker.model.dto.user.UserGetDto;
-import com.job.application.tracker.model.dto.user.UserUpdateDto;
+import com.job.application.tracker.model.dto.user.UserRequest;
+import com.job.application.tracker.model.dto.user.UserResponse;
+import com.job.application.tracker.model.dto.user.UserUpdateRequest;
 import com.job.application.tracker.model.entity.User;
 
 import java.util.stream.Collectors;
 
 public class UserMapper {
-    public static User toEntity(UserCreateDto dto) {
+    public static User toEntity(UserRequest dto) {
         if(dto == null) return null;
 
         User user = new User();
@@ -21,9 +21,9 @@ public class UserMapper {
         return user;
     }
 
-    public static UserGetDto toDto(User user) {
+    public static UserResponse toDto(User user) {
 
-        UserGetDto dto = new UserGetDto();
+        UserResponse dto = new UserResponse();
         dto.setId(user.getId());
         dto.setName(user.getName());
         dto.setPhone(user.getPhone());
@@ -38,7 +38,7 @@ public class UserMapper {
         return dto;
     }
 
-    public static void UpdateEntity(User user , UserUpdateDto dto) {
+    public static void UpdateEntity(User user , UserUpdateRequest dto) {
         if (dto == null || user == null) return ;
         user.setName(dto.getName());
         user.setPhone(dto.getPhone());

@@ -4,13 +4,12 @@ import com.job.application.tracker.Utils.JwtUtils;
 import com.job.application.tracker.model.CustomUserDetails;
 import com.job.application.tracker.model.dto.token.RefreshTokenRequest;
 import com.job.application.tracker.model.dto.token.TokenResponse;
-import com.job.application.tracker.model.dto.user.LoginRequestDto;
-import com.job.application.tracker.model.dto.user.UserCreateDto;
-import com.job.application.tracker.model.dto.user.UserGetDto;
+import com.job.application.tracker.model.dto.user.LoginRequest;
+import com.job.application.tracker.model.dto.user.UserRequest;
+import com.job.application.tracker.model.dto.user.UserResponse;
 import com.job.application.tracker.model.entity.RefreshToken;
 import com.job.application.tracker.service.implementation.AuthenticationService;
 import com.job.application.tracker.service.implementation.RefreshTokenService;
-import com.job.application.tracker.service.implementation.UserDetailsServiceImpl;
 import com.job.application.tracker.service.implementation.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,8 +17,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,14 +33,14 @@ public class AuthController {
 
     @Operation(summary = "2- Login")
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest loginRequestDto) {
 
     return ResponseEntity.ok(service.login(loginRequestDto));
     }
 
     @Operation(summary = "1- Register")
     @PostMapping("/register")
-    public ResponseEntity<UserGetDto> register(@Valid @RequestBody UserCreateDto userDto) {
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRequest userDto) {
         return ResponseEntity.ok(userService.add(userDto));
     }
 

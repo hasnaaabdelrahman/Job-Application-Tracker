@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Data
 
-public class UserCreateDto {
+public class UserRequest {
     @NotBlank
     private String name;
     @NumberFormat

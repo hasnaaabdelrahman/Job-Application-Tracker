@@ -3,9 +3,9 @@ package com.job.application.tracker.service.implementation;
 import com.job.application.tracker.Utils.JwtUtils;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.model.dto.token.TokenResponse;
-import com.job.application.tracker.model.dto.user.LoginRequestDto;
-import com.job.application.tracker.model.dto.user.UserCreateDto;
-import com.job.application.tracker.model.dto.user.UserGetDto;
+import com.job.application.tracker.model.dto.user.LoginRequest;
+import com.job.application.tracker.model.dto.user.UserRequest;
+import com.job.application.tracker.model.dto.user.UserResponse;
 import com.job.application.tracker.model.entity.RefreshToken;
 import com.job.application.tracker.model.entity.User;
 import com.job.application.tracker.repository.RefreshTokenRepository;
@@ -16,8 +16,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +29,7 @@ public class AuthenticationService {
     private final RefreshTokenService refreshTokenService;
 
 
-    public TokenResponse login(LoginRequestDto request) {
+    public TokenResponse login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail() , request.getPassword())
         );
@@ -41,7 +39,7 @@ public class AuthenticationService {
                 .refreshToken(refreshToken.getToken())
                 .build();
     }
-    public UserGetDto register(UserCreateDto userDto) {
+    public UserResponse register(UserRequest userDto) {
         return userService.add(userDto);
     }
 
