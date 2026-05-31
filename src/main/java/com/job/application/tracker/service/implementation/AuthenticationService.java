@@ -2,9 +2,11 @@ package com.job.application.tracker.service.implementation;
 
 import com.job.application.tracker.Utils.JwtUtils;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
+import com.job.application.tracker.model.dto.token.TokenResponse;
 import com.job.application.tracker.model.dto.user.LoginRequestDto;
 import com.job.application.tracker.model.dto.user.UserCreateDto;
 import com.job.application.tracker.model.dto.user.UserGetDto;
+import com.job.application.tracker.model.entity.RefreshToken;
 import com.job.application.tracker.model.entity.User;
 import com.job.application.tracker.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +26,20 @@ public class AuthenticationService {
     private final UserService userService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenService refreshTokenService;
 
 
-    public String login(LoginRequestDto request) {
+    public TokenResponse login(LoginRequestDto request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail() , request.getPassword())
         );
-        return jwtUtils.generateJwtToken(authentication);
+        RefreshToken refreshToken = refreshTokenService.create(request.getEmail());
+        TokenResponse token = TokenResponse.builder()
+                .accessToken(jwtUtils.generateJwtToken(authentication))
+                .refreshToken(refreshToken.getToken())
+                .build();
+
+        return token;
     }
     public UserGetDto register(UserCreateDto userDto) {
         return userService.add(userDto);

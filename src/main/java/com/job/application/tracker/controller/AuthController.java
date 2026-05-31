@@ -2,10 +2,12 @@ package com.job.application.tracker.controller;
 
 import com.job.application.tracker.Utils.JwtUtils;
 import com.job.application.tracker.model.CustomUserDetails;
+import com.job.application.tracker.model.dto.token.TokenResponse;
 import com.job.application.tracker.model.dto.user.LoginRequestDto;
 import com.job.application.tracker.model.dto.user.UserCreateDto;
 import com.job.application.tracker.model.dto.user.UserGetDto;
 import com.job.application.tracker.service.implementation.AuthenticationService;
+import com.job.application.tracker.service.implementation.RefreshTokenService;
 import com.job.application.tracker.service.implementation.UserDetailsServiceImpl;
 import com.job.application.tracker.service.implementation.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,10 +30,12 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     private final UserService userService;
     private final AuthenticationService service;
+    private final RefreshTokenService refreshTokenService;
 
     @Operation(summary = "2- Login")
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
+
     return ResponseEntity.ok(service.login(loginRequestDto));
     }
 
