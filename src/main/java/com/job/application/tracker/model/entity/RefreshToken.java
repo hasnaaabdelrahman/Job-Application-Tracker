@@ -23,7 +23,7 @@ public class RefreshToken {
     private Instant expiryDate;
 
     // relationship
-    @OneToMany
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 }
