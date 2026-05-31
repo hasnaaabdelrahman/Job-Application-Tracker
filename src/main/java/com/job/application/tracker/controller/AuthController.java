@@ -8,6 +8,7 @@ import com.job.application.tracker.service.implementation.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequiredArgsConstructor
 @Tag(name = "1- Authentication")
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -24,12 +26,6 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final UserService userService;
-
-    public AuthController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, UserService userService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtUtils = jwtUtils;
-        this.userService = userService;
-    }
 
     @Operation(summary = "2- Login")
     @PostMapping("/login")
