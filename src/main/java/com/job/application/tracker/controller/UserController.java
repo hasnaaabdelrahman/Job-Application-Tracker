@@ -32,10 +32,9 @@ public class UserController {
     @Operation(summary = "1- Get user")
     @GetMapping("/get/me")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<UserResponse> get(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<?> get(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(userService.get(userDetails.getId()));
     }
-
     @Operation(summary = "2- Get all users")
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
@@ -65,7 +64,7 @@ public class UserController {
     @Operation(summary = "4- Delete user")
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> deleteUser(@PathVariable("id") Integer id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") Integer id) {
         userService.delete(id);
         return ResponseEntity.ok().build();
     }
