@@ -8,6 +8,7 @@ import com.job.application.tracker.model.dto.user.UserCreateDto;
 import com.job.application.tracker.model.dto.user.UserGetDto;
 import com.job.application.tracker.model.entity.RefreshToken;
 import com.job.application.tracker.model.entity.User;
+import com.job.application.tracker.repository.RefreshTokenRepository;
 import com.job.application.tracker.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +26,7 @@ public class AuthenticationService {
     private final JwtUtils jwtUtils;
     private final UserService userService;
     private final UserRepository userRepository;
+    private final RefreshTokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenService refreshTokenService;
 
@@ -34,12 +36,10 @@ public class AuthenticationService {
                 new UsernamePasswordAuthenticationToken(request.getEmail() , request.getPassword())
         );
         RefreshToken refreshToken = refreshTokenService.create(request.getEmail());
-        TokenResponse token = TokenResponse.builder()
+        return TokenResponse.builder()
                 .accessToken(jwtUtils.generateJwtToken(authentication))
                 .refreshToken(refreshToken.getToken())
                 .build();
-
-        return token;
     }
     public UserGetDto register(UserCreateDto userDto) {
         return userService.add(userDto);
@@ -61,5 +61,10 @@ public class AuthenticationService {
         }
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+    }
+
+    public void logout(String token) {
+        RefreshToken refreshToken = refreshTokenService.verifyToken(token);
+        tokenRepository.delete(refreshToken);
     }
 }
