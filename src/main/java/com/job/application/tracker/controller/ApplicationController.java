@@ -134,14 +134,24 @@ public class ApplicationController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Application> delete(@Valid @PathVariable("id") Integer id) {
       applicationService.delete(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "10- Applications Count Per Job")
     @GetMapping("jobs/{id}/applications/count")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApplicationsCountRequest> count(@Valid @PathVariable("id") Integer id) {
+    public ResponseEntity<ApplicationsCountRequest> count(@PathVariable("id") Integer id) {
 
         return ResponseEntity.ok(applicationService.count(id));
+    }
+
+    @Operation(summary = "11- Withdraw application")
+    @DeleteMapping("{id}/withdraw")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Void> withdraw(
+            @AuthenticationPrincipal CustomUserDetails current,
+            @PathVariable("id") Integer id) {
+        applicationService.withdraw(current.getId(), id);
+        return ResponseEntity.noContent().build();
     }
 }

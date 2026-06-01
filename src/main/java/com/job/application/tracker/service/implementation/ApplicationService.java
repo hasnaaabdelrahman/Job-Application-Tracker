@@ -130,7 +130,15 @@ public class ApplicationService  implements com.job.application.tracker.service.
     @Override
     public void delete(Integer id) {
         Application application = applicationRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("application not found with id: " + id));
-        applicationRepository.deleteById(id);
+                applicationRepository.deleteById(application.getId());
+    }
+
+    public void withdraw(Integer userId, Integer id) {
+        Application application = applicationRepository.findByUser_IdAndId(userId , id).orElseThrow(
+                ()-> new ResourceNotFoundException("user not found with id: " + userId + " and" +
+                        " application not found with id: " + id)
+        );
+        applicationRepository.deleteById(application.getId());
     }
 
     public ApplicationsCountRequest count(Integer jobId) {
