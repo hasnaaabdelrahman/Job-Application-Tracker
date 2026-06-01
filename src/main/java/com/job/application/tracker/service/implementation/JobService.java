@@ -1,9 +1,6 @@
 package com.job.application.tracker.service.implementation;
 
-import com.job.application.tracker.model.dto.job.JobCreateDto;
-import com.job.application.tracker.model.dto.job.JobGetDto;
-import com.job.application.tracker.model.dto.job.JobUpdateDto;
-import com.job.application.tracker.model.dto.job.JobsDto;
+import com.job.application.tracker.model.dto.job.*;
 import com.job.application.tracker.model.entity.Company;
 import com.job.application.tracker.model.entity.Job;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
@@ -37,6 +34,12 @@ public class JobService implements com.job.application.tracker.service.JobServic
     }
 
     @Override
+    public List<JobsDto> getAllByCompany(Pageable pageable, Integer id) {
+        return  jobRepository.findByCompanyId(id).stream()
+                .map(job -> new JobsDto(job.getId() , job.getTitle() , job.getDescription()))
+                .toList();
+    }
+
     public List<JobsDto> getAllByCompany(Integer id) {
         return  jobRepository.findByCompanyId(id).stream()
                 .map(job -> new JobsDto(job.getId() , job.getTitle() , job.getDescription()))
@@ -78,5 +81,9 @@ public class JobService implements com.job.application.tracker.service.JobServic
         JobMapper.update(job , dto);
         Job updatedjob = jobRepository.save(job);
         return JobMapper.toDto(updatedjob);
+    }
+
+    public JobApplicationsRequest countApplications(int id) {
+        return jobRepository.countApplicationsByCompanyId(id);
     }
 }

@@ -1,23 +1,23 @@
 package com.job.application.tracker.mapper;
 
-import com.job.application.tracker.model.dto.company.CompanyCreateDto;
-import com.job.application.tracker.model.dto.company.CompanyGetDto;
-import com.job.application.tracker.model.dto.company.CompanyUpdateDto;
+import com.job.application.tracker.model.dto.company.CompanyRequest;
+import com.job.application.tracker.model.dto.company.CompanyResponse;
+import com.job.application.tracker.model.dto.company.CompanyUpdateRequest;
 import com.job.application.tracker.model.dto.job.JobsDto;
 import com.job.application.tracker.model.entity.Company;
 
 public class CompanyMapper {
 
-    public static Company toEntity(CompanyCreateDto dto) {
+    public static Company toEntity(CompanyRequest dto) {
         if(dto == null) return null;
         Company company = new Company();
         company.setName(dto.getName());
         return company;
     }
 
-    public static CompanyGetDto toDto(Company company) {
+    public static CompanyResponse toDto(Company company) {
         if(company == null) return null;
-        CompanyGetDto dto = new CompanyGetDto();
+        CompanyResponse dto = new CompanyResponse();
         dto.setId(company.getId());
         dto.setName(company.getName());
         dto.setJobs(company.getJobs()
@@ -27,7 +27,7 @@ public class CompanyMapper {
         return dto;
     }
 
-    public static void update(Company company , CompanyUpdateDto dto) {
+    public static void update(Company company , CompanyUpdateRequest dto) {
         if(company == null || dto == null) return;
         company.setName(dto.getName());
     }

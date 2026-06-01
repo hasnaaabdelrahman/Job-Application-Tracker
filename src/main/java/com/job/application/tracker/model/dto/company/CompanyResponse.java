@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyGetDto {
+public class CompanyResponse {
     private Integer id;
     private String name;
     private List<JobsDto> jobs;
