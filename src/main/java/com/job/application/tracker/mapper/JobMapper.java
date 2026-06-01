@@ -1,13 +1,13 @@
 package com.job.application.tracker.mapper;
 
-import com.job.application.tracker.model.dto.job.JobCreateDto;
-import com.job.application.tracker.model.dto.job.JobGetDto;
-import com.job.application.tracker.model.dto.job.JobUpdateDto;
+import com.job.application.tracker.model.dto.job.JobRequest;
+import com.job.application.tracker.model.dto.job.JobResponse;
+import com.job.application.tracker.model.dto.job.JobUpdateRequest;
 import com.job.application.tracker.model.entity.Job;
 
 public class JobMapper {
 
-    public static Job toEntity(JobCreateDto dto) {
+    public static Job toEntity(JobRequest dto) {
         if(dto == null) return null;
         Job job = new Job();
         job.setTitle(dto.getTitle());
@@ -15,8 +15,8 @@ public class JobMapper {
         return job;
     }
 
-    public static JobGetDto toDto(Job job) {
-        JobGetDto dto = new JobGetDto();
+    public static JobResponse toDto(Job job) {
+        JobResponse dto = new JobResponse();
         dto.setId(job.getId());
         dto.setTitle(job.getTitle());
         dto.setDescription(job.getDescription());
@@ -24,7 +24,7 @@ public class JobMapper {
         return dto;
     }
 
-    public static void update(Job job , JobUpdateDto dto) {
+    public static void update(Job job , JobUpdateRequest dto) {
         if(job == null || dto == null) return;
         job.setTitle(dto.getTitle());
         job.setDescription(dto.getDescription());

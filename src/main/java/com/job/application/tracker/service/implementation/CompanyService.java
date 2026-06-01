@@ -4,12 +4,11 @@ import com.job.application.tracker.model.dto.company.CompanyDashboardRequest;
 import com.job.application.tracker.model.dto.company.CompanyRequest;
 import com.job.application.tracker.model.dto.company.CompanyResponse;
 import com.job.application.tracker.model.dto.company.CompanyUpdateRequest;
-import com.job.application.tracker.model.dto.job.JobsDto;
+import com.job.application.tracker.model.dto.job.JobsResponse;
 import com.job.application.tracker.model.entity.Company;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.mapper.CompanyMapper;
 import com.job.application.tracker.repository.CompanyRepository;
-import com.job.application.tracker.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,7 +36,7 @@ public class CompanyService implements com.job.application.tracker.service.Compa
                 .stream()
                 .map(company -> new CompanyResponse(company.getId(), company.getName() ,company.getJobs()
                         .stream()
-                        .map(job -> new JobsDto(job.getId() , job.getTitle() , job.getDescription()))
+                        .map(job -> new JobsResponse(job.getId() , job.getTitle() , job.getDescription()))
                         .toList()))
                 .toList();
     }

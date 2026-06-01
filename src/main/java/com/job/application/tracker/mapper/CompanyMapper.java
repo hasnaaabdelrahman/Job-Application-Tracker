@@ -3,7 +3,7 @@ package com.job.application.tracker.mapper;
 import com.job.application.tracker.model.dto.company.CompanyRequest;
 import com.job.application.tracker.model.dto.company.CompanyResponse;
 import com.job.application.tracker.model.dto.company.CompanyUpdateRequest;
-import com.job.application.tracker.model.dto.job.JobsDto;
+import com.job.application.tracker.model.dto.job.JobsResponse;
 import com.job.application.tracker.model.entity.Company;
 
 public class CompanyMapper {
@@ -22,7 +22,7 @@ public class CompanyMapper {
         dto.setName(company.getName());
         dto.setJobs(company.getJobs()
                 .stream()
-                .map(job -> new JobsDto(job.getId(), job.getTitle() , job.getDescription()))
+                .map(job -> new JobsResponse(job.getId(), job.getTitle() , job.getDescription()))
                 .toList());
         return dto;
     }

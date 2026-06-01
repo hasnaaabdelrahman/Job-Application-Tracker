@@ -1,21 +1,21 @@
 package com.job.application.tracker.service;
 
-import com.job.application.tracker.model.dto.job.JobCreateDto;
-import com.job.application.tracker.model.dto.job.JobGetDto;
-import com.job.application.tracker.model.dto.job.JobUpdateDto;
-import com.job.application.tracker.model.dto.job.JobsDto;
+import com.job.application.tracker.model.dto.job.JobRequest;
+import com.job.application.tracker.model.dto.job.JobResponse;
+import com.job.application.tracker.model.dto.job.JobUpdateRequest;
+import com.job.application.tracker.model.dto.job.JobsResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface JobService {
 
-    JobGetDto add(JobCreateDto job);
-    List<JobsDto> getAllByCompany(Pageable pageable,Integer id);
-    JobGetDto get(Integer id);
-    List<JobsDto> getByTitle(String title);
-    List<JobGetDto> showAll(Pageable pageable);
+    JobResponse add(JobRequest job);
+    List<JobsResponse> getAllByCompany(Pageable pageable, Integer id);
+    JobResponse get(Integer id);
+    List<JobsResponse> getByTitle(String title);
+    List<JobResponse> showAll(Pageable pageable);
     void delete(Integer id);
-    JobGetDto update(Integer id , JobUpdateDto dto);
+    JobResponse update(Integer id , JobUpdateRequest dto);
 
 }

@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JobGetDto {
+public class JobsResponse {
     private Integer id;
     private String title;
     private String description;
-    private Integer company_id;
 }

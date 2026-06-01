@@ -4,9 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class JobUpdateDto {
+public class JobRequest {
     @NotBlank
     private String title;
     @NotBlank
     private String description;
+    private Integer companyId;
 }
