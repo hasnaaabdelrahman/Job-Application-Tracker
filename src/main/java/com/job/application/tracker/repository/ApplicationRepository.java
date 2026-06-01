@@ -1,9 +1,12 @@
 package com.job.application.tracker.repository;
 
 import com.job.application.tracker.common.ApplicationStatus;
+import com.job.application.tracker.model.dto.application.ApplicationsCountRequest;
 import com.job.application.tracker.model.entity.Application;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,4 +22,15 @@ public interface ApplicationRepository extends JpaRepository<Application , Integ
     Optional<Application> findByUser_IdAndId(Integer userId , Integer applicationId);
     List<Application> findByJob_Company_Id(Integer companyId);
 
+    @Query(
+            """
+            SELECT new com.job.application.tracker.model.dto.application.ApplicationsCountRequest(
+            COUNT(a)
+            )
+            FROM Application a
+            WHERE a.job.id =:id
+            """
+    )
+
+    ApplicationsCountRequest countApplicationsByJobId(@Param("id") Integer id);
 }

@@ -133,4 +133,11 @@ public class ApplicationService  implements com.job.application.tracker.service.
         applicationRepository.deleteById(id);
     }
 
+    public ApplicationsCountRequest count(Integer jobId) {
+        Job job = jobRepository.findById(jobId).orElseThrow(
+                ()-> new ResourceNotFoundException("job not found with id: " + jobId)
+        );
+        return applicationRepository.countApplicationsByJobId(jobId);
+    }
+
 }

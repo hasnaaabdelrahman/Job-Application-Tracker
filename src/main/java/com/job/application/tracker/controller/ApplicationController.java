@@ -136,4 +136,12 @@ public class ApplicationController {
       applicationService.delete(id);
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "10- Applications Count Per Job")
+    @GetMapping("jobs/{id}/applications/count")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApplicationsCountRequest> count(@Valid @PathVariable("id") Integer id) {
+
+        return ResponseEntity.ok(applicationService.count(id));
+    }
 }
