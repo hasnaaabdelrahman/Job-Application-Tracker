@@ -70,4 +70,19 @@ public interface JobRepository extends JpaRepository<Job, Integer> , JpaSpecific
             """
     )
     JobOnsiteRequest countOnsiteJobs();
+
+    @Query(
+            """
+            SELECT  new com.job.application.tracker.model.dto.job.JobsResponse (
+            j.id,
+            j.title,
+            j.description,
+            j.salary,
+            j.location,
+            j.type
+            )
+            FROM Job j
+            """
+    )
+    List<JobsResponse> findTop10ByOrderByIdDesc();
 }

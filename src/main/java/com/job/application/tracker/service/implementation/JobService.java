@@ -120,4 +120,8 @@ public class JobService implements com.job.application.tracker.service.JobServic
                 .remoteJobs(jobRepository.countRemoteJobs().getCount())
                 .build();
     }
+
+    public List<JobsResponse> latest() {
+        return jobRepository.findTop10ByOrderByIdDesc();
+    }
 }

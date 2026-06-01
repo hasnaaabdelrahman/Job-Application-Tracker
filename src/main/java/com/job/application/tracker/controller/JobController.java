@@ -108,4 +108,11 @@ public class JobController {
         jobService.delete(id);
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "10- lastest")
+    @GetMapping("lastest")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public ResponseEntity<List<JobsResponse>> lastest() {
+        return ResponseEntity.ok(jobService.latest());
+    }
 }
