@@ -34,6 +34,12 @@ public class JobService implements com.job.application.tracker.service.JobServic
     }
 
     @Override
+    public List<JobsDto> getAllByCompany(Pageable pageable, Integer id) {
+        return  jobRepository.findByCompanyId(id).stream()
+                .map(job -> new JobsDto(job.getId() , job.getTitle() , job.getDescription()))
+                .toList();
+    }
+
     public List<JobsDto> getAllByCompany(Integer id) {
         return  jobRepository.findByCompanyId(id).stream()
                 .map(job -> new JobsDto(job.getId() , job.getTitle() , job.getDescription()))

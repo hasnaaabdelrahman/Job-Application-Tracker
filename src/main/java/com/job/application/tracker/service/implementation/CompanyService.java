@@ -23,7 +23,6 @@ public class CompanyService implements com.job.application.tracker.service.Compa
 
     private final CompanyRepository companyRepository;
     private final JobService jobService;
-    private final JobRepository jobRepository;
 
     @Override
     public CompanyResponse add(CompanyRequest dto) {

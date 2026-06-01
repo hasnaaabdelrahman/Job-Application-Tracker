@@ -11,7 +11,7 @@ import java.util.List;
 public interface JobService {
 
     JobGetDto add(JobCreateDto job);
-    List<JobsDto> getAllByCompany(Integer id);
+    List<JobsDto> getAllByCompany(Pageable pageable,Integer id);
     JobGetDto get(Integer id);
     List<JobsDto> getByTitle(String title);
     List<JobGetDto> showAll(Pageable pageable);

@@ -37,8 +37,14 @@ public class JobController {
     @Operation(summary = "2- Get jobs by company")
     @GetMapping("/companies/{id}/jobs")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<JobsDto>> getByCompany(@PathVariable("id") Integer id) {
-        final List<JobsDto> jobs = jobService.getAllByCompany(id);
+    public ResponseEntity<List<JobsDto>> getByCompany(@RequestParam(defaultValue = "0") int page ,
+                                                      @RequestParam(defaultValue = "5") int size ,
+                                                      @RequestParam(defaultValue = "id") String sortBy ,
+                                                      @RequestParam(defaultValue = "true") boolean ascending,
+                                                      @PathVariable("id") Integer id) {
+        Sort sort = ascending? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page , size , sort);
+        final List<JobsDto> jobs = jobService.getAllByCompany(pageable,id);
         return ResponseEntity.ok(jobs);
     }
     @Operation(summary = "3- Get all jobs")
