@@ -68,7 +68,18 @@ public class JobController {
         return ResponseEntity.ok(jobs);
     }
 
-    @Operation(summary = "5- Create job")
+
+    @Operation(summary = "5- filter")
+    @GetMapping("filter")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<Job>> filter(
+            @RequestParam(required = false) String title ,
+            @RequestParam(required = false) String location ,
+            @RequestParam(required = false) Long minSalary) {
+        return ResponseEntity.ok(jobService.search(title , location , minSalary));
+    }
+
+    @Operation(summary = "6- Create job")
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<JobResponse> addJob(@Valid @RequestBody JobRequest dto) {
@@ -76,7 +87,7 @@ public class JobController {
         return ResponseEntity.ok(added);
     }
 
-    @Operation(summary = "6- Update job")
+    @Operation(summary = "7- Update job")
     @PutMapping("/update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<JobResponse> updateJob(@PathVariable("id") Integer id, @Valid @RequestBody JobUpdateRequest dto) {
@@ -84,7 +95,7 @@ public class JobController {
         return ResponseEntity.ok(updated);
     }
 
-    @Operation(summary = "7- Delete job")
+    @Operation(summary = "8- Delete job")
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Job> deleteJob(@PathVariable("id") Integer id) {

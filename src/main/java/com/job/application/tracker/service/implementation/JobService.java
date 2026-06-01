@@ -7,8 +7,10 @@ import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.mapper.JobMapper;
 import com.job.application.tracker.repository.CompanyRepository;
 import com.job.application.tracker.repository.JobRepository;
+import com.job.application.tracker.repository.specification.JobSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,6 +56,20 @@ public class JobService implements com.job.application.tracker.service.JobServic
         return jobRepository.findByTitleContainingIgnoreCase(title)
                 .stream().map(job -> new JobsResponse(job.getId() , job.getTitle() , job.getDescription()))
                 .toList();
+    }
+
+    public List<Job> search(String title , String location , Long minSalary) {
+        Specification<Job> spec = Specification.where((Specification<Job>) null);
+         if(title != null && !title.isBlank()) {
+                spec = spec.and(JobSpecification.hasTitle(title));
+         }
+        if(location != null && !location.isBlank()) {
+            spec = spec.and(JobSpecification.hasLocation(location));
+        }
+        if(minSalary != null) {
+            spec = spec.and(JobSpecification.hasSalary(minSalary));
+        }
+        return jobRepository.findAll(spec);
     }
 
     @Override
