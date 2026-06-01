@@ -1,14 +1,16 @@
 package com.job.application.tracker.controller;
 
-import com.job.application.tracker.model.dto.job.JobCreateDto;
-import com.job.application.tracker.model.dto.job.JobGetDto;
-import com.job.application.tracker.model.dto.job.JobUpdateDto;
-import com.job.application.tracker.model.dto.job.JobsDto;
+import com.job.application.tracker.common.JobType;
+import com.job.application.tracker.model.dto.job.JobRequest;
+import com.job.application.tracker.model.dto.job.JobResponse;
+import com.job.application.tracker.model.dto.job.JobUpdateRequest;
+import com.job.application.tracker.model.dto.job.JobsResponse;
 import com.job.application.tracker.model.entity.Job;
 import com.job.application.tracker.service.implementation.JobService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -19,74 +21,83 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @Tag(name = "4- Job")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/job")
 public class JobController {
     private final JobService jobService;
 
-    public JobController(JobService jobService) {
-        this.jobService = jobService;
-    }
-
     @Operation(summary = "1- Get job")
     @GetMapping("/get/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<JobGetDto> get(@PathVariable("id") Integer id) {
-        JobGetDto job = jobService.get(id);
+    public ResponseEntity<JobResponse> get(@PathVariable("id") Integer id) {
+        JobResponse job = jobService.get(id);
         return ResponseEntity.ok(job);
     }
     @Operation(summary = "2- Get jobs by company")
     @GetMapping("/companies/{id}/jobs")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<JobsDto>> getByCompany(@RequestParam(defaultValue = "0") int page ,
-                                                      @RequestParam(defaultValue = "5") int size ,
-                                                      @RequestParam(defaultValue = "id") String sortBy ,
-                                                      @RequestParam(defaultValue = "true") boolean ascending,
-                                                      @PathVariable("id") Integer id) {
+    public ResponseEntity<List<JobsResponse>> getByCompany(@RequestParam(defaultValue = "0") int page ,
+                                                           @RequestParam(defaultValue = "5") int size ,
+                                                           @RequestParam(defaultValue = "id") String sortBy ,
+                                                           @RequestParam(defaultValue = "true") boolean ascending,
+                                                           @PathVariable("id") Integer id) {
         Sort sort = ascending? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page , size , sort);
-        final List<JobsDto> jobs = jobService.getAllByCompany(pageable,id);
+        final List<JobsResponse> jobs = jobService.getAllByCompany(pageable,id);
         return ResponseEntity.ok(jobs);
     }
     @Operation(summary = "3- Get all jobs")
     @GetMapping("/get")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<JobGetDto>> getAll(@RequestParam(defaultValue = "0") int page ,
-                                                  @RequestParam(defaultValue = "5") int size ,
-                                                  @RequestParam(defaultValue = "id") String sortBy ,
-                                                  @RequestParam(defaultValue = "true") boolean ascending)
+    public ResponseEntity<List<JobResponse>> getAll(@RequestParam(defaultValue = "0") int page ,
+                                                    @RequestParam(defaultValue = "5") int size ,
+                                                    @RequestParam(defaultValue = "id") String sortBy ,
+                                                    @RequestParam(defaultValue = "true") boolean ascending)
 
     {
           Sort sort = ascending? Sort.by(sortBy).ascending():Sort.by(sortBy).descending();
           Pageable pageable = PageRequest.of(page , size , sort);
-        final List<JobGetDto> jobs = jobService.showAll(pageable);
+        final List<JobResponse> jobs = jobService.showAll(pageable);
         return ResponseEntity.ok(jobs);
     }
 
     @Operation(summary = "4- Search jobs by title")
     @GetMapping("search/{title}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<JobsDto>> getByTitle(@PathVariable("title") String title) {
-        final List<JobsDto> jobs = jobService.getByTitle(title);
+    public ResponseEntity<List<JobsResponse>> getByTitle(@PathVariable("title") String title) {
+        final List<JobsResponse> jobs = jobService.getByTitle(title);
         return ResponseEntity.ok(jobs);
     }
 
-    @Operation(summary = "5- Create job")
+
+    @Operation(summary = "5- filter")
+    @GetMapping("filter")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<JobResponse>> filter(
+            @RequestParam(required = false) String title ,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) JobType type,
+            @RequestParam(required = false) Long minSalary) {
+        return ResponseEntity.ok(jobService.search(title , location , type , minSalary));
+    }
+
+    @Operation(summary = "6- Create job")
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<JobGetDto> addJob(@Valid @RequestBody JobCreateDto dto) {
-        final JobGetDto added = jobService.add(dto);
+    public ResponseEntity<JobResponse> addJob(@Valid @RequestBody JobRequest dto) {
+        final JobResponse added = jobService.add(dto);
         return ResponseEntity.ok(added);
     }
 
-    @Operation(summary = "6- Update job")
+    @Operation(summary = "7- Update job")
     @PutMapping("/update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<JobGetDto> updateJob(@PathVariable("id") Integer id,@Valid @RequestBody JobUpdateDto dto) {
-        final JobGetDto updated = jobService.update(id,dto);
+    public ResponseEntity<JobResponse> updateJob(@PathVariable("id") Integer id, @Valid @RequestBody JobUpdateRequest dto) {
+        final JobResponse updated = jobService.update(id,dto);
         return ResponseEntity.ok(updated);
     }
 
-    @Operation(summary = "7- Delete job")
+    @Operation(summary = "8- Delete job")
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Job> deleteJob(@PathVariable("id") Integer id) {

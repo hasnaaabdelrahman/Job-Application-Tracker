@@ -1,5 +1,6 @@
 package com.job.application.tracker.service.implementation;
 
+import com.job.application.tracker.common.ApplicationStatus;
 import com.job.application.tracker.model.dto.application.*;
 import com.job.application.tracker.model.entity.Application;
 import com.job.application.tracker.model.entity.Company;
@@ -36,7 +37,7 @@ public class ApplicationService  implements com.job.application.tracker.service.
     }
 
     @Override
-    public ApplicationGetDto add(ApplicationCreateDto dto) {
+    public ApplicationResponse add(ApplicationCreateRequest dto) {
         Application application = ApplicationMapper.toEntity(dto);
         User user =   userRepository.findById(dto.getUser_id()).orElseThrow(() -> new ResourceNotFoundException("user not found with id: "+ dto.getUser_id()));
 
@@ -53,79 +54,79 @@ public class ApplicationService  implements com.job.application.tracker.service.
     }
 
     @Override
-    public List<ApplicationGetDto> get(Pageable pageable) {
+    public List<ApplicationResponse> get(Pageable pageable) {
         return applicationRepository.findAll(pageable)
                 .stream()
-                .map(application -> new ApplicationGetDto(application.getId() , application.getApplicationStatus()))
+                .map(application -> new ApplicationResponse(application.getId() , application.getApplicationStatus()))
                 .toList();
     }
     @Override
-    public ApplicationGetDto get(Integer id) {
+    public ApplicationResponse get(Integer id) {
         Application application= applicationRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("application not found with id: " + id));
         return ApplicationMapper.toDto(application);
     }
     @Override
-    public ApplicationGetDto get(Integer userId , Integer applicationId) {
+    public ApplicationResponse get(Integer userId , Integer applicationId) {
         Application application= applicationRepository.findByUser_IdAndId(userId , applicationId)
                 .orElseThrow(()-> new ResourceNotFoundException("application not found with id: " + applicationId));
         return ApplicationMapper.toDto(application);
     }
 
-    public List<ApplicationGetDto> getAllByUser(Integer id , Pageable pageable) {
+    public List<ApplicationResponse> getAllByUser(Integer id , Pageable pageable) {
         return applicationRepository.findByUser_Id(id , pageable)
                 .stream()
-                .map(application -> new ApplicationGetDto(application.getId() , application.getApplicationStatus()))
+                .map(application -> new ApplicationResponse(application.getId() , application.getApplicationStatus()))
                 .toList();
     }
 
     @Override
-    public List<ApplicationsByCompanyDto> getByCompany(Integer id) {
+    public List<ApplicationsByCompanyRequest> getByCompany(Integer id) {
         Company company = companyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("company not found with id:" + id));
         return applicationRepository.findByJob_Company_Id(company.getId())
                 .stream()
-                .map(application -> new ApplicationsByCompanyDto(application.getId() , application.getApplicationStatus() , application.getJob().getCompany().getName()))
+                .map(application -> new ApplicationsByCompanyRequest(application.getId() , application.getApplicationStatus() , application.getJob().getCompany().getName()))
                 .toList();
     }
 
-    public  List<ApplicationsByCompanyDto>getByCompanyForUser(Integer id , Integer userId) {
+    public  List<ApplicationsByCompanyRequest>getByCompanyForUser(Integer id , Integer userId) {
         return applicationRepository.findByJobCompanyIdAndUserId(id , userId).stream()
-                .map(app -> new ApplicationsByCompanyDto(app.getId() , app.getApplicationStatus() , app.getJob().getCompany().getName()))
+                .map(app -> new ApplicationsByCompanyRequest(app.getId() , app.getApplicationStatus() , app.getJob().getCompany().getName()))
                 .toList();
     }
 
     @Override
-    public List<ApplicationGetDto> getByUser(Integer id) {
+    public List<ApplicationResponse> getByUser(Integer id) {
         return applicationRepository.findByUserId(id).stream()
-                .map(application -> new ApplicationGetDto(application.getId() , application.getApplicationStatus()))
+                .map(application -> new ApplicationResponse(application.getId() , application.getApplicationStatus()))
                 .toList();
     }
 
     @Override
-    public List<ApplicationByStatusDto> getByStatus(Application.ApplicationStatus status) {
+    public List<ApplicationByStatusRequest> getByStatus(ApplicationStatus status) {
         return applicationRepository.findByApplicationStatus(status).stream()
-                .map(app -> new ApplicationByStatusDto(app.getId() , app.getApplicationStatus()))
+                .map(app -> new ApplicationByStatusRequest(app.getId() , app.getApplicationStatus()))
                 .toList();
     }
     @Override
-    public List<ApplicationByStatusDto> getByStatusForUser(Application.ApplicationStatus status , Integer id) {
+    public List<ApplicationByStatusRequest> getByStatusForUser(ApplicationStatus status , Integer id) {
         return applicationRepository.findByApplicationStatusAndUserId(status , id).stream()
-                .map(app -> new ApplicationByStatusDto(app.getId() , app.getApplicationStatus()))
+                .map(app -> new ApplicationByStatusRequest(app.getId() , app.getApplicationStatus()))
                 .toList();
     }
 
     @Override
-    public Map<Application.ApplicationStatus , Long> getStats() {
+    public Map<ApplicationStatus , Long> getStats() {
         return applicationRepository.findAll().stream()
                 .collect(Collectors.groupingBy(Application::getApplicationStatus , Collectors.counting()));
     }
     @Override
-    public Map<Application.ApplicationStatus , Long> getStats(Integer id) {
+    public Map<ApplicationStatus , Long> getStats(Integer id) {
         return applicationRepository.findByUserId(id).stream()
                 .collect(Collectors.groupingBy(Application::getApplicationStatus , Collectors.counting()));
     }
 
     @Override
-    public ApplicationGetDto update(Integer id, ApplicationUpdateDto dto) {
+    public ApplicationResponse update(Integer id, ApplicationUpdateRequest dto) {
         Application application = applicationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("application not found with id:"+ id));
         ApplicationMapper.update(application , dto);
         applicationRepository.save(application);

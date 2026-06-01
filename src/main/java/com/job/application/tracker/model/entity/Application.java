@@ -3,6 +3,7 @@ package com.job.application.tracker.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.job.application.tracker.common.ApplicationStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,15 +17,9 @@ public class Application {
     @Id
     @GeneratedValue
     private Integer id;
-    @Enumerated(EnumType.STRING)
 
+    @Enumerated(EnumType.STRING)
     private ApplicationStatus applicationStatus;
-    public enum ApplicationStatus {
-        APPLIED,
-        INTERVIEW,
-        REJECTED,
-        ACCEPTED
-    }
 
     //relations
     @ManyToOne

@@ -1,5 +1,6 @@
 package com.job.application.tracker.controller;
 
+import com.job.application.tracker.common.ApplicationStatus;
 import com.job.application.tracker.model.dto.application.*;
 import com.job.application.tracker.model.entity.Application;
 import com.job.application.tracker.service.implementation.ApplicationService;
@@ -32,9 +33,9 @@ public class ApplicationController {
     @Operation(summary = "1- Get application")
     @GetMapping("/get/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<ApplicationGetDto> getApplication(@PathVariable("id") Integer id ,
-                                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        ApplicationGetDto application;
+    public ResponseEntity<ApplicationResponse> getApplication(@PathVariable("id") Integer id ,
+                                                              @AuthenticationPrincipal CustomUserDetails userDetails) {
+        ApplicationResponse application;
         if(userDetails.getUsername().equals("admin@gmail.com")) {
             application = applicationService.get(id);
 
@@ -47,15 +48,15 @@ public class ApplicationController {
     @Operation(summary = "2- Get all applications")
     @GetMapping("/get")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<ApplicationGetDto>> getAll(@RequestParam(defaultValue = "0") int page ,
-                                                          @RequestParam(defaultValue = "5") int size ,
-                                                          @RequestParam(defaultValue = "id") String sortBy ,
-                                                          @RequestParam(defaultValue = "true") boolean ascending
-            ,@AuthenticationPrincipal CustomUserDetails userDetails)
+    public ResponseEntity<List<ApplicationResponse>> getAll(@RequestParam(defaultValue = "0") int page ,
+                                                            @RequestParam(defaultValue = "5") int size ,
+                                                            @RequestParam(defaultValue = "id") String sortBy ,
+                                                            @RequestParam(defaultValue = "true") boolean ascending
+            , @AuthenticationPrincipal CustomUserDetails userDetails)
     {
         Sort sort = ascending? Sort.by(sortBy).ascending(): Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page , size , sort);
-        final List<ApplicationGetDto> applications ;
+        final List<ApplicationResponse> applications ;
         if (userDetails.getUsername().equals("admin@gmail.com")) {
             applications =applicationService.get(pageable);
         } else {
@@ -67,9 +68,9 @@ public class ApplicationController {
     @Operation(summary = "3- Get applications by company")
     @GetMapping("/companies/{id}/applications")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<ApplicationsByCompanyDto>> get(@PathVariable("id") Integer id
+    public ResponseEntity<List<ApplicationsByCompanyRequest>> get(@PathVariable("id") Integer id
     , @AuthenticationPrincipal CustomUserDetails userDetails) {
-        final List<ApplicationsByCompanyDto> applications ;
+        final List<ApplicationsByCompanyRequest> applications ;
         if (userDetails.getUsername().equals("admin@gmail.com")) {
             applications = applicationService.getByCompany(id);
         } else {
@@ -81,9 +82,9 @@ public class ApplicationController {
     @Operation(summary = "4- Get applications by status")
     @GetMapping("/search")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<ApplicationByStatusDto>> get(@RequestParam Application.ApplicationStatus status
+    public ResponseEntity<List<ApplicationByStatusRequest>> get(@RequestParam ApplicationStatus status
             , @AuthenticationPrincipal CustomUserDetails userDetails) {
-        final List<ApplicationByStatusDto> applications ;
+        final List<ApplicationByStatusRequest> applications ;
         if(userDetails.getUsername().equals("admin@gmail.com")) {
             applications = applicationService.getByStatus(status);
         }else {
@@ -95,15 +96,15 @@ public class ApplicationController {
     @Operation(summary = "5- Get applications by user")
     @GetMapping("/users/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<ApplicationGetDto>> getByUser(@PathVariable("id") Integer id) {
-        final List<ApplicationGetDto> applications = applicationService.getByUser(id);
+    public ResponseEntity<List<ApplicationResponse>> getByUser(@PathVariable("id") Integer id) {
+        final List<ApplicationResponse> applications = applicationService.getByUser(id);
         return ResponseEntity.ok(applications);
     }
 
     @Operation(summary = "6- Get applications stats")
     @GetMapping("/stats")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<Map<Application.ApplicationStatus , Long>> getStats(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<Map<ApplicationStatus , Long>> getStats(@AuthenticationPrincipal CustomUserDetails userDetails) {
         if(userDetails.getUsername().equals("admin@gmail.com")) {
             return ResponseEntity.ok(applicationService.getStats());
         }
@@ -116,16 +117,16 @@ public class ApplicationController {
     @Operation(summary = "7- Create application")
     @PostMapping("/add")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ApplicationGetDto> add(@Valid @RequestBody ApplicationCreateDto dto) {
-        final ApplicationGetDto applicationAdded = applicationService.add(dto);
+    public ResponseEntity<ApplicationResponse> add(@Valid @RequestBody ApplicationCreateRequest dto) {
+        final ApplicationResponse applicationAdded = applicationService.add(dto);
         return ResponseEntity.ok(applicationAdded);
     }
 
     @Operation(summary = "8- Update application")
     @PutMapping("/update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApplicationGetDto> update(@PathVariable("id") Integer id,@Valid @RequestBody ApplicationUpdateDto dto) {
-        final ApplicationGetDto applicationUpdated= applicationService.update(id,dto);
+    public ResponseEntity<ApplicationResponse> update(@PathVariable("id") Integer id, @Valid @RequestBody ApplicationUpdateRequest dto) {
+        final ApplicationResponse applicationUpdated= applicationService.update(id,dto);
         return ResponseEntity.ok(applicationUpdated);
     }
 

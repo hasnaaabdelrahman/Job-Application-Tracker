@@ -1,6 +1,6 @@
 package com.job.application.tracker.model.dto.application;
 
-import com.job.application.tracker.model.entity.Application;
+import com.job.application.tracker.common.ApplicationStatus;
 import lombok.*;
 
 @Data
@@ -8,8 +8,8 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ApplicationCreateDto {
-    private Application.ApplicationStatus applicationStatus;
+public class ApplicationCreateRequest {
+    private ApplicationStatus applicationStatus;
     private Integer user_id;
     private Integer job_id;
 }

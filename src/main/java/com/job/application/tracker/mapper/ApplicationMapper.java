@@ -1,27 +1,27 @@
 package com.job.application.tracker.mapper;
-import com.job.application.tracker.model.dto.application.ApplicationCreateDto;
-import com.job.application.tracker.model.dto.application.ApplicationGetDto;
-import com.job.application.tracker.model.dto.application.ApplicationUpdateDto;
+import com.job.application.tracker.model.dto.application.ApplicationCreateRequest;
+import com.job.application.tracker.model.dto.application.ApplicationResponse;
+import com.job.application.tracker.model.dto.application.ApplicationUpdateRequest;
 import com.job.application.tracker.model.entity.Application;
 
 
 public class ApplicationMapper {
-    public static Application toEntity(ApplicationCreateDto dto) {
+    public static Application toEntity(ApplicationCreateRequest dto) {
         if(dto == null) return null;
         Application application = new Application();
         application.setApplicationStatus(dto.getApplicationStatus());
         return application;
     }
 
-    public static ApplicationGetDto toDto(Application application) {
+    public static ApplicationResponse toDto(Application application) {
         if (application == null) return null;
-        ApplicationGetDto dto = new ApplicationGetDto();
+        ApplicationResponse dto = new ApplicationResponse();
         dto.setId(application.getId());
         dto.setApplicationStatus(application.getApplicationStatus());
         return dto;
     }
 
-    public static void update(Application application , ApplicationUpdateDto dto) {
+    public static void update(Application application , ApplicationUpdateRequest dto) {
         if(application == null || dto == null) return;
         application.setApplicationStatus(dto.getApplicationStatus());
     }
