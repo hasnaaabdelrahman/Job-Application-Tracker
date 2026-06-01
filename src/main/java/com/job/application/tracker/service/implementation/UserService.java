@@ -1,6 +1,6 @@
 package com.job.application.tracker.service.implementation;
 
-import com.job.application.tracker.model.dto.application.ApplicationDto;
+import com.job.application.tracker.model.dto.application.ApplicationRequest;
 import com.job.application.tracker.model.dto.user.UserRequest;
 import com.job.application.tracker.model.dto.user.UserResponse;
 import com.job.application.tracker.model.dto.user.UserUpdateRequest;
@@ -54,7 +54,7 @@ public class UserService implements com.job.application.tracker.service.UserServ
                         user.getEmail(),
                         user.getBirthDate(),
                         user.getApplications().stream()
-                                .map(application -> new ApplicationDto(application.getId(), application.getApplicationStatus()))
+                                .map(application -> new ApplicationRequest(application.getId(), application.getApplicationStatus()))
                                 .collect(Collectors.toList()),
                         user.getRoles()
                 )).toList();

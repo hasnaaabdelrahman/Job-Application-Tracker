@@ -1,6 +1,6 @@
 package com.job.application.tracker.mapper;
 
-import com.job.application.tracker.model.dto.application.ApplicationDto;
+import com.job.application.tracker.model.dto.application.ApplicationRequest;
 import com.job.application.tracker.model.dto.user.UserRequest;
 import com.job.application.tracker.model.dto.user.UserResponse;
 import com.job.application.tracker.model.dto.user.UserUpdateRequest;
@@ -30,7 +30,7 @@ public class UserMapper {
         dto.setEmail(user.getEmail());
         dto.setBirthDate(user.getBirthDate());
         dto.setApplication(user.getApplications().stream()
-                .map(application -> new ApplicationDto(application.getId(), application.getApplicationStatus()))
+                .map(application -> new ApplicationRequest(application.getId(), application.getApplicationStatus()))
                 .collect(Collectors.toList()));
         dto.setRoles(user.getRoles());
 
