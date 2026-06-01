@@ -13,6 +13,7 @@ import com.job.application.tracker.repository.ApplicationRepository;
 import com.job.application.tracker.repository.CompanyRepository;
 import com.job.application.tracker.repository.JobRepository;
 import com.job.application.tracker.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -21,20 +22,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class ApplicationService  implements com.job.application.tracker.service.ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
     private final CompanyRepository companyRepository;
 
-    public ApplicationService(ApplicationRepository applicationRepository ,  UserRepository userRepository,
-                              JobRepository jobRepository , CompanyRepository companyRepository) {
-        this.applicationRepository = applicationRepository;
-        this.userRepository = userRepository;
-        this.jobRepository = jobRepository;
-        this.companyRepository = companyRepository;
-
-    }
 
     @Override
     public ApplicationResponse add(ApplicationCreateRequest dto) {
