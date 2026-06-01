@@ -19,19 +19,19 @@ import java.util.List;
 @Tag(name = "4- Job")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/job")
+@RequestMapping("/api/v1/job/")
 public class JobController {
     private final JobService jobService;
 
     @Operation(summary = "1- Get job")
-    @GetMapping("/get/{id}")
+    @GetMapping("get/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<JobResponse> get(@PathVariable("id") Integer id) {
         JobResponse job = jobService.get(id);
         return ResponseEntity.ok(job);
     }
     @Operation(summary = "2- Get jobs by company")
-    @GetMapping("/companies/{id}/jobs")
+    @GetMapping("companies/{id}/jobs")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<JobsResponse>> getByCompany(@RequestParam(defaultValue = "0") int page ,
                                                            @RequestParam(defaultValue = "5") int size ,
@@ -44,7 +44,7 @@ public class JobController {
         return ResponseEntity.ok(jobs);
     }
     @Operation(summary = "3- Get all jobs")
-    @GetMapping("/get")
+    @GetMapping("get")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<JobResponse>> getAll(@RequestParam(defaultValue = "0") int page ,
                                                     @RequestParam(defaultValue = "5") int size ,
@@ -85,24 +85,24 @@ public class JobController {
         return ResponseEntity.ok(jobService.countTypes());
     }
 
-    @Operation(summary = "6- Create job")
-    @PostMapping("/add")
+    @Operation(summary = "7- Create job")
+    @PostMapping("add")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<JobResponse> addJob(@Valid @RequestBody JobRequest dto) {
         final JobResponse added = jobService.add(dto);
         return ResponseEntity.ok(added);
     }
 
-    @Operation(summary = "7- Update job")
-    @PutMapping("/update/{id}")
+    @Operation(summary = "8- Update job")
+    @PutMapping("update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<JobResponse> updateJob(@PathVariable("id") Integer id, @Valid @RequestBody JobUpdateRequest dto) {
         final JobResponse updated = jobService.update(id,dto);
         return ResponseEntity.ok(updated);
     }
 
-    @Operation(summary = "8- Delete job")
-    @DeleteMapping("/delete/{id}")
+    @Operation(summary = "9- Delete job")
+    @DeleteMapping("delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Job> deleteJob(@PathVariable("id") Integer id) {
         jobService.delete(id);
