@@ -108,6 +108,16 @@ public class JobService implements com.job.application.tracker.service.JobServic
     }
 
     public JobApplicationsRequest countApplications(int id) {
+
         return jobRepository.countApplicationsByCompanyId(id);
+    }
+
+    public JobStatsRequest countTypes() {
+         return JobStatsRequest.builder()
+                .totalJobs(jobRepository.countAllJobs().getCount())
+                .hybridJobs(jobRepository.countHybridJobs().getCount())
+                .onsiteJobs(jobRepository.countOnsiteJobs().getCount())
+                .remoteJobs(jobRepository.countRemoteJobs().getCount())
+                .build();
     }
 }

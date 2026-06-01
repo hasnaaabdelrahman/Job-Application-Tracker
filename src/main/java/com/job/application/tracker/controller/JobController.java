@@ -1,10 +1,7 @@
 package com.job.application.tracker.controller;
 
 import com.job.application.tracker.common.JobType;
-import com.job.application.tracker.model.dto.job.JobRequest;
-import com.job.application.tracker.model.dto.job.JobResponse;
-import com.job.application.tracker.model.dto.job.JobUpdateRequest;
-import com.job.application.tracker.model.dto.job.JobsResponse;
+import com.job.application.tracker.model.dto.job.*;
 import com.job.application.tracker.model.entity.Job;
 import com.job.application.tracker.service.implementation.JobService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -79,6 +76,13 @@ public class JobController {
             @RequestParam(required = false) JobType type,
             @RequestParam(required = false) Long minSalary) {
         return ResponseEntity.ok(jobService.search(title , location , type , minSalary));
+    }
+
+    @Operation(summary = "6- stats")
+    @GetMapping("stats")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<JobStatsRequest> stats() {
+        return ResponseEntity.ok(jobService.countTypes());
     }
 
     @Operation(summary = "6- Create job")
