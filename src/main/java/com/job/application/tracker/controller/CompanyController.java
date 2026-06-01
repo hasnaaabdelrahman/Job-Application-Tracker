@@ -1,5 +1,6 @@
 package com.job.application.tracker.controller;
 
+import com.job.application.tracker.model.dto.company.CompanyDashboardRequest;
 import com.job.application.tracker.model.dto.company.CompanyRequest;
 import com.job.application.tracker.model.dto.company.CompanyResponse;
 import com.job.application.tracker.model.dto.company.CompanyUpdateRequest;
@@ -67,5 +68,10 @@ public class CompanyController {
         companyService.delete(id);
         return ResponseEntity.ok().build();
     }
-
+    @Operation(summary = "6- Dashboard")
+    @GetMapping("/dashboard/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CompanyDashboardRequest> dashboard(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(companyService.dashboard(id));
+    }
 }

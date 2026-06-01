@@ -1,5 +1,6 @@
 package com.job.application.tracker.service.implementation;
 
+import com.job.application.tracker.model.dto.company.CompanyDashboardRequest;
 import com.job.application.tracker.model.dto.company.CompanyRequest;
 import com.job.application.tracker.model.dto.company.CompanyResponse;
 import com.job.application.tracker.model.dto.company.CompanyUpdateRequest;
@@ -8,6 +9,7 @@ import com.job.application.tracker.model.entity.Company;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.mapper.CompanyMapper;
 import com.job.application.tracker.repository.CompanyRepository;
+import com.job.application.tracker.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ import java.util.List;
 public class CompanyService implements com.job.application.tracker.service.CompanyService {
 
     private final CompanyRepository companyRepository;
+    private final JobService jobService;
+    private final JobRepository jobRepository;
 
     @Override
     public CompanyResponse add(CompanyRequest dto) {
@@ -59,5 +63,15 @@ public class CompanyService implements com.job.application.tracker.service.Compa
             throw new ResourceNotFoundException("Company not found with id: "+ id);
         }
         companyRepository.deleteById(id);
+    }
+
+    public CompanyDashboardRequest dashboard(Integer id) {
+        if(!companyRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Company not found with id: "+ id);
+        }
+        return  CompanyDashboardRequest.builder()
+                .jobsPosted((long) jobService.getAllByCompany(id).size())
+                .applicationsReceived(jobService.countApplications(id).getApplications())
+                .build();
     }
 }
