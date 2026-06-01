@@ -1,5 +1,6 @@
 package com.job.application.tracker.service.implementation;
 
+import com.job.application.tracker.common.JobType;
 import com.job.application.tracker.model.dto.job.*;
 import com.job.application.tracker.model.entity.Company;
 import com.job.application.tracker.model.entity.Job;
@@ -35,13 +36,15 @@ public class JobService implements com.job.application.tracker.service.JobServic
     @Override
     public List<JobsResponse> getAllByCompany(Pageable pageable, Integer id) {
         return  jobRepository.findByCompanyId(id).stream()
-                .map(job -> new JobsResponse(job.getId() , job.getTitle() , job.getDescription()))
+                .map(job -> new JobsResponse(job.getId() , job.getTitle() , job.getDescription() ,
+                        job.getSalary() , job.getLocation() , job.getType()))
                 .toList();
     }
 
     public List<JobsResponse> getAllByCompany(Integer id) {
         return  jobRepository.findByCompanyId(id).stream()
-                .map(job -> new JobsResponse(job.getId() , job.getTitle() , job.getDescription()))
+                .map(job -> new JobsResponse(job.getId() , job.getTitle() , job.getDescription() ,
+                        job.getSalary() , job.getLocation() , job.getType()))
                 .toList();
     }
 
@@ -54,29 +57,37 @@ public class JobService implements com.job.application.tracker.service.JobServic
     @Override
     public List<JobsResponse> getByTitle(String title) {
         return jobRepository.findByTitleContainingIgnoreCase(title)
-                .stream().map(job -> new JobsResponse(job.getId() , job.getTitle() , job.getDescription()))
+                .stream().map(job -> new JobsResponse(job.getId() , job.getTitle() , job.getDescription() ,
+                        job.getSalary() , job.getLocation() , job.getType()))
                 .toList();
     }
 
-    public List<Job> search(String title , String location , Long minSalary) {
-        Specification<Job> spec = Specification.where((Specification<Job>) null);
+    public List<JobResponse> search(String title , String location , JobType type, Long minSalary) {
+        Specification<Job> spec = Specification.unrestricted();
          if(title != null && !title.isBlank()) {
                 spec = spec.and(JobSpecification.hasTitle(title));
          }
+        if(type != null ) {
+            spec = spec.and(JobSpecification.hasType(String.valueOf(type)));
+        }
         if(location != null && !location.isBlank()) {
             spec = spec.and(JobSpecification.hasLocation(location));
         }
         if(minSalary != null) {
             spec = spec.and(JobSpecification.hasSalary(minSalary));
         }
-        return jobRepository.findAll(spec);
+        return jobRepository.findAll(spec)
+                .stream().map(job ->
+                        new JobResponse(job.getId(), job.getTitle(), job.getDescription() , job.getCompany().getId() ,
+                                job.getSalary() , job.getLocation() , job.getType())).toList();
     }
 
     @Override
     public List<JobResponse> showAll(Pageable pageable) {
         return jobRepository.findAll(pageable)
                 .stream()
-                .map(job -> new JobResponse(job.getId(), job.getTitle(), job.getDescription() , job.getCompany().getId()))
+                .map(job -> new JobResponse(job.getId(), job.getTitle(), job.getDescription() , job.getCompany().getId() ,
+                        job.getSalary() , job.getLocation() , job.getType()))
                 .toList();
     }
 

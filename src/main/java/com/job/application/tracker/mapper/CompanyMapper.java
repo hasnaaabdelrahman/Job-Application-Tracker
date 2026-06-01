@@ -22,7 +22,8 @@ public class CompanyMapper {
         dto.setName(company.getName());
         dto.setJobs(company.getJobs()
                 .stream()
-                .map(job -> new JobsResponse(job.getId(), job.getTitle() , job.getDescription()))
+                .map(job -> new JobsResponse(job.getId(), job.getTitle() , job.getDescription() ,
+                        job.getSalary() , job.getLocation() , job.getType()))
                 .toList());
         return dto;
     }

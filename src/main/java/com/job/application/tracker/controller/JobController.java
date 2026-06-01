@@ -1,5 +1,6 @@
 package com.job.application.tracker.controller;
 
+import com.job.application.tracker.common.JobType;
 import com.job.application.tracker.model.dto.job.JobRequest;
 import com.job.application.tracker.model.dto.job.JobResponse;
 import com.job.application.tracker.model.dto.job.JobUpdateRequest;
@@ -72,11 +73,12 @@ public class JobController {
     @Operation(summary = "5- filter")
     @GetMapping("filter")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<Job>> filter(
+    public ResponseEntity<List<JobResponse>> filter(
             @RequestParam(required = false) String title ,
-            @RequestParam(required = false) String location ,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) JobType type,
             @RequestParam(required = false) Long minSalary) {
-        return ResponseEntity.ok(jobService.search(title , location , minSalary));
+        return ResponseEntity.ok(jobService.search(title , location , type , minSalary));
     }
 
     @Operation(summary = "6- Create job")

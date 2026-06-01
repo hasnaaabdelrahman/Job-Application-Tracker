@@ -36,7 +36,8 @@ public class CompanyService implements com.job.application.tracker.service.Compa
                 .stream()
                 .map(company -> new CompanyResponse(company.getId(), company.getName() ,company.getJobs()
                         .stream()
-                        .map(job -> new JobsResponse(job.getId() , job.getTitle() , job.getDescription()))
+                        .map(job -> new JobsResponse(job.getId() , job.getTitle() , job.getDescription() ,
+                                job.getSalary() , job.getLocation() , job.getType()))
                         .toList()))
                 .toList();
     }
