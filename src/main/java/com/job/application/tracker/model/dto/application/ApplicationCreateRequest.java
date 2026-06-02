@@ -6,8 +6,7 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Builder
 public class ApplicationCreateRequest {
     private ApplicationStatus applicationStatus;
     private Integer user_id;
