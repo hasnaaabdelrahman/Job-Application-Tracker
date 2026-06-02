@@ -29,23 +29,31 @@ public class ApplicationService  implements com.job.application.tracker.service.
     private final JobRepository jobRepository;
     private final CompanyRepository companyRepository;
 
-
     @Override
-    public ApplicationResponse add(ApplicationCreateRequest dto) {
-        Application application = ApplicationMapper.toEntity(dto);
-        User user =   userRepository.findById(dto.getUser_id()).orElseThrow(() -> new ResourceNotFoundException("user not found with id: "+ dto.getUser_id()));
+    public ApplicationResponse add(Integer userId , Integer jobId) {
+        User user =   userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user not found with id: "+userId));
 
-        Job job = jobRepository.findById(dto.getJob_id())
-                .orElseThrow(() -> new ResourceNotFoundException("job not found with id: "+dto.getJob_id()));
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new ResourceNotFoundException("job not found with id: "+jobId));
         if(applicationRepository.existsByUserIdAndJobId(user.getId() , job.getId())) {
             throw new DuplicateApplicationException("You have already applied for this job");
         }
-        application.setUser(user);
-        application.setJob(job);
+
+        if (applicationRepository.existsByUserIdAndJobId(userId , jobId)) {
+            throw new DuplicateApplicationException("You have already applied for this job");
+
+        }
+        Application application = Application
+                .builder()
+                .job(job)
+                .user(user)
+                .applicationStatus(ApplicationStatus.APPLIED)
+                .build();
 
         applicationRepository.save(application);
-         return ApplicationMapper.toDto(application);
+        return  ApplicationMapper.toDto(application);
     }
+
 
     @Override
     public List<ApplicationResponse> get(Pageable pageable) {
@@ -145,7 +153,7 @@ public class ApplicationService  implements com.job.application.tracker.service.
         Job job = jobRepository.findById(jobId).orElseThrow(
                 ()-> new ResourceNotFoundException("job not found with id: " + jobId)
         );
-        return applicationRepository.countApplicationsByJobId(jobId);
+        return applicationRepository.countApplicationsByJobId(job.getId());
     }
 
 }

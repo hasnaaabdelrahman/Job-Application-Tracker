@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ApplicationService {
-    ApplicationResponse add(ApplicationCreateRequest dto);
+    ApplicationResponse add(Integer userId , Integer jobId);
     List<ApplicationResponse> get(Pageable pageable);
     ApplicationResponse get(Integer id);
     ApplicationResponse get(Integer userId , Integer applivationId);

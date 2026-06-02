@@ -114,10 +114,12 @@ public class ApplicationController {
     }
 
     @Operation(summary = "7- Create application")
-    @PostMapping("apply")
+    @PostMapping("jobs/{id}/apply")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ApplicationResponse> add(@Valid @RequestBody ApplicationCreateRequest dto) {
-        final ApplicationResponse applicationAdded = applicationService.add(dto);
+    public ResponseEntity<ApplicationResponse> add(
+            @AuthenticationPrincipal CustomUserDetails current
+            , @PathVariable("id") Integer id) {
+        final ApplicationResponse applicationAdded = applicationService.add(current.getId() , id);
         return ResponseEntity.ok(applicationAdded);
     }
 
