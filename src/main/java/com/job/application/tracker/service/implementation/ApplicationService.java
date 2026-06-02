@@ -13,6 +13,7 @@ import com.job.application.tracker.repository.ApplicationRepository;
 import com.job.application.tracker.repository.CompanyRepository;
 import com.job.application.tracker.repository.JobRepository;
 import com.job.application.tracker.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -21,37 +22,38 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class ApplicationService  implements com.job.application.tracker.service.ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
     private final CompanyRepository companyRepository;
 
-    public ApplicationService(ApplicationRepository applicationRepository ,  UserRepository userRepository,
-                              JobRepository jobRepository , CompanyRepository companyRepository) {
-        this.applicationRepository = applicationRepository;
-        this.userRepository = userRepository;
-        this.jobRepository = jobRepository;
-        this.companyRepository = companyRepository;
-
-    }
-
     @Override
-    public ApplicationResponse add(ApplicationCreateRequest dto) {
-        Application application = ApplicationMapper.toEntity(dto);
-        User user =   userRepository.findById(dto.getUser_id()).orElseThrow(() -> new ResourceNotFoundException("user not found with id: "+ dto.getUser_id()));
+    public ApplicationResponse add(Integer userId , Integer jobId) {
+        User user =   userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user not found with id: "+userId));
 
-        Job job = jobRepository.findById(dto.getJob_id())
-                .orElseThrow(() -> new ResourceNotFoundException("job not found with id: "+dto.getJob_id()));
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new ResourceNotFoundException("job not found with id: "+jobId));
         if(applicationRepository.existsByUserIdAndJobId(user.getId() , job.getId())) {
             throw new DuplicateApplicationException("You have already applied for this job");
         }
-        application.setUser(user);
-        application.setJob(job);
+
+        if (applicationRepository.existsByUserIdAndJobId(userId , jobId)) {
+            throw new DuplicateApplicationException("You have already applied for this job");
+
+        }
+        Application application = Application
+                .builder()
+                .job(job)
+                .user(user)
+                .applicationStatus(ApplicationStatus.APPLIED)
+                .build();
 
         applicationRepository.save(application);
-         return ApplicationMapper.toDto(application);
+        return  ApplicationMapper.toDto(application);
     }
+
 
     @Override
     public List<ApplicationResponse> get(Pageable pageable) {
@@ -136,7 +138,22 @@ public class ApplicationService  implements com.job.application.tracker.service.
     @Override
     public void delete(Integer id) {
         Application application = applicationRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("application not found with id: " + id));
-        applicationRepository.deleteById(id);
+                applicationRepository.deleteById(application.getId());
+    }
+
+    public void withdraw(Integer userId, Integer id) {
+        Application application = applicationRepository.findByUser_IdAndId(userId , id).orElseThrow(
+                ()-> new ResourceNotFoundException("user not found with id: " + userId + " and" +
+                        " application not found with id: " + id)
+        );
+        applicationRepository.deleteById(application.getId());
+    }
+
+    public ApplicationsCountRequest count(Integer jobId) {
+        Job job = jobRepository.findById(jobId).orElseThrow(
+                ()-> new ResourceNotFoundException("job not found with id: " + jobId)
+        );
+        return applicationRepository.countApplicationsByJobId(job.getId());
     }
 
 }

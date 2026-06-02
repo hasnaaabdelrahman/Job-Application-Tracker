@@ -8,6 +8,7 @@ import com.job.application.tracker.model.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,17 +22,15 @@ import java.util.Map;
 
 @Tag(name = "5- Application")
 @RestController
-@RequestMapping("/api/v1/application")
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/application/")
 public class ApplicationController {
 
     private final ApplicationService applicationService;
 
-    public ApplicationController(ApplicationService applicationService) {
-        this.applicationService = applicationService;
-    }
 
     @Operation(summary = "1- Get application")
-    @GetMapping("/get/{id}")
+    @GetMapping("get/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ApplicationResponse> getApplication(@PathVariable("id") Integer id ,
                                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -46,7 +45,7 @@ public class ApplicationController {
     }
 
     @Operation(summary = "2- Get all applications")
-    @GetMapping("/get")
+    @GetMapping("get")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<ApplicationResponse>> getAll(@RequestParam(defaultValue = "0") int page ,
                                                             @RequestParam(defaultValue = "5") int size ,
@@ -66,7 +65,7 @@ public class ApplicationController {
     }
 
     @Operation(summary = "3- Get applications by company")
-    @GetMapping("/companies/{id}/applications")
+    @GetMapping("companies/{id}/applications")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<ApplicationsByCompanyRequest>> get(@PathVariable("id") Integer id
     , @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -80,7 +79,7 @@ public class ApplicationController {
     }
 
     @Operation(summary = "4- Get applications by status")
-    @GetMapping("/search")
+    @GetMapping("search")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<ApplicationByStatusRequest>> get(@RequestParam ApplicationStatus status
             , @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -94,7 +93,7 @@ public class ApplicationController {
     }
 
     @Operation(summary = "5- Get applications by user")
-    @GetMapping("/users/{id}")
+    @GetMapping("users/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<ApplicationResponse>> getByUser(@PathVariable("id") Integer id) {
         final List<ApplicationResponse> applications = applicationService.getByUser(id);
@@ -102,7 +101,7 @@ public class ApplicationController {
     }
 
     @Operation(summary = "6- Get applications stats")
-    @GetMapping("/stats")
+    @GetMapping("stats")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Map<ApplicationStatus , Long>> getStats(@AuthenticationPrincipal CustomUserDetails userDetails) {
         if(userDetails.getUsername().equals("admin@gmail.com")) {
@@ -115,15 +114,17 @@ public class ApplicationController {
     }
 
     @Operation(summary = "7- Create application")
-    @PostMapping("/add")
+    @PostMapping("jobs/{id}/apply")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ApplicationResponse> add(@Valid @RequestBody ApplicationCreateRequest dto) {
-        final ApplicationResponse applicationAdded = applicationService.add(dto);
+    public ResponseEntity<ApplicationResponse> add(
+            @AuthenticationPrincipal CustomUserDetails current
+            , @PathVariable("id") Integer id) {
+        final ApplicationResponse applicationAdded = applicationService.add(current.getId() , id);
         return ResponseEntity.ok(applicationAdded);
     }
 
     @Operation(summary = "8- Update application")
-    @PutMapping("/update/{id}")
+    @PutMapping("update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApplicationResponse> update(@PathVariable("id") Integer id, @Valid @RequestBody ApplicationUpdateRequest dto) {
         final ApplicationResponse applicationUpdated= applicationService.update(id,dto);
@@ -131,10 +132,28 @@ public class ApplicationController {
     }
 
     @Operation(summary = "9- Delete applications")
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("delete/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Application> delete(@Valid @PathVariable("id") Integer id) {
       applicationService.delete(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "10- Applications Count Per Job")
+    @GetMapping("jobs/{id}/applications/count")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApplicationsCountRequest> count(@PathVariable("id") Integer id) {
+
+        return ResponseEntity.ok(applicationService.count(id));
+    }
+
+    @Operation(summary = "11- Withdraw application")
+    @DeleteMapping("{id}/withdraw")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Void> withdraw(
+            @AuthenticationPrincipal CustomUserDetails current,
+            @PathVariable("id") Integer id) {
+        applicationService.withdraw(current.getId(), id);
+        return ResponseEntity.noContent().build();
     }
 }
