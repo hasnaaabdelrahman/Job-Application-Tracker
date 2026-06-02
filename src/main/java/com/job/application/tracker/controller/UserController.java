@@ -1,5 +1,6 @@
 package com.job.application.tracker.controller;
 
+import com.job.application.tracker.model.dto.application.ApplicationStatsRequest;
 import com.job.application.tracker.model.dto.user.UserResponse;
 import com.job.application.tracker.model.dto.user.UserUpdateRequest;
 import com.job.application.tracker.model.entity.User;
@@ -21,7 +22,7 @@ import java.util.List;
 
 @Tag(name = "2- User")
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/user/")
 public class UserController {
     private final UserService userService;
 
@@ -30,13 +31,13 @@ public class UserController {
     }
 
     @Operation(summary = "1- Get user")
-    @GetMapping("/get/me")
+    @GetMapping("get/me")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> get(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(userService.get(userDetails.getId()));
     }
     @Operation(summary = "2- Get all users")
-    @GetMapping("/users")
+    @GetMapping("users")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponse>>
     getAll(@RequestParam(defaultValue = "0") int page , @RequestParam(defaultValue = "5") int size ,
@@ -48,7 +49,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
     @Operation(summary = "3- Update user")
-    @PutMapping("/update/{id}")
+    @PutMapping("update/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateUser(@PathVariable("id") Integer id
             ,@Valid @RequestBody UserUpdateRequest userDto
@@ -62,10 +63,18 @@ public class UserController {
         return ResponseEntity.ok(updated);
     }
     @Operation(summary = "4- Delete user")
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Integer id) {
         userService.delete(id);
         return ResponseEntity.ok().build();
     }
+    @Operation(summary = "5- Dashboard")
+    @GetMapping("dashboard")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<ApplicationStatsRequest> dashboard(@AuthenticationPrincipal CustomUserDetails current) {
+        return ResponseEntity.ok(userService.stats(current.getId()));
+    }
+
+
 }

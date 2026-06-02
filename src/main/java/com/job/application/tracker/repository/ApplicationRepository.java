@@ -37,7 +37,7 @@ public interface ApplicationRepository extends JpaRepository<Application , Integ
 
     @Query(
             """
-            SELECT com.job.application.tracker.model.dto.application.ApplicationAcceptedStatusCount(
+            SELECT new com.job.application.tracker.model.dto.application.ApplicationAcceptedRequest(
             COUNT(a)
             )
             FROM Application a
@@ -46,12 +46,12 @@ public interface ApplicationRepository extends JpaRepository<Application , Integ
             a.user.id = :id
             """
     )
-    ApplicationAcceptedStatusCount countAcceptedApplications(@Param("id") Integer id);
+    ApplicationAcceptedRequest countAcceptedApplications(@Param("id") Integer id);
 
 
     @Query(
             """
-            SELECT com.job.application.tracker.model.dto.application.ApplicationAppliedStatusCount(
+            SELECT new com.job.application.tracker.model.dto.application.ApplicationAppliedRequest(
             COUNT(a)
             )
             FROM Application a
@@ -60,12 +60,12 @@ public interface ApplicationRepository extends JpaRepository<Application , Integ
             a.user.id = :id
             """
     )
-    ApplicationAppliedStatusCount countAppliedApplications(@Param("id") Integer id);
+    ApplicationAppliedRequest countAppliedApplications(@Param("id") Integer id);
 
 
     @Query(
             """
-            SELECT com.job.application.tracker.model.dto.application.ApplicationInterviewStatusCount(
+            SELECT new com.job.application.tracker.model.dto.application.ApplicationInterviewRequest(
             COUNT(a)
             )
             FROM Application a
@@ -74,11 +74,11 @@ public interface ApplicationRepository extends JpaRepository<Application , Integ
             a.user.id = :id
             """
     )
-    ApplicationInterviewStatusCount countInterviewApplications(@Param("id") Integer id);
+    ApplicationInterviewRequest countInterviewApplications(@Param("id") Integer id);
 
     @Query(
             """
-            SELECT com.job.application.tracker.model.dto.application.ApplicationRejectedStatusCount(
+            SELECT new com.job.application.tracker.model.dto.application.ApplicationRejectedRequest(
             COUNT(a)
             )
             FROM Application a
@@ -87,6 +87,17 @@ public interface ApplicationRepository extends JpaRepository<Application , Integ
             a.user.id = :id
             """
     )
-    ApplicationRejectedStatusCount countRejectedApplications(@Param("id") Integer id);
+    ApplicationRejectedRequest countRejectedApplications(@Param("id") Integer id);
 
+
+    @Query(
+            """
+            SELECT new com.job.application.tracker.model.dto.application.ApplicationsCountRequest(
+            COUNT(a)
+            )
+            FROM Application a
+            WHERE a.user.id = :id
+            """
+    )
+    ApplicationsCountRequest countAll(@Param("id") Integer id);
 }

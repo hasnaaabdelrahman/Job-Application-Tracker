@@ -1,6 +1,7 @@
 package com.job.application.tracker.service.implementation;
 
 import com.job.application.tracker.model.dto.application.ApplicationRequest;
+import com.job.application.tracker.model.dto.application.ApplicationStatsRequest;
 import com.job.application.tracker.model.dto.user.UserRequest;
 import com.job.application.tracker.model.dto.user.UserResponse;
 import com.job.application.tracker.model.dto.user.UserUpdateRequest;
@@ -8,6 +9,7 @@ import com.job.application.tracker.model.entity.User;
 import com.job.application.tracker.exceptions.DuplicateApplicationException;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.mapper.UserMapper;
+import com.job.application.tracker.repository.ApplicationRepository;
 import com.job.application.tracker.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +26,7 @@ public class UserService implements com.job.application.tracker.service.UserServ
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ApplicationRepository applicationRepository;
 
 
     @Override
@@ -90,6 +93,20 @@ public class UserService implements com.job.application.tracker.service.UserServ
          UserMapper.UpdateEntity(user , userDto);
         userRepository.save(user);
         return UserMapper.toDto(user);
+    }
+
+    public ApplicationStatsRequest stats(Integer userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                ()-> new ResourceNotFoundException("user not found with id: " + userId)
+        );
+        return ApplicationStatsRequest
+                .builder()
+                .applied(applicationRepository.countAppliedApplications(user.getId()).getCount())
+                .accepted(applicationRepository.countAcceptedApplications(user.getId()).getCount())
+                .applications(applicationRepository.countAll(user.getId()).getCount())
+                .interview(applicationRepository.countInterviewApplications(user.getId()).getCount())
+                .rejected(applicationRepository.countRejectedApplications(user.getId()).getCount())
+                .build();
     }
 
 }

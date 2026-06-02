@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ApplicationAppliedStatusCount {
+public class ApplicationAppliedRequest {
     private Long count;
 
 }

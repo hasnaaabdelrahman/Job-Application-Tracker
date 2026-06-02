@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ApplicationInterviewStatusCount {
+public class ApplicationInterviewRequest {
     private Long count;
 
 }
