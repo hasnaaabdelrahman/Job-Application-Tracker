@@ -2,6 +2,7 @@ package com.job.application.tracker.service.implementation;
 
 import com.job.application.tracker.model.dto.application.ApplicationRequest;
 import com.job.application.tracker.model.dto.application.ApplicationStatsRequest;
+import com.job.application.tracker.model.dto.user.UserInfo;
 import com.job.application.tracker.model.dto.user.UserRequest;
 import com.job.application.tracker.model.dto.user.UserResponse;
 import com.job.application.tracker.model.dto.user.UserUpdateRequest;
@@ -27,7 +28,6 @@ public class UserService implements com.job.application.tracker.service.UserServ
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationRepository applicationRepository;
-
 
     @Override
     public UserResponse add(UserRequest user) {
@@ -107,6 +107,13 @@ public class UserService implements com.job.application.tracker.service.UserServ
                 .interview(applicationRepository.countInterviewApplications(user.getId()).getCount())
                 .rejected(applicationRepository.countRejectedApplications(user.getId()).getCount())
                 .build();
+    }
+
+    public UserInfo profile(Integer userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("user not found with id: " + userId)
+        );
+        return UserMapper.toUserInfo(user);
     }
 
 }

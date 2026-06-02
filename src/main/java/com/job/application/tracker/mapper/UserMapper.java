@@ -1,6 +1,7 @@
 package com.job.application.tracker.mapper;
 
 import com.job.application.tracker.model.dto.application.ApplicationRequest;
+import com.job.application.tracker.model.dto.user.UserInfo;
 import com.job.application.tracker.model.dto.user.UserRequest;
 import com.job.application.tracker.model.dto.user.UserResponse;
 import com.job.application.tracker.model.dto.user.UserUpdateRequest;
@@ -35,6 +36,17 @@ public class UserMapper {
         dto.setRoles(user.getRoles());
 
 
+        return dto;
+    }
+
+
+    public static UserInfo toUserInfo(User user) {
+
+        UserInfo dto = new UserInfo();
+        dto.setName(user.getName());
+        dto.setPhone(user.getPhone());
+        dto.setEmail(user.getEmail());
+        dto.setBirthDate(user.getBirthDate());
         return dto;
     }
 

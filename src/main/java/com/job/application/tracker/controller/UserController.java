@@ -1,6 +1,7 @@
 package com.job.application.tracker.controller;
 
 import com.job.application.tracker.model.dto.application.ApplicationStatsRequest;
+import com.job.application.tracker.model.dto.user.UserInfo;
 import com.job.application.tracker.model.dto.user.UserResponse;
 import com.job.application.tracker.model.dto.user.UserUpdateRequest;
 import com.job.application.tracker.model.entity.User;
@@ -74,6 +75,13 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApplicationStatsRequest> dashboard(@AuthenticationPrincipal CustomUserDetails current) {
         return ResponseEntity.ok(userService.stats(current.getId()));
+    }
+
+    @Operation(summary = "6- Profile")
+    @GetMapping("profile")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<UserInfo> profile(@AuthenticationPrincipal CustomUserDetails current) {
+        return ResponseEntity.ok(userService.profile(current.getId()));
     }
 
 
