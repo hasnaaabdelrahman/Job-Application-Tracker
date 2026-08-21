@@ -1,7 +1,7 @@
 package com.job.application.tracker.repository;
 
 import com.job.application.tracker.common.ApplicationStatus;
-import com.job.application.tracker.model.dto.application.ApplicationsCountRequest;
+import com.job.application.tracker.model.dto.application.*;
 import com.job.application.tracker.model.entity.Application;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,4 +33,71 @@ public interface ApplicationRepository extends JpaRepository<Application , Integ
     )
 
     ApplicationsCountRequest countApplicationsByJobId(@Param("id") Integer id);
+
+
+    @Query(
+            """
+            SELECT new com.job.application.tracker.model.dto.application.ApplicationAcceptedRequest(
+            COUNT(a)
+            )
+            FROM Application a
+            WHERE a.applicationStatus = com.job.application.tracker.common.ApplicationStatus.ACCEPTED
+            AND
+            a.user.id = :id
+            """
+    )
+    ApplicationAcceptedRequest countAcceptedApplications(@Param("id") Integer id);
+
+
+    @Query(
+            """
+            SELECT new com.job.application.tracker.model.dto.application.ApplicationAppliedRequest(
+            COUNT(a)
+            )
+            FROM Application a
+            WHERE a.applicationStatus = com.job.application.tracker.common.ApplicationStatus.APPLIED
+            AND
+            a.user.id = :id
+            """
+    )
+    ApplicationAppliedRequest countAppliedApplications(@Param("id") Integer id);
+
+
+    @Query(
+            """
+            SELECT new com.job.application.tracker.model.dto.application.ApplicationInterviewRequest(
+            COUNT(a)
+            )
+            FROM Application a
+            WHERE a.applicationStatus = com.job.application.tracker.common.ApplicationStatus.INTERVIEW
+            AND
+            a.user.id = :id
+            """
+    )
+    ApplicationInterviewRequest countInterviewApplications(@Param("id") Integer id);
+
+    @Query(
+            """
+            SELECT new com.job.application.tracker.model.dto.application.ApplicationRejectedRequest(
+            COUNT(a)
+            )
+            FROM Application a
+            WHERE a.applicationStatus = com.job.application.tracker.common.ApplicationStatus.REJECTED
+            AND
+            a.user.id = :id
+            """
+    )
+    ApplicationRejectedRequest countRejectedApplications(@Param("id") Integer id);
+
+
+    @Query(
+            """
+            SELECT new com.job.application.tracker.model.dto.application.ApplicationsCountRequest(
+            COUNT(a)
+            )
+            FROM Application a
+            WHERE a.user.id = :id
+            """
+    )
+    ApplicationsCountRequest countAll(@Param("id") Integer id);
 }

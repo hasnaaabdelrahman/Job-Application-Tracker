@@ -1,12 +1,15 @@
-package com.job.application.tracker.model.dto.job;
+package com.job.application.tracker.model.dto.application;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JobOnsiteRequest {
+@Builder
+public class ApplicationAcceptedRequest {
     private Long count;
+
 }

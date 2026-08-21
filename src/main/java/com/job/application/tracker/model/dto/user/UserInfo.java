@@ -1,24 +1,20 @@
 package com.job.application.tracker.model.dto.user;
 
-import com.job.application.tracker.model.dto.application.ApplicationRequest;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponse {
-    private Integer id;
+@Builder
+public class UserInfo {
     private String name;
     private String phone;
     private String email;
     private LocalDate birthDate;
-    private List<ApplicationRequest> application;
-    private Set<String> roles = new HashSet<>();
+
 }

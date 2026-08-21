@@ -1,6 +1,5 @@
 package com.job.application.tracker.model.dto.application;
 
-import com.job.application.tracker.common.ApplicationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ApplicationsByCompanyRequest {
-    private Integer id;
-    private ApplicationStatus applicationStatus;
-    private String companyName;
+public class ApplicationStatsRequest {
+    private Long applications;
+    private Long applied;
+    private Long accepted;
+    private Long interview;
+    private Long rejected;
 }

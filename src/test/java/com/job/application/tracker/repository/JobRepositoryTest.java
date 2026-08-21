@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import com.job.application.tracker.common.JobType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,13 @@ public class JobRepositoryTest {
         Company company = new Company();
         company.setName("ABC Company");
         companyRepository.save(company);
-        job = new Job(null, "full stack" , "We need a Full Stack Developer who can work on both frontend and backend technologies. You will build end-to-end features, manage databases, and ensure seamless integration between systems." , new ArrayList<>() ,company);
+        job = new Job(null, "full stack" ,
+                "We need a Full Stack Developer who can work on both frontend and backend technologies. You will build end-to-end features, manage databases, and ensure seamless integration between systems." ,
+                JobType.HYBRID,
+                10000L,
+                "cairo",
+                new ArrayList<>() ,
+                company);
         jobRepository.save(job);
     }
 
