@@ -6,17 +6,21 @@ import com.job.application.tracker.model.dto.user.UserInfo;
 import com.job.application.tracker.model.dto.user.UserRequest;
 import com.job.application.tracker.model.dto.user.UserResponse;
 import com.job.application.tracker.model.dto.user.UserUpdateRequest;
+import com.job.application.tracker.model.entity.FileRecord;
 import com.job.application.tracker.model.entity.User;
 import com.job.application.tracker.exceptions.DuplicateApplicationException;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
 import com.job.application.tracker.mapper.UserMapper;
 import com.job.application.tracker.repository.ApplicationRepository;
+import com.job.application.tracker.repository.FileRecordRepository;
 import com.job.application.tracker.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,6 +32,7 @@ public class UserService implements com.job.application.tracker.service.UserServ
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationRepository applicationRepository;
+    private final FileRecordRepository fileRecordRepository;
 
     @Override
     public UserResponse add(UserRequest user) {
@@ -116,4 +121,16 @@ public class UserService implements com.job.application.tracker.service.UserServ
         return UserMapper.toUserInfo(user);
     }
 
+    public FileRecord upload(MultipartFile file, Integer userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                ()-> new ResourceNotFoundException("user not found")
+        );
+        FileRecord newFile = new FileRecord();
+        newFile.setFileName(file.getOriginalFilename());
+        newFile.setFileType(file.getContentType());
+        newFile.setFileSize(file.getSize());
+        newFile.setUser(user);
+        newFile.setUploadedAt(LocalDateTime.now());
+        return  fileRecordRepository.save(newFile);
+    }
 }
