@@ -4,6 +4,7 @@ import com.job.application.tracker.model.dto.application.ApplicationStatsRequest
 import com.job.application.tracker.model.dto.user.UserInfo;
 import com.job.application.tracker.model.dto.user.UserResponse;
 import com.job.application.tracker.model.dto.user.UserUpdateRequest;
+import com.job.application.tracker.model.entity.FileRecord;
 import com.job.application.tracker.model.entity.User;
 import com.job.application.tracker.model.CustomUserDetails;
 import com.job.application.tracker.service.implementation.UserService;
@@ -14,10 +15,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -82,6 +85,23 @@ public class UserController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserInfo> profile(@AuthenticationPrincipal CustomUserDetails current) {
         return ResponseEntity.ok(userService.profile(current.getId()));
+    }
+    @Operation(summary = "7- upload-resume")
+    @PostMapping(value="upload-resume", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<String> upload(
+            @AuthenticationPrincipal CustomUserDetails current,
+            @RequestParam("file")MultipartFile file) {
+        if(file.isEmpty()) {
+            return ResponseEntity.badRequest().body("File is empty!");
+        }
+        if(!"applicaion/pdf".equals(file.getContentType())) {
+            return ResponseEntity.badRequest().body("Only PDF files are allowed");
+
+        }
+        userService.upload(file, current.getId());
+        return ResponseEntity.ok("Cv uploaded Successfully");
+
     }
 
 

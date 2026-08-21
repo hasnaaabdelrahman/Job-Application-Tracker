@@ -59,5 +59,9 @@ public class User {
     @JsonIgnore
     private List<Application> applications = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<FileRecord> files;
+
 
 }
