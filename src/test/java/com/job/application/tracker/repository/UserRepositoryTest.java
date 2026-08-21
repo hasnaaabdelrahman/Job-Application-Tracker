@@ -21,7 +21,7 @@ public class UserRepositoryTest {
     private User user;
     @BeforeEach
     void setUp() {
-         user = new User(null , "joe" , "00000000000" , "joe@gmail.com" , "password@123" , LocalDate.of(2002, 02 , 01) ,  Set.of("User"), new ArrayList<>()   );
+         user = new User(null , "joe" , "00000000000" , "joe@gmail.com" , "password@123" , LocalDate.of(2002, 02 , 01) ,  Set.of("User"), new ArrayList<>() , new ArrayList<>()  );
         userRepository.save(user);
     }
 
