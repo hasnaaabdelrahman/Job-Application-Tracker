@@ -1,5 +1,6 @@
 package com.job.application.tracker.service;
 
+import com.job.application.tracker.common.JobType;
 import com.job.application.tracker.model.entity.Company;
 import com.job.application.tracker.model.entity.Job;
 import com.job.application.tracker.exceptions.ResourceNotFoundException;
@@ -29,7 +30,13 @@ public class JobServiceTest {
     void  getJob_shouldCallGet_whenJobExists() {
         Company company = new Company();
         company.setName("ABC Company");
-        Job job = new Job(1, "full stack" , "We need a Full Stack Developer who can work on both frontend and backend technologies. You will build end-to-end features, manage databases, and ensure seamless integration between systems." , new ArrayList<>() ,company);
+        Job job = new Job(null, "full stack" ,
+                "We need a Full Stack Developer who can work on both frontend and backend technologies. You will build end-to-end features, manage databases, and ensure seamless integration between systems." ,
+                JobType.HYBRID,
+                10000L,
+                "cairo",
+                new ArrayList<>() ,
+                company);
         when(jobRepository.findById(1)).thenReturn(Optional.of(job));
         jobService.get(1);
         verify(jobRepository).findById(1);
@@ -39,7 +46,13 @@ public class JobServiceTest {
     void  getJob_shouldThrowException_whenJobNotExists() {
         Company company = new Company();
         company.setName("ABC Company");
-        Job job = new Job(1, "full stack" , "We need a Full Stack Developer who can work on both frontend and backend technologies. You will build end-to-end features, manage databases, and ensure seamless integration between systems." , new ArrayList<>() ,company);
+        Job job = new Job(null, "full stack" ,
+                "We need a Full Stack Developer who can work on both frontend and backend technologies. You will build end-to-end features, manage databases, and ensure seamless integration between systems." ,
+                JobType.HYBRID,
+                10000L,
+                "cairo",
+                new ArrayList<>() ,
+                company);
         when(jobRepository.findById(999)).thenReturn(Optional.empty());
         assertThrows(ResourceNotFoundException.class , ()->
                 jobService.get(999));
