@@ -31,7 +31,7 @@ public class JobServiceTest {
         Company company = new Company();
         company.setName("ABC Company");
         Job job = new Job(null, "full stack" ,
-                "We need a Full Stack Developer who can work on both frontend and backend technologies. You will build end-to-end features, manage databases, and ensure seamless integration between systems." ,
+                "We need a Full Stack Developer who can work on both frontend and backend technologies. You will build end-to-end features." ,
                 JobType.HYBRID,
                 10000L,
                 "cairo",
@@ -47,7 +47,7 @@ public class JobServiceTest {
         Company company = new Company();
         company.setName("ABC Company");
         Job job = new Job(null, "full stack" ,
-                "We need a Full Stack Developer who can work on both frontend and backend technologies. You will build end-to-end features, manage databases, and ensure seamless integration between systems." ,
+                "We need a Full Stack Developer who can work on both frontend and backend technologies. You will build end-to-end features." ,
                 JobType.HYBRID,
                 10000L,
                 "cairo",
