@@ -249,8 +249,6 @@ User ──────< Application >────── Job >──────
 
 > **Note:** admin-vs-user scoping on the Applications endpoints is currently done by checking whether the authenticated username is `admin@gmail.com`, rather than by role alone — worth keeping in mind if the default admin email is ever changed.
 
-> **Known issue:** `POST /api/v1/user/upload-resume` checks the uploaded file's content type against the literal string `"applicaion/pdf"` (typo — missing the `t` in "application"). As written, this comparison never matches a real PDF's `application/pdf` content type, so every upload is currently rejected with `"Only PDF files are allowed"` regardless of the file. Fix pending.
-
 ---
 
 ## Sample Requests & Responses
