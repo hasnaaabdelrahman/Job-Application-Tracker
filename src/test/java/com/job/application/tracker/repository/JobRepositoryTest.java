@@ -29,7 +29,7 @@ public class JobRepositoryTest {
         companyRepository.save(company);
         job = new Job(null, "Full Stack Developer" ,
                 "We need a Full Stack Developer who can work on both frontend and backend technologies. You will build end-to-end features, manage databases, and ensure seamless integration between client and server applications.",
-                JobType.HYBRID,
+                JobType.REMOTE,
                 10000L,
                 "Cairo",
                 new ArrayList<>() ,

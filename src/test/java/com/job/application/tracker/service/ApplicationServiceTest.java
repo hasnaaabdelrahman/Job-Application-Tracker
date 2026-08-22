@@ -13,8 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ApplicationServiceTest {
@@ -25,17 +24,25 @@ public class ApplicationServiceTest {
 
     @Test
     void deleteApplication_shouldCallDelete_whenApplicationIsFound() {
-        when(applicationRepository.findById(1)).thenReturn(Optional.of(new Application()));
+        Application application = new Application();
+        application.setId(1);
+        when(applicationRepository.findById(1))
+                .thenReturn(Optional.of(application));
         applicationService.delete(1);
         verify(applicationRepository).deleteById(1);
-
     }
 
     @Test
     void deleteApplication_shouldThrowException_whenApplicationIsNotFound() {
-        when(applicationRepository.findById(99)).thenReturn(Optional.empty());
-        assertThrows(ResourceNotFoundException.class,
-                ()-> applicationService.delete(99));
+        when(applicationRepository.findById(99))
+                .thenReturn(Optional.empty());
+
+        assertThrows(
+                ResourceNotFoundException.class,
+                () -> applicationService.delete(99)
+        );
+
+        verify(applicationRepository, never()).deleteById(99);
     }
 
 }
