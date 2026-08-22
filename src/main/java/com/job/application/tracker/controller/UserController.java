@@ -95,7 +95,7 @@ public class UserController {
         if(file.isEmpty()) {
             return ResponseEntity.badRequest().body("File is empty!");
         }
-        if(!"applicaion/pdf".equals(file.getContentType())) {
+        if(!"application/pdf".equals(file.getContentType())) {
             return ResponseEntity.badRequest().body("Only PDF files are allowed");
 
         }
