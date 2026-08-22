@@ -10,9 +10,13 @@ Job Application Tracker is a system that allows users to:
 - Manage job applications in one place
 - Track application status (Applied, Interview, Rejected, Accepted)
 - Organize jobs by companies
-- Filter applications by status or company
+- Filter jobs by title, location, type, and minimum salary
 - Search jobs by title keyword
+- View the most recently posted jobs
+- Upload a resume (PDF) to their profile
+- View a personal dashboard of application statistics
 - View application statistics grouped by status
+- (Admin) View job-type and company-level dashboard stats
 
 This project demonstrates clean backend architecture using modern development practices.
 
@@ -23,7 +27,7 @@ This project demonstrates clean backend architecture using modern development pr
 | Technology | Purpose |
 |---|---|
 | Java 17 | Core language |
-| Spring Boot | Application framework |
+| Spring Boot 4 | Application framework |
 | Spring Security | Authentication & Authorization |
 | Spring Data JPA | Data access layer |
 | PostgreSQL | Relational database |
@@ -33,6 +37,7 @@ This project demonstrates clean backend architecture using modern development pr
 | JUnit 5 | Unit & integration testing framework |
 | Mockito | Mocking framework for service unit tests |
 | H2 Database | In-memory database for repository integration tests |
+| Docker / Docker Compose | Containerized local setup (API + PostgreSQL) |
 
 ---
 
@@ -85,22 +90,32 @@ This project uses **JWT-based stateless authentication** with **role-based acces
 ### How It Works
 
 1. Register via `POST /api/v1/auth/register` — account is created with `ROLE_USER`
-2. Login via `POST /api/v1/auth/login` — returns a JWT token
-3. Include the token in subsequent requests as a Bearer token:
+2. Login via `POST /api/v1/auth/login` — returns an `accessToken` and a `refreshToken`
+3. Include the access token in subsequent requests as a Bearer token:
 
 ```
-Authorization: Bearer <your_token>
+Authorization: Bearer <your_access_token>
 ```
+
+4. When the access token expires, call `POST /api/v1/auth/refresh-token` with the refresh token to get a new one without logging in again
 
 ### Endpoint Access Rules
 
 | Endpoint | Access |
 |---|---|
-| `POST /api/v1/auth/**` | Public (no token required) |
+| `POST /api/v1/auth/register` | Public (no token required) |
+| `POST /api/v1/auth/login` | Public (no token required) |
+| `POST /api/v1/auth/refresh-token` | Public (requires a valid refresh token) |
+| `PUT /api/v1/auth/rest-password` | Authenticated |
+| `POST /api/v1/auth/logout` | Authenticated |
 | `GET /api/v1/user/users` | `ROLE_ADMIN` only |
 | `DELETE /api/v1/user/delete/{id}` | `ROLE_ADMIN` only |
-| `GET /api/v1/user/get/{id}` | Authenticated (`ROLE_USER` or `ROLE_ADMIN`) |
+| `GET /api/v1/user/get/me` | Authenticated (`ROLE_USER` or `ROLE_ADMIN`) — returns the current user |
 | `PUT /api/v1/user/update/{id}` | Authenticated — own profile only |
+| `GET /api/v1/user/dashboard` | `ROLE_USER` only |
+| `POST /api/v1/user/upload-resume` | `ROLE_USER` only |
+| `GET /api/v1/job/stats` | `ROLE_ADMIN` only |
+| `GET /api/company/v1/dashboard/{id}` | `ROLE_ADMIN` only |
 | All other endpoints | Authenticated |
 
 ### Default Admin Account
@@ -168,38 +183,46 @@ User ──────< Application >────── Job >──────
 
 ## API Endpoints
 
-### Auth `/api/v1/auth` — Public
+### Auth `/api/v1/auth`
 
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | `/login` | Login and receive JWT token |
-| POST | `/register` | Register a new user account |
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| POST | `/register` | Public | Register a new user account |
+| POST | `/login` | Public | Login and receive an access + refresh token pair |
+| POST | `/refresh-token` | Public | Exchange a valid refresh token for a new access token |
+| PUT | `/rest-password` | Authenticated | Change the current user's password |
+| POST | `/logout` | Authenticated | Invalidate the current token |
 
 ### Applications `/api/v1/application` — Authenticated
 
 | Method | Endpoint | Access | Description |
 |---|---|---|---|
-| GET | `/get` | USER / ADMIN | Get all applications (paginated) |
-| GET | `/get/{id}` | USER / ADMIN | Get application by ID |
-| GET | `/companies/{id}/applications` | USER / ADMIN | Get applications by company |
-| GET | `/search?status=` | USER / ADMIN | Filter by status |
-| GET | `/users/{id}` | USER / ADMIN | Get applications by user |
-| GET | `/stats` | USER / ADMIN | Get count grouped by status |
-| POST | `/add` | USER | Create new application |
-| PUT | `/update/{id}` | ADMIN | Update application |
-| DELETE | `/delete/{id}` | USER | Delete application |
+| GET | `/get/{id}` | USER / ADMIN | Get application by ID — admin can view any; a user can only view their own |
+| GET | `/get` | USER / ADMIN | Get all applications (paginated) — admin sees all, user sees only their own |
+| GET | `/companies/{id}/applications` | USER / ADMIN | Get applications for a company — admin sees all, user sees only their own |
+| GET | `/search?status=` | USER / ADMIN | Filter applications by status — admin sees all, user sees only their own |
+| GET | `/users/{id}` | USER / ADMIN | Get applications for a given user ID |
+| GET | `/stats` | USER / ADMIN | Get application counts grouped by status — admin gets global stats, user gets their own |
+| POST | `/jobs/{id}/apply` | USER | Apply to a job — creates an application for the current user |
+| PUT | `/update/{id}` | ADMIN | Update an application |
+| DELETE | `/delete/{id}` | USER | Delete an application |
+| GET | `/jobs/{id}/applications/count` | ADMIN | Count applications received for a job |
+| DELETE | `/{id}/withdraw` | USER | Withdraw the current user's own application |
 
 ### Jobs `/api/v1/job` — Authenticated
 
 | Method | Endpoint | Access | Description |
 |---|---|---|---|
-| GET | `/get` | USER / ADMIN | Get all jobs (paginated) |
 | GET | `/get/{id}` | USER / ADMIN | Get job by ID |
-| GET | `/companies/{id}/jobs` | USER / ADMIN | Get jobs by company |
+| GET | `/get` | USER / ADMIN | Get all jobs (paginated) |
+| GET | `/companies/{id}/jobs` | USER / ADMIN | Get jobs by company (paginated) |
 | GET | `/search/{title}` | USER / ADMIN | Search jobs by title keyword |
+| GET | `/filter` | USER / ADMIN | Filter jobs by optional `title`, `location`, `type`, `minSalary` query params |
+| GET | `/stats` | ADMIN | Get job counts grouped by job type |
 | POST | `/add` | ADMIN | Create new job |
 | PUT | `/update/{id}` | ADMIN | Update job |
 | DELETE | `/delete/{id}` | ADMIN | Delete job |
+| GET | `/lastest` | USER / ADMIN | Get the most recently posted jobs |
 
 ### Companies `/api/company/v1` — Authenticated
 
@@ -210,15 +233,23 @@ User ──────< Application >────── Job >──────
 | POST | `/add` | ADMIN | Create new company |
 | PUT | `/update/{id}` | ADMIN | Update company |
 | DELETE | `/delete/{id}` | ADMIN | Delete company |
+| GET | `/dashboard/{id}` | ADMIN | Get dashboard stats for a company |
 
 ### Users `/api/v1/user` — Authenticated / Admin
 
 | Method | Endpoint | Access | Description |
 |---|---|---|---|
-| GET | `/get/{id}` | USER / ADMIN | Get user by ID |
-| GET | `/users` | ADMIN only | Get all users (paginated) |
+| GET | `/get/me` | USER / ADMIN | Get the currently authenticated user |
+| GET | `/users` | ADMIN only | Get all users (paginated, sortable) |
 | PUT | `/update/{id}` | Own account only | Update user profile |
 | DELETE | `/delete/{id}` | ADMIN only | Delete user |
+| GET | `/dashboard` | USER only | Get the current user's application stats |
+| GET | `/profile` | USER / ADMIN | Get the current user's profile info |
+| POST | `/upload-resume` | USER only | Upload a resume (PDF only, multipart form) |
+
+> **Note:** admin-vs-user scoping on the Applications endpoints is currently done by checking whether the authenticated username is `admin@gmail.com`, rather than by role alone — worth keeping in mind if the default admin email is ever changed.
+
+> **Known issue:** `POST /api/v1/user/upload-resume` checks the uploaded file's content type against the literal string `"applicaion/pdf"` (typo — missing the `t` in "application"). As written, this comparison never matches a real PDF's `application/pdf` content type, so every upload is currently rejected with `"Only PDF files are allowed"` regardless of the file. Fix pending.
 
 ---
 
@@ -258,20 +289,16 @@ User ──────< Application >────── Job >──────
 ```
 
 **Response:**
-```
-eyJhbGciOiJIUzI1NiJ9...
-```
-
-### POST `/api/v1/application/add`
-
-**Request:**
 ```json
 {
-  "user_id": 1,
-  "job_id": 2,
-  "applicationStatus": "APPLIED"
+  "accessToken": "eyJhbGciOiJIUzI1NiJ9...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiJ9..."
 }
 ```
+
+### POST `/api/v1/application/jobs/{id}/apply`
+
+Applies the current authenticated user to the job with the given `{id}`. No request body is needed — the user and job are both resolved from the authenticated principal and the path variable.
 
 **Response:**
 ```json
@@ -364,26 +391,23 @@ http://localhost:8080/swagger-ui/index.html
 
 ## Configuration
 
-This project uses environment-specific configuration. A template file is provided — copy it and fill in your values:
+`application.properties` reads its values from environment variables (via `spring.config.import=optional:file:.env[.properties]`), so configuration is supplied through a `.env` file in the project root rather than by editing `application.properties` directly.
 
-```bash
-cp src/main/resources/application.properties.example src/main/resources/application.properties
-```
+Create a `.env` file in the project root with the following variables:
 
 ```properties
 # PostgreSQL
-spring.datasource.url=jdbc:postgresql://localhost:5432/job_tracker
-spring.datasource.username=your_db_username
-spring.datasource.password=your_db_password
-spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
-spring.jpa.hibernate.ddl-auto=update
+DB_URL=jdbc:postgresql://localhost:5432/job_tracker
+DB_USERNAME=your_db_username
+DB_PASSWORD=your_db_password
 
 # JWT
-jwt.secret=your_jwt_secret_key
-jwt.expiration=86400000
+JWT_SECRET=your_jwt_secret_key
+JWT_ACCESS=300000
+JWT_REFRESHMENT_DAYS=7
 ```
 
-> `application.properties` is excluded from version control via `.gitignore` to protect credentials.
+> `.env` is excluded from version control via `.gitignore` to protect credentials.
 
 ### Database Setup
 
@@ -395,21 +419,19 @@ CREATE DATABASE job_tracker;
 
 ## Running the Project
 
+### Option 1: Run locally with Maven
+
 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/job-application-tracker.git
+git clone https://github.com/hasnaaabdelrahman/Job-Application-Tracker.git
 ```
 
 2. Navigate to the project directory
 ```bash
-cd job-application-tracker
+cd Job-Application-Tracker
 ```
 
-3. Set up configuration
-```bash
-cp src/main/resources/application.properties.example src/main/resources/application.properties
-# then edit application.properties with your DB credentials
-```
+3. Set up configuration and the database as described in [Configuration](#configuration)
 
 4. Run the application
 ```bash
@@ -418,12 +440,36 @@ mvn spring-boot:run
 
 The API will be available at `http://localhost:8080`
 
+### Option 2: Run with Docker Compose
+
+The project ships with a `Dockerfile` and `docker-compose.yaml` that run the API alongside a PostgreSQL container.
+
+1. Build the application JAR (Docker Compose expects `target/*.jar` to already exist)
+```bash
+mvn clean package -DskipTests
+```
+
+2. Start the containers
+```bash
+docker compose up --build
+```
+
+This starts:
+- `app` — the Spring Boot API on `http://localhost:8080`
+- `db` — a PostgreSQL 16 container on `localhost:5432` (database `job_tracker`, user/password `postgres`/`postgres`)
+
+> The default Compose credentials in `docker-compose.yaml` are for local development only — change them before using this setup anywhere else.
+
+3. Stop the containers
+```bash
+docker compose down
+```
+
 ---
 
 ## Future Improvements
 
 - Integration tests for controllers
-- Refresh token support
 - Deploy to cloud (Railway / Render)
 
 ---
