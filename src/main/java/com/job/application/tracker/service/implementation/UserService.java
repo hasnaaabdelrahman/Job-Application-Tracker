@@ -133,4 +133,10 @@ public class UserService implements com.job.application.tracker.service.UserServ
         newFile.setUploadedAt(LocalDateTime.now());
         return  fileRecordRepository.save(newFile);
     }
+
+    public User findByUsername(String email) {
+        return userRepository.findByEmail(email).orElseThrow(
+                ()-> new ResourceNotFoundException("user not found with email: " + email)
+        );
+    }
 }

@@ -24,6 +24,9 @@ jobs:
           cache: maven
 
       - name: Build with Maven
+        env:
+          MAIL_USERNAME: ${{ secrets.EMAIL }}
+          MAIL_PASSWORD: ${{ secrets.PASSWORD }}
         run: mvn -B package --file pom.xml
 
       - name: Update dependency graph
