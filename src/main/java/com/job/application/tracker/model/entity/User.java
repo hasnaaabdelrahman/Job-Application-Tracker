@@ -63,5 +63,8 @@ public class User {
     @JsonIgnore
     private List<FileRecord> files;
 
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<EmailDetails> emailDetails;
 
 }

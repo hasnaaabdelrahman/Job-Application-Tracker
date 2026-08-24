@@ -32,5 +32,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body("Upload too large");
     }
 
-
+    @ExceptionHandler(EmailSendingException.class)
+    public ResponseEntity<String> handleSendingEmails(EmailSendingException ex) {
+        return ResponseEntity.badRequest().body("");
+    }
 }
