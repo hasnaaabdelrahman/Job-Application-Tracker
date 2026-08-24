@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +21,8 @@
     <div style="padding: 30px;">
 
         <p style="font-size: 16px;">
-            Hello <strong>${candidate_name}</strong>,
+            Hello
+            <strong th:text="${candidate_name}">Candidate</strong>,
         </p>
 
         <p style="font-size: 16px; line-height: 1.6;">
@@ -33,22 +34,21 @@
         <div style="background-color: #f8fafc; border-radius: 8px; padding: 20px; margin: 25px 0;">
 
             <p style="margin: 8px 0;">
-                <strong>Job Title:</strong> ${job_title}
+                <strong>Job Title:</strong>
+                <span th:text="${job_title}">Software Engineer</span>
             </p>
 
             <p style="margin: 8px 0;">
-                <strong>Company:</strong> ${company_name}
-            </p>
-
-            <p style="margin: 8px 0;">
-                <strong>Application Date:</strong> ${application_date}
+                <strong>Company:</strong>
+                <span th:text="${company_name}">Company Name</span>
             </p>
 
             <p style="margin: 8px 0;">
                 <strong>Application Status:</strong>
-                <span style="color: #2563eb; font-weight: bold;">
-                        ${application_status}
-                    </span>
+                <span th:text="${application_status}"
+                      style="color: #2563eb; font-weight: bold;">
+                    Submitted
+                </span>
             </p>
 
         </div>
@@ -60,18 +60,21 @@
 
         <!-- Button -->
         <div style="text-align: center; margin: 30px 0;">
-            <a href="{application_url}"
-               style="display: inline-block; padding: 12px 24px;
-                          background-color: #2563eb; color: #ffffff;
-                          text-decoration: none; border-radius: 6px;
-                          font-weight: bold;">
+            <a
+               style="display: inline-block;
+                      padding: 12px 24px;
+                      background-color: #2563eb;
+                      color: #ffffff;
+                      text-decoration: none;
+                      border-radius: 6px;
+                      font-weight: bold;">
                 View Application
             </a>
         </div>
 
         <p style="font-size: 14px; color: #666666;">
             Best regards,<br>
-            <strong>${company_name}</strong>
+            <strong th:text="${company_name}">Company Name</strong>
         </p>
 
     </div>

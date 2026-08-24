@@ -16,6 +16,7 @@ import com.job.application.tracker.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class ApplicationService  implements com.job.application.tracker.service.
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
     private final CompanyRepository companyRepository;
-
+    private final EmailService emailService;
     @Override
     public ApplicationResponse add(Integer userId , Integer jobId) {
         User user =   userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user not found with id: "+userId));
@@ -49,6 +50,14 @@ public class ApplicationService  implements com.job.application.tracker.service.
                 .user(user)
                 .applicationStatus(ApplicationStatus.APPLIED)
                 .build();
+
+        Context context = new Context();
+        context.setVariable("candidate_name", user.getName());
+        context.setVariable("job_title", job.getTitle());
+        context.setVariable("company_name", job.getCompany().getName());
+        context.setVariable("application_status", application.getApplicationStatus());
+
+        emailService.sendTemplateEmail(user.getEmail() , "email-job-applied-notification", context);
 
         applicationRepository.save(application);
         return  ApplicationMapper.toDto(application);
