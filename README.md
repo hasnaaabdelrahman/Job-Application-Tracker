@@ -16,6 +16,7 @@ Job Application Tracker is a system that allows users to:
 - Upload a resume (PDF) to their profile
 - View a personal dashboard of application statistics
 - View application statistics grouped by status
+- Receive an email notification after applying for a job, containing the application details
 - (Admin) View job-type and company-level dashboard stats
 
 This project demonstrates clean backend architecture using modern development practices.
