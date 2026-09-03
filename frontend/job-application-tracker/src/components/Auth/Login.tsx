@@ -1,21 +1,48 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import loginImage from '../../assets/images.jpeg';
 import '../../login.css';
 
 function Login() {
+    const navigate = useNavigate();
+    const [message, setMessage] = useState('Loading...');
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch('http://localhost:8080/api/v1/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: e.target.inputEmail4.value,
+                    password: e.target.inputPassword4.value,
+                }),
+            });
+            const data = await response.json();
+            setMessage(data.message);
+            if (response.ok) {
+                console.log('Login successful:', data);
+            }
+        } catch (error) {
+            setMessage('Error logging in');
+            console.error('Error logging in:', error);
+        }
+    }
     return (
         <>
             <div className="container-fluid p-0">
                 <div className="row min-vh-100 g-0">
                     <div className="col-md-6 p-0">
                         <img
-                            src="/src/assets/images.jpeg"
+                            src={loginImage}
                             alt="Login"
                             className="w-100 h-100 object-fit-cover"
                         />
                     </div>
                     <div className="col-md-6 d-flex align-items-center justify-content-center">
 
-                        <form className="w-75">
+                        <form className="w-75" onSubmit={handleLogin}>
                             <h1 className='form-header'>Welcome</h1>
                             <div className="mb-3">
                                 <input type="email" className="form-control" id="inputEmail4" placeholder='Email' />
@@ -45,9 +72,9 @@ function Login() {
                                 </div>
 
                                 <div className="col-auto">
-                                    <button type="button" className="btn btn-primary">
+                                    <Link to="/signup" className="btn btn-primary">
                                         Sign up
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         </form>

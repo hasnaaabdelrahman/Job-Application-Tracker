@@ -1,4 +1,5 @@
-.form-header, .form-label {
+.form-header,
+.form-label {
     color: #3f579f;
 }
 
@@ -12,6 +13,7 @@
     color: #7d8fc4 !important;
     opacity: 1;
 }
+
 .form-control:focus {
     background-color: #eef1fa;
     border-color: #4e67b3;
@@ -23,21 +25,22 @@
     background-color: #f4f6fc;
     border: 1px solid #cbd3eb;
 }
+
 .form-check-label {
     color: #4e67b3;
 }
 
-button.btn-primary {
-    background-color: #4e67b3;
-    border-color: #4e67b3;
-    color: white;
-}
-
-button.btn-primary:hover {
+.btn-primary {
     background-color: #3f579f;
     border-color: #3f579f;
+    color: white !important;
 }
 
+.btn-primary:hover {
+    background-color: #344a8a;
+    border-color: #344a8a;
+    color: white !important;
+}
 a,
 a:link,
 a:visited,
