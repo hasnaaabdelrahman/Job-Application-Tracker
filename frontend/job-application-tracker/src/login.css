@@ -1,0 +1,45 @@
+.form-header {
+    color: #3f579f;
+}
+
+.form-control {
+    color: #3f579f;
+    background-color: #f4f6fc;
+    border: 1px solid #cbd3eb;
+}
+
+.form-control::placeholder {
+    color: #7d8fc4 !important;
+    opacity: 1;
+}
+
+.form-control:focus {
+    background-color: #eef1fa;
+    border-color: #4e67b3;
+    box-shadow: 0 0 0 0.2rem rgba(78, 103, 179, 0.15);
+}
+
+.form-check-label {
+    color: #4e67b3;
+}
+
+button.btn-primary {
+    background-color: #4e67b3;
+    border-color: #4e67b3;
+    color: white;
+}
+
+button.btn-primary:hover {
+    background-color: #3f579f;
+    border-color: #3f579f;
+}
+
+a,
+a:link,
+a:visited,
+a:hover,
+a:active,
+a:focus {
+    color: #4e67b3;
+    text-decoration: none !important;
+}
