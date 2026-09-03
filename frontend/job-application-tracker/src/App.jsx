@@ -1,11 +1,17 @@
-import Login from "./components/Auth/Login"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Signup from "./components/Auth/Sign-up";
+import Login from "./components/Auth/Login";
+
 
 function App() {
 
   return (
-    <>
-      <Login />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

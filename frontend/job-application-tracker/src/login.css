@@ -1,4 +1,4 @@
-.form-header {
+.form-header, .form-label {
     color: #3f579f;
 }
 
@@ -12,13 +12,17 @@
     color: #7d8fc4 !important;
     opacity: 1;
 }
-
 .form-control:focus {
     background-color: #eef1fa;
     border-color: #4e67b3;
     box-shadow: 0 0 0 0.2rem rgba(78, 103, 179, 0.15);
 }
 
+#InputBirthday4 {
+    color: #3f579f;
+    background-color: #f4f6fc;
+    border: 1px solid #cbd3eb;
+}
 .form-check-label {
     color: #4e67b3;
 }
